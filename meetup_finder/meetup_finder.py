@@ -1,32 +1,21 @@
 from __future__ import print_function
 import logging
 import os
+import sys
 import time
 from collections import Counter
 
 import requests
 from ratelimit import limits, sleep_and_retry
 
-### LOGGING ####################################################################
-def configure_logger(logger, path, console_output=False):
-    if not os.path.exists(path):
-        os.mkdir(path)
-    logger.setLevel(logging.DEBUG)
-    fh = logging.FileHandler(path + os.path.splitext(os.path.basename(__file__))[0] + ".log")
-    fh.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(module)s | %(message)s')
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
-    if console_output:
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        ch.setFormatter(formatter)
-        logger.addHandler(ch)
-
 HOME_DIR = os.environ['HOME']
-LOGGING_DIR = HOME_DIR + "/logs/"
+UTILS_DIR = HOME_DIR + '/devrel-tools/utilities'
+sys.path.append(UTILS_DIR)
+import utils
+
+### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
-configure_logger(logger, path=LOGGING_DIR, console_output=True)
+utils.configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
 ################################################################################
 
 @sleep_and_retry
