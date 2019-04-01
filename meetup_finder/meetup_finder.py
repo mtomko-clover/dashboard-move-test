@@ -8,14 +8,14 @@ from collections import Counter
 import requests
 from ratelimit import limits, sleep_and_retry
 
+### IMPORTS ####################################################################
 HOME_DIR = os.environ['HOME']
 UTILS_DIR = HOME_DIR + '/devrel-tools/utilities'
 sys.path.append(UTILS_DIR)
-import utils
-
+from config_logger import configure_logger
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
-utils.configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
+configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
 ################################################################################
 
 @sleep_and_retry
