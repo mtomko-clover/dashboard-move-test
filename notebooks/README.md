@@ -36,5 +36,6 @@ Before committing, go to Kernel > Restart & Clear Output.
 * `app_approval_time_pending.ipynb` Histogram and descriptive statistics of the length of time apps have been waiting to be approved.
 * `developer_percentiles.ipynb` Lagging indicators of developer success (e.g., combined install count across all of their apps).
 * `developer_time_to_first_approval.ipynb` Descriptive statistics of time from prod developer account creation to first approved app.
+* `developers_by_location.ipynb` Find developers located in particular states. Useful for generating email lists for regional events.
 * `monthly_installs.ipynb` Exploratory work re: month-over-month growth in app install bases.
 * `sandbox_prod_acc_bridge.ipynb` Exploratory work re: how to identify prod and sandbox developer accounts that belong to the same entitity.
