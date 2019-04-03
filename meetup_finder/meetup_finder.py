@@ -8,11 +8,9 @@ from collections import Counter
 import requests
 from ratelimit import limits, sleep_and_retry
 
-### IMPORTS ####################################################################
-HOME_DIR = os.environ['HOME']
-UTILS_DIR = HOME_DIR + '/devrel-tools/utilities'
-sys.path.append(UTILS_DIR)
-from config_logger import configure_logger
+sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) + '/utilities'))
+from configure_logger import configure_logger
+
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
 configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
@@ -98,9 +96,13 @@ def is_itinerant(group_urlname, threshold=.67):
               "time": "-3m,3m",
               "desc": "true"}
     response = call_api(endpoint, params)
-    response = response.json()
-    # v2 endpoints nest results.
-    results = response["results"]
+    try:
+        response = response.json()
+        # v2 endpoints nest results.
+        results = response["results"]
+    except ValueError:
+        logger.warn(response)
+        return False
 
     # If the group didn't have at least two events in our six month span, fail fast.
     if len(results) <= 2:

@@ -4,10 +4,9 @@ import sys
 
 import pandas as pd
 
-### IMPORTS ####################################################################
-UTILS_DIR = os.environ['HOME'] + '/devrel-tools/utilities'
-sys.path.append(UTILS_DIR)
-from config_logger import configure_logger
+sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) + '/utilities'))
+from configure_logger import configure_logger
+
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
 configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)

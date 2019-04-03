@@ -12,12 +12,10 @@ import pandas as pd
 import requests
 from requests.auth import HTTPBasicAuth
 
-### IMPORTS ####################################################################
-HOME_DIR = os.environ['HOME']
-UTILS_DIR = HOME_DIR + '/devrel-tools/utilities'
-sys.path.append(UTILS_DIR)
+sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) + '/utilities'))
 import utils
-from config_logger import configure_logger
+from configure_logger import configure_logger
+
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
 configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
