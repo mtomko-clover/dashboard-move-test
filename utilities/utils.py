@@ -157,20 +157,27 @@ def get_sheet(spreadsheet_title, worksheet_title=None):
              'https://www.googleapis.com/auth/drive']  # Change for API v4
     creds = ServiceAccountCredentials.from_json_keyfile_name('/home/' + USERNAME + '/.gcp/developer-logins-key.json', scope)
     client = gspread.authorize(creds)
-    if worksheet_title:
-        sheet = client.open(spreadsheet_title).worksheet(worksheet_title)
-    else:
-        sheet = client.open(spreadsheet_title).sheet1        
+    try:
+        if worksheet_title:
+            sheet = client.open(spreadsheet_title).worksheet(worksheet_title)
+        else:
+            sheet = client.open(spreadsheet_title).sheet1
+    except Exception:
+        raise        
     return sheet
 
 def write_counts_to_sheet(counts, sheet, env="prod_us"):
     for count in counts:
         row = [env]
         row.extend(count)
-        sheet.append_row(row)
-        logger.debug("Sleeping...")
         sleep(1.1)  # Rate limited to 100 writes in 100 seconds
-        logger.debug("Awake!")
+        try:
+            # https://gspread.readthedocs.io/en/latest/api.html?highlight=append_row
+            # https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+            sheet.append_row(row, value_input_option="USER_ENTERED")
+            logger.debug("Wrote {row} to {sheet}".format(row=row, sheet=sheet))
+        except Exception:
+            raise
 
 def clear_sheet_and_write(spreadsheet_title, worksheet_title, rows, env):
     logger.debug("Retrieving {spreadsheet_title}: {worksheet_title}...".format(

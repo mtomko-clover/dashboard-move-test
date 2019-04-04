@@ -35,11 +35,13 @@ def monthly_combined_dev_counts(db, period_start, period_end, ids_to_exclude):
                                                       period_start=ps,
                                                       period_end=pe,
                                                       ids_to_exclude=ids_to_exclude)
+        logger.debug(devs_count)
         semi_devs_count = pull_count_semi_devs_filtered_between(db=db,
                                                                 filter_field="created_time",
                                                                 period_start=ps,
                                                                 period_end=pe,
                                                                 ids_to_exclude=ids_to_exclude)
+        logger.debug(semi_devs_count)
         combined_counts.append((ps.strftime("%Y-%m"), devs_count, semi_devs_count))
     logger.debug(combined_counts)
     return combined_counts
@@ -98,6 +100,9 @@ def monthly_dev_timestamps_to_sheet():
     prod_us = Db("~/.clover/p801.cfg")
     first_day_of_current_month = datetime.datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     first_day_of_previous_month = first_day_of_current_month - relativedelta(months=1)
+    logger.debug(first_day_of_current_month)
+    logger.debug(first_day_of_previous_month)
+
     spreadsheet_title = "[DA-170] App and Developer Counts"
     worksheet_title = "combined_dev_created"
 
@@ -112,13 +117,14 @@ def monthly_dev_timestamps_to_sheet():
                                                   period_end=first_day_of_current_month,
                                                   ids_to_exclude=first_party_ids)
     logger.debug("Created monthly combined dev counts.")
+    prod_us.close()
 
     logger.debug("Retreiving {spreadsheet_title}: {worksheet_title}...".format(
         spreadsheet_title=spreadsheet_title,
         worksheet_title=worksheet_title))
     combined_sheet = utils.get_sheet(spreadsheet_title, worksheet_title)
     logger.debug("Retrieved worksheet {worksheet_title}.".format(
-        worksheet_title=worksheet_title))
+        worksheet_title=combined_sheet))
 
     logger.debug("Writing counts to worksheet {worksheet_title}...".format(
         worksheet_title=worksheet_title))
@@ -127,7 +133,6 @@ def monthly_dev_timestamps_to_sheet():
         counts=combined_counts[0][1:],
         month=combined_counts[0][0],
         worksheet_title=worksheet_title))
-    prod_us.close()
 
 ################################################################################
 if __name__ == "__main__":
