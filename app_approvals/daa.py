@@ -1,4 +1,4 @@
-import MySQLdb
+import mysql.connector
 import os
 import requests
 import webbrowser
@@ -10,6 +10,7 @@ import getpass
 class DAA:
     def __init__(self):
         self.jira = None
+        self.app = None
 
     # Initialize JIRA
     def auth(self, username):
@@ -32,6 +33,7 @@ class DAA:
 
             if existing_jira:
                 print("JIRA for this app already exists at {}".format(existing_jira))
+                self.app = existing_jira
                 return existing_jira
             else:
                 issue_name = "[US] {} by {} {}".format(app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
@@ -43,7 +45,7 @@ class DAA:
 
         elif ticket_type == "logo":
             # search and download the icon to attach
-            existing_jira = self.search_jira(app_info["app_name"], ticket_type)
+            existing_jira = self.search_jira(app_info["app_uuid"], ticket_type)
 
             if existing_jira:
                 print("JIRA for this app already exists at {}".format(existing_jira))
@@ -105,8 +107,9 @@ class DAA:
             except:
                 return None
         if ticket_type == "logo":
+
             try:
-                existing_jira = self.jira.search_issues('text ~ "LOGO {}" and project=DLV'.format(query))
+                existing_jira = self.jira.search_issues('text ~ "LOGO {}"'.format(query))
                 return existing_jira[0]
             except:
                 return None
@@ -122,7 +125,7 @@ class DAA:
                 return existing_jira[0]
             except:
                 return None
-    
+
     def query_p801(self, query):
         """
         Query p801:
@@ -132,11 +135,12 @@ class DAA:
         """
         ssl_set = {}
         ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
-        db = MySQLdb.connect(host="p801.corp.clover.com",
-                            user="gpark",
-                            passwd="asWJn9rWa88=", # pw Kess provided originally
-                            db="meta", # database you're trying to use
-                            ssl=ssl_set)
+        db = mysql.connector.connect(
+            user="gpark",
+            password="asWJn9rWa88=",  # pw Kess provided originally
+            host="db-usprod-shard0.corp.clover.com",
+            db="meta" #database you're trying to use
+        )
         cur = db.cursor()
         cur.execute(query)
         query_output = cur.fetchall()
@@ -190,6 +194,7 @@ class DAA:
         print("logo issue linked")
         self.jira.create_issue_link("is blocked by", privacy, app_approval)
         print("privacy issue linked")
+        self.jira.assign_issue(privacy, "sue.minton@firstdata.com")
         self.jira.create_issue_link("is blocked by", tos, app_approval)
         print("tos issue linked")
 
