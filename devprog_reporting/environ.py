@@ -44,8 +44,9 @@ class ApprovalStage(object):
 
 
 class BaseEnviron(object):
-    def __init__(self, name, environ_type, db, dev_reports, app_reports, countries):
+    def __init__(self, name, name_key, environ_type, db, dev_reports, app_reports, countries):
         self.name = name
+        self.name_key = name_key
         self.environ = environ_type
         self.db = db
         self.dev_reports = dev_reports
@@ -56,12 +57,13 @@ class BaseEnviron(object):
         return self.name
     
     def __repr__(self):
-        return 'Environ(%s, %s, %s, %s, %s, %s)' % (self.name, self.environ, self.db, self.dev_reports, self.app_reports, self.countries)
+        return 'Environ(%s, %s, %s, %s, %s, %s)' % (self.name, self.name_key, self.environ, self.db, self.dev_reports, self.app_reports, self.countries)
 
 class Environ(BaseEnviron):
     def __init__(self, environ_type):
         if environ_type == EnvironType.PROD_US:
             super(Environ, self).__init__(name="Prod US/CA",
+                                          name_key="prod_us",
                                           environ_type=environ_type,
                                           db=Db("~/.clover/p801.cfg"),
                                           dev_reports=[
@@ -78,6 +80,7 @@ class Environ(BaseEnviron):
                                           countries=["US", "CA"])
         elif environ_type == EnvironType.SANDBOX:
             super(Environ, self).__init__(name="Sandbox",
+                                          name_key = "sandbox",
                                           environ_type=environ_type,
                                           db=SshDb("~/.clover/sb.cfg"),
                                           dev_reports=[

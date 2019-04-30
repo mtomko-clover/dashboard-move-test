@@ -1,3 +1,5 @@
+MYSQL_DATE_FORMAT = "%Y-%m-%d"
+
 NOT_LIKE_DEVELOPER_NAMES_ACCOUNT_EMAILS = """
     developer.name NOT LIKE "Clover" AND
     account.email NOT LIKE '%clover.com' AND
