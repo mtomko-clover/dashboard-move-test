@@ -9,8 +9,9 @@ import  pytz, datetime, shelve
 
 
 # Initialize JIRA
-PWD = getpass.getpass('Jira Password: ') # prompt for Jira password
-DAV = JIRA('https://jira.dev.clover.com', basic_auth=('richelle.herrli', PWD))
+username = input("LDAP username: ")
+PWD = getpass.getpass('LDAP Password: ') # prompt for Jira password
+DAV = JIRA('https://jira.dev.clover.com', basic_auth=(username, PWD))
 
 ##########################################################
 ###################### FUNCTIONS #########################
