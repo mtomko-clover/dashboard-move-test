@@ -44,7 +44,7 @@ class ApprovalStage(object):
 
 
 class BaseEnviron(object):
-    def __init__(self, name, name_key, environ_type, db, dev_reports, app_reports, countries):
+    def __init__(self, name, name_key, environ_type, db, dev_reports, app_reports, countries, first_party_dev_ids=None):
         self.name = name
         self.name_key = name_key
         self.environ = environ_type
@@ -52,6 +52,7 @@ class BaseEnviron(object):
         self.dev_reports = dev_reports
         self.app_reports = app_reports
         self.countries = countries
+        self.first_party_dev_ids = first_party_dev_ids
 
     def __str__(self):
         return self.name
@@ -77,7 +78,8 @@ class Environ(BaseEnviron):
                                             ApprovalStage(Status.APPROVED, '2014-06-26'),
                                             ApprovalStage(Status.PUBLISHED, '2014-06-26')
                                           ],
-                                          countries=["US", "CA"])
+                                          countries=["US", "CA"],
+                                          first_party_dev_ids=[0, 277, 500, 1417, 3831, 11239])
         elif environ_type == EnvironType.SANDBOX:
             super(Environ, self).__init__(name="Sandbox",
                                           name_key = "sandbox",
