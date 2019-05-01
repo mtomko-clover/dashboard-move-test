@@ -58,7 +58,7 @@ class BaseEnviron(object):
         return self.name
     
     def __repr__(self):
-        return 'Environ(%s, %s, %s, %s, %s, %s)' % (self.name, self.name_key, self.environ, self.db, self.dev_reports, self.app_reports, self.countries)
+        return 'Environ(%s, %s)' % (self.name_key, self.db)
 
 class Environ(BaseEnviron):
     def __init__(self, environ_type):
