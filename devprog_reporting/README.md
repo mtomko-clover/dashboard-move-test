@@ -65,7 +65,7 @@ After saving, run `python report_period.py`.
 59 23 * * * /home/rachel/devrel-tools/devprog_reporting/dev_logins_to_datastore.sh
 5 0 * * * /home/rachel/devrel-tools/devprog_reporting/dev_logins_to_sheet.sh
 30 0 * * 1 /home/rachel/devrel-tools/devprog_reporting/popular_apps_devs_to_sheet.sh
-0 2 1 * * /home/rachel/devrel-tools/devprog_reporting/app_dev_timestamps_to_sheet.sh
+0 2 1 * * /home/rachel/devrel-tools/devprog_reporting/app_dev_counts_to_sheet.sh
 ```
 
 ### Google Sheets
