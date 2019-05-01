@@ -44,24 +44,27 @@ class ApprovalStage(object):
 
 
 class BaseEnviron(object):
-    def __init__(self, name, environ_type, db, dev_reports, app_reports, countries):
+    def __init__(self, name, name_key, environ_type, db, dev_reports, app_reports, countries, first_party_dev_ids=None):
         self.name = name
+        self.name_key = name_key
         self.environ = environ_type
         self.db = db
         self.dev_reports = dev_reports
         self.app_reports = app_reports
         self.countries = countries
+        self.first_party_dev_ids = first_party_dev_ids
 
     def __str__(self):
         return self.name
     
     def __repr__(self):
-        return 'Environ(%s, %s, %s, %s, %s, %s)' % (self.name, self.environ, self.db, self.dev_reports, self.app_reports, self.countries)
+        return 'Environ(%s, %s)' % (self.name_key, self.db)
 
 class Environ(BaseEnviron):
     def __init__(self, environ_type):
         if environ_type == EnvironType.PROD_US:
             super(Environ, self).__init__(name="Prod US/CA",
+                                          name_key="prod_us",
                                           environ_type=environ_type,
                                           db=Db("~/.clover/p801.cfg"),
                                           dev_reports=[
@@ -75,9 +78,11 @@ class Environ(BaseEnviron):
                                             ApprovalStage(Status.APPROVED, '2014-06-26'),
                                             ApprovalStage(Status.PUBLISHED, '2014-06-26')
                                           ],
-                                          countries=["US", "CA"])
+                                          countries=["US", "CA"],
+                                          first_party_dev_ids=[0, 277, 500, 1417, 3831, 11239])
         elif environ_type == EnvironType.SANDBOX:
             super(Environ, self).__init__(name="Sandbox",
+                                          name_key = "sandbox",
                                           environ_type=environ_type,
                                           db=SshDb("~/.clover/sb.cfg"),
                                           dev_reports=[
