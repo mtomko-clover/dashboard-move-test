@@ -355,7 +355,7 @@ def open_shelf(txt_files = False):
     last_time = ""
 
 
-    with shelve.open("prelaunch3/timestamp") as the_shelf:
+    with shelve.open("timestamp") as the_shelf:
         last_time = the_shelf["last time"]
         last_time = last_time.astimezone(pytz.utc)
         print("App was last run on", last_time)
