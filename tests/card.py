@@ -53,12 +53,13 @@ TEST_CARDS = [
     TestCard(pan=4111111111111111, results={"devpay": "APPROVED",
                                             "manual": "APPROVED"},
                                             docs=False),
+    TestCard(pan=4005562231212149, results={"devpay": "APPROVED",
+                                            "manual": "APPROVED"},
+                                            docs=False),
     TestCard(pan=4005571702222222, results={"devpay": "DECLINED",
                                             "manual": "DECLINED"}),
     TestCard(pan=4005578003333335, results={"devpay": "DECLINED",
                                             "manual": "PARTIAL_AUTH"}),
-    TestCard(pan=4005562231212149, results={"devpay": "APPROVED",
-                                            "manual": "APPROVED"}),
     TestCard(pan=6011361000006668, results={"devpay": "APPROVE",
                                             "manual": "APPROVED"})
 ]

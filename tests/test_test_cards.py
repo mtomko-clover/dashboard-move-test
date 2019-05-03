@@ -14,7 +14,7 @@ from card import DOCUMENTED_TEST_CARDS
 
 sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) + '/utilities'))
 from configure_logger import configure_logger
-# from utils import phone_home
+from utils import phone_home
 
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
@@ -64,27 +64,15 @@ def test_test_cards_with_devpay():
             assert result == c.results.get("devpay")
         except AssertionError:
             func_name = inspect.currentframe().f_code.co_name
-            # phone_home(func_name, sys.exc_info())
-
-
-# def phone_home(name, exc_info, recipients=None):
-#     if not recipients:
-#         recipients = ['rachel@clover.com']
-#     if recipients and type(recipients) != list:
-#         raise TypeError("'recipients' must be a list")
-#     type_, value_, traceback_ = exc_info
-#     ex = traceback.format_exception(type_, value_, traceback_)
-#     emails.send(recipients,
-#                 'Exception in {name}'.format(name=name),
-#                 str(ex),
-#                 'rachel@clover.com')
+            # Make the message more useful. Currently: 
+            # ['Traceback (most recent call last):\n', ' File "test_test_cards.py", line 74, in \n test_test_cards_with_devpay()\n', ' File "test_test_cards.py", line 64, in test_test_cards_with_devpay\n assert result == c.results.get("devpay")\n', 'AssertionError\n']
+            phone_home(func_name, sys.exc_info(), ['rachel@clover.com'])  # Add Chetan, add Dex
 
 ################################################################################
 if __name__ == "__main__":
     filename = os.path.basename(__file__)
-    test_test_cards_with_devpay()
-    # try:
-    #     test_test_cards_with_devpay()
-    # except Exception as err:
-    #     logger.exception(err)
-    #     phone_home(filename, sys.exc_info())
+    try:
+        test_test_cards_with_devpay()  # Re-write in parallel, why make sync requests except we have to decouple utils first so that we can use a Python 3.7 runtime
+    except Exception as err:
+        logger.exception(err)
+        phone_home(filename, sys.exc_info())
