@@ -202,7 +202,7 @@ def credit(uuids):
             developer_str += line + "\r\n"
 
         # Output to .txt file and open Jira
-        file_name = "{}.txt".format(developer_list[0])
+        file_name = "dev_txt_files/{}.txt".format(developer_list[0])
         file = open(file_name,'w')
         file.write(developer_str)
         file.write("\n\n")
@@ -252,6 +252,22 @@ def ofac(uuids):
     number_of_developers = len(developer)
 
     add_to_ofac_master(developer,number_of_developers)
+
+
+    '''
+THESE LINES ARE IN PROGRESS. PLEASE IGNORE FOR NOW
+-Richelle
+'''
+
+
+#def auto_ofac():
+#    ofac_run_time = datetime.datetime.now()
+#    ofac_utc_time = ofac_run_time.astimezone(pytz.utc)
+#    ofac_uuids = []
+
+    #query = "SELECT uuid IN developer WHERE approval_status = \'APPROVED\' AND modified_time > " + ofac_utc_time
+
+    #Note to self: cannot pull modified time from shard to get the UUIDs that need to be OFAC-ed. Will need to use JQL
 
 
 def add_to_ofac_master(developer,number_of_developers):
