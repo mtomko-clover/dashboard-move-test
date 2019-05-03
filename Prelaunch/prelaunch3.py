@@ -202,7 +202,7 @@ def credit(uuids):
             developer_str += line + "\r\n"
 
         # Output to .txt file and open Jira
-        file_name = "{}.txt".format(developer_list[0])
+        file_name = "dev_txt_files/{}.txt".format(developer_list[0])
         file = open(file_name,'w')
         file.write(developer_str)
         file.write("\n\n")
