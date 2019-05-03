@@ -11,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 from oauth2client.service_account import ServiceAccountCredentials
 
 from config import CSV_OUTPUT_DIR, DATASCIENCE_DIR, USERNAME
-from config_logger import configure_logger
+from configure_logger import configure_logger
 sys.path.append(DATASCIENCE_DIR)
 from services import emails
 
@@ -178,6 +178,16 @@ def write_counts_to_sheet(counts, sheet, env="prod_us"):
             logger.debug("Wrote {row} to {sheet}".format(row=row, sheet=sheet))
         except Exception:
             raise
+
+def write_row_to_sheet(row, sheet):
+    sleep(1.1)  # Rate limited to 100 writes in 100 seconds
+    try:
+        # https://gspread.readthedocs.io/en/latest/api.html?highlight=append_row
+        # https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+        sheet.append_row(row, value_input_option="USER_ENTERED")
+        logger.debug("Wrote {row} to {sheet}".format(row=row, sheet=sheet))
+    except Exception:
+        raise
 
 def clear_sheet_and_write(spreadsheet_title, worksheet_title, rows, env):
     logger.debug("Retrieving {spreadsheet_title}: {worksheet_title}...".format(
