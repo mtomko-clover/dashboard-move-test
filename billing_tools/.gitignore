@@ -1,0 +1,6 @@
+billing/bin/*
+billing/lib/*
+billing/include/*
+billing/pyvenv.cfg
+billing/pip-selfcheck.json
+venv/*
