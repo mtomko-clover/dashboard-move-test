@@ -54,7 +54,7 @@ class DAA:
                 self.get_icon(app_info["icon_filename"])
 
                 issue_name = "[US] LOGO/BRAND - {}".format(app_info["app_name"])
-                issue_description = "Hi [~Christopher.Demetriades@firstdata.com],\n{} by {} is attached for your review.\nThanks!".format(app_info["app_name"], app_info["dev_name"])
+                issue_description = "Hi [~Christopher.Demetriades],\n{} by {} is attached for your review.\nThanks!".format(app_info["app_name"], app_info["dev_name"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 self.jira.add_attachment(issue=new_DLV, attachment=app_info["icon_filename"])
@@ -190,12 +190,13 @@ class DAA:
         privacy = self.open_jira(app_info, "privacy")
         tos = self.open_jira(app_info, "tos")
 
-        self.jira.create_issue_link("is blocked by", logo, app_approval)
+        self.jira.create_issue_link("blocks", logo, app_approval)
+        self.jira.assign_issue(logo, "Christopher.Demetriades")
         print("logo issue linked")
-        self.jira.create_issue_link("is blocked by", privacy, app_approval)
+        self.jira.create_issue_link("blocks", privacy, app_approval)
         print("privacy issue linked")
         self.jira.assign_issue(privacy, "sue.minton@firstdata.com")
-        self.jira.create_issue_link("is blocked by", tos, app_approval)
+        self.jira.create_issue_link("blocks", tos, app_approval)
         print("tos issue linked")
 
         webbrowser.open_new_tab("https://jira.dev.clover.com/browse/" + str(app_approval))
