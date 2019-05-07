@@ -397,6 +397,7 @@ def print_menu():
     (1) Create Credit .txt files
     (2) Create OFAC spreadsheet
     (3) Quit
+    (4) Override Auto-Credit
         """)
         choice = input("> ")
 
@@ -404,14 +405,18 @@ def print_menu():
             utc_time = open_shelf(txt_files = True)
             #the_shelf["last time"] = new_time
 
-            #print("\nEnter Credit UUIDs in the following format: ('UUID1', 'UUID2')")
-            #credit_uuids = input("> ")
-            # should look like this ('GVAEY1AB0JVMW','AAC2MMHKJR6N2')
+            
             auto_credit(utc_time)
         elif choice == "2":
             print("\nEnter OFAC UUIDs in the following format: ('UUID1', 'UUID2')")
             ofac_uuids = input("> ")
             ofac(ofac_uuids)
+        elif choice == "4":
+            print("\nEnter Credit UUIDs in the following format: ('UUID1', 'UUID2')")
+            credit_uuids = input("> ")
+            # should look like this ('GVAEY1AB0JVMW','AAC2MMHKJR6N2')
+            credit(credit_uuids)
+
         else:
             choosing = False
 
