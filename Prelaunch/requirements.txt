@@ -1,7 +1,6 @@
 mysql-connector-python
 pytz
 datetime
-openpyxl
 jira
 getpass
 shelve
