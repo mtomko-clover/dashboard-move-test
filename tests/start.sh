@@ -1,2 +1,2 @@
-source ~/virtualenvs/devprog/bin/activate
+source ~/virtualenvs/tests/bin/activate
 source secrets.sh
