@@ -61,11 +61,12 @@ def search_for_merchant(session, host, by_merchant_id):
         else:
             merchant_id = raw_input('Merchant name: ')
         date_string = datetime.now().strftime("%s")
-        url = host + "/v3/merchants?expand=owner&expand=owner&orderBy=name%20ASC&limit=50&find=name%20LIKE%20" \
-                                 + merchant_id + "%25&find=id%20LIKE%20" + merchant_id + "%25&_=" + date_string
+        find_string = "name LIKE" + merchant_id + "%"
+        query_params = {"orderBy": "name ASC", "limit": "50", "find": find_string, "_": str(date_string)}
+        url = host + "/v3/merchants"
 
         try:
-            response = session.get(url)
+            response = session.get(url, params=query_params)
             if response.status_code == 200:
                 response_object = json.loads(response.content)
                 potential_merchants = response_object['elements']
@@ -97,11 +98,12 @@ def search_for_application(session, host, by_app_id):
         else:
             application_id = raw_input("Enter application name: ")
         date_string = datetime.now().strftime("%s")
-        url = host + "/v3/apps?expand=subscriptions%2CavailableSubscriptions%2CcurrentSubscription%2Cdeveloper&limit=51&" \
-                     "find=id%20LIKE%20" + application_id + "%25&find=name%20LIKE%20" + application_id + "%25&_=" + date_string
-
+        find_id = "id LIKE" + application_id + "%"
+        find_name = "name LIKE" + application_id + "%"
+        query_params = {"limit": str(50), "find": find_id, "find": find_name, "_": date_string}
+        url = host + "/v3/apps"
         try:
-            response = session.get(url)
+            response = session.get(url, params=query_params)
             if response.status_code == 200:
                 response_object = json.loads(response.content)
                 potential_applications = response_object['elements']
