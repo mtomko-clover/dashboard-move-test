@@ -62,9 +62,8 @@ def search_for_merchant(session, host, by_merchant_id):
             merchant_id = raw_input('Merchant name: ')
         date_string = datetime.now().strftime("%s")
         url = host + "/v3/merchants?expand=owner&expand=owner&orderBy=name%20ASC&limit=50&find=name%20LIKE%20" \
-                                 + merchant_id + "&find=id%20LIKE%20" + merchant_id + "%25&_=" + date_string
-        # url = host + "/v3/merchants?expand=owner&expand=owner&orderBy=name%20ASC&limit=11&find=id%20LIKE%20" \
-        #              + merchant_id + "%25&_=" + date_string
+                                 + merchant_id + "%25&find=id%20LIKE%20" + merchant_id + "%25&_=" + date_string
+
         try:
             response = session.get(url)
             if response.status_code == 200:
@@ -99,7 +98,8 @@ def search_for_application(session, host, by_app_id):
             application_id = raw_input("Enter application name: ")
         date_string = datetime.now().strftime("%s")
         url = host + "/v3/apps?expand=subscriptions%2CavailableSubscriptions%2CcurrentSubscription%2Cdeveloper&limit=51&" \
-                     "find=id%20LIKE%25" + application_id + "%25&find=name%20LIKE%25" + application_id + "%25&_=" + date_string
+                     "find=id%20LIKE%20" + application_id + "%25&find=name%20LIKE%20" + application_id + "%25&_=" + date_string
+
         try:
             response = session.get(url)
             if response.status_code == 200:
