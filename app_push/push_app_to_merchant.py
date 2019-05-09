@@ -1,6 +1,7 @@
 import argparse
 from requests import Session
 from getpass import getpass
+from datetime import datetime
 import json
 import sys
 
@@ -37,6 +38,7 @@ def get_login_info(session, host):
     resp = session.post(host+"/cos/v1/dashboard/internal/login", json={'username': ldap_username, 'password':ldap_password})
     return resp.status_code
 
+
 # Need to get appSubscription info. It will pick the first one.
 # Maybe need to iterate through for the right one?
 def get_app_info(session, host, app_id):
@@ -50,6 +52,85 @@ def get_app_info(session, host, app_id):
         print e.message
 
 
+def search_for_merchant(session, host, by_merchant_id):
+    merchants = []
+    merchant_id = ""
+    while True:
+        if by_merchant_id:
+            merchant_id = raw_input("Enter merchant ID: ")
+        else:
+            merchant_id = raw_input('Merchant name: ')
+        date_string = datetime.now().strftime("%s")
+        url = host + "/v3/merchants?expand=owner&expand=owner&orderBy=name%20ASC&limit=50&find=name%20LIKE%20" \
+                                 + merchant_id + "&find=id%20LIKE%20" + merchant_id + "%25&_=" + date_string
+        # url = host + "/v3/merchants?expand=owner&expand=owner&orderBy=name%20ASC&limit=11&find=id%20LIKE%20" \
+        #              + merchant_id + "%25&_=" + date_string
+        try:
+            response = session.get(url)
+            if response.status_code == 200:
+                response_object = json.loads(response.content)
+                potential_merchants = response_object['elements']
+                i = 1
+                print "Are any of these merchants correct?"
+                print
+                for merchant in potential_merchants:
+                    print '[' + str(i) + ']' + merchant['name'] + ' (' + merchant['id'] + ')'
+                    i += 1
+                print
+                choice = raw_input('If so, choose one. Otherwise, press [Enter]: ')
+                if choice != "":
+                    merchants.append(potential_merchants[int(choice)-1])
+
+        except Exception as e:
+            print e.message
+
+        ans = raw_input('Search more? [Y/n]: ')
+        if ans.lower() == 'n':
+            return merchants
+
+
+def search_for_application(session, host, by_app_id):
+    application_id = ""
+    applications = []
+    while True:
+        if by_app_id:
+            application_id = raw_input("Enter application ID: ")
+        else:
+            application_id = raw_input("Enter application name: ")
+        date_string = datetime.now().strftime("%s")
+        url = host + "/v3/apps?expand=subscriptions%2CavailableSubscriptions%2CcurrentSubscription%2Cdeveloper&limit=51&" \
+                     "find=id%20LIKE%25" + application_id + "%25&find=name%20LIKE%25" + application_id + "%25&_=" + date_string
+        try:
+            response = session.get(url)
+            if response.status_code == 200:
+                response_object = json.loads(response.content)
+                potential_applications = response_object['elements']
+                i = 1
+                print "Are any of these applications correct?"
+                print
+                for application in potential_applications:
+                    print '[' + str(i) + ']' + application['name'] + ' (' + application['id'] + ')'
+                    i += 1
+                print
+                choice = raw_input('If so, choose one. Otherwise, press [Enter]: ')
+                if choice != "":
+                    applications.append(potential_applications[int(choice)-1])
+
+        except Exception as e:
+            print e.message
+
+        ans = raw_input('Search more? [Y/n]: ')
+        if ans.lower() == 'n':
+            return applications
+
+
+def get_ids(object_list):
+    ids = []
+    for object in object_list:
+        ids.append(object['id'])
+    return ids
+
+
 def main():
 
     parser = argparse.ArgumentParser()
@@ -58,34 +139,27 @@ def main():
 
     args = parser.parse_args()
 
-    application_ids = raw_input("Enter application ids (separate by \';\'): ")
-    application_ids_list = application_ids.split(";")
-    app_id_set = set(application_ids_list)
-    if '' in app_id_set:
-        app_id_set.remove('')
-    if ' ' in app_id_set:
-        app_id_set.remove(' ')
-    if len(app_id_set) == 0:
-        exit("at least one application ID must be provided")
-
-    merchant_ids = raw_input("Enter merchant ids (separate by \';\'): ")
-    merchant_ids_list = merchant_ids.split(";")
-    merchant_id_set = set(merchant_ids_list)
-    if ' ' in merchant_id_set:
-        merchant_id_set.remove(' ')
-    if '' in merchant_id_set:
-        merchant_id_set.remove('')
-    if len(merchant_ids_list) == 0:
-        exit("at least one merchant ID must be provided")
-
-    print
-
     session = Session()
 
     if get_login_info(session, args.host) == 200:
         print "Logged in successfully"
         print
-        app_push(session, app_id_set, merchant_id_set, args.host)
+        merchant_search_type = raw_input('Enter [1] for search by name or [2] for search by merchant ID: ')
+        merchants = []
+        if int(merchant_search_type) == 1:
+            merchants = search_for_merchant(session, args.host, False)
+        else:
+            merchants = search_for_merchant(session, args.host, True)
+
+        app_search_type = raw_input('Enter [1] for search by name or [2] for search by application ID: ')
+        applications = []
+        if int(app_search_type) == 1:
+            applications = search_for_application(session, args.host, False)
+        else:
+            applications = search_for_application(session, args.host, True)
+
+        app_push(session, get_ids(applications), get_ids(merchants), args.host)
+
     else:
         raise Exception("LDAP login failed")
 
