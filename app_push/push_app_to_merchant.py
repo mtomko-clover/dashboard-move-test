@@ -145,7 +145,7 @@ def get_ids(object_list):
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--host', default=dev1_address,
+    parser.add_argument('--host', default="https://api.clover.com",
                         help='Hostname for environment to use (e.g. https://api.clover.com)')
 
     args = parser.parse_args()
