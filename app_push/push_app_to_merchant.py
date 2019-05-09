@@ -144,13 +144,15 @@ def main():
     if get_login_info(session, args.host) == 200:
         print "Logged in successfully"
         print
+        print 'Merchant Search'
         merchant_search_type = raw_input('Enter [1] for search by name or [2] for search by merchant ID: ')
         merchants = []
         if int(merchant_search_type) == 1:
             merchants = search_for_merchant(session, args.host, False)
         else:
             merchants = search_for_merchant(session, args.host, True)
-
+        print
+        print 'Application Search'
         app_search_type = raw_input('Enter [1] for search by name or [2] for search by application ID: ')
         applications = []
         if int(app_search_type) == 1:
