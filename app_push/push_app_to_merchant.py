@@ -52,17 +52,22 @@ def get_app_info(session, host, app_id):
         print e.message
 
 
-def search_for_merchant(session, host, by_merchant_id):
+def search_for_merchant(session, host):
     merchants = []
     merchant_id = ""
+    find_param = ""
     while True:
-        if by_merchant_id:
-            merchant_id = raw_input("Enter merchant ID: ")
-        else:
+        merchant_search_type = raw_input('Enter [1] for search by name or [2] for search by merchant ID: ')
+        if merchant_search_type != "" and int(merchant_search_type) == 1:
             merchant_id = raw_input('Merchant name: ')
+            find_param = "name LIKE" + merchant_id + "%"
+        elif merchant_search_type != "" and int(merchant_search_type) == 2:
+            merchant_id = raw_input("Enter merchant ID: ")
+            find_param = "id LIKE" + merchant_id + "%"
+        else:
+            continue
         date_string = datetime.now().strftime("%s")
-        find_string = "name LIKE" + merchant_id + "%"
-        query_params = {"orderBy": "name ASC", "limit": "50", "find": find_string, "_": str(date_string)}
+        query_params = {"orderBy": "name ASC", "limit": "50", "find": find_param, "_": str(date_string)}
         url = host + "/v3/merchants"
 
         try:
@@ -89,18 +94,22 @@ def search_for_merchant(session, host, by_merchant_id):
             return merchants
 
 
-def search_for_application(session, host, by_app_id):
+def search_for_application(session, host):
     application_id = ""
     applications = []
     while True:
-        if by_app_id:
-            application_id = raw_input("Enter application ID: ")
-        else:
+        app_search_type = raw_input('Enter [1] for search by name or [2] for search by application ID: ')
+        find_param = ""
+        if app_search_type != "" and int(app_search_type) == 1:
             application_id = raw_input("Enter application name: ")
+            find_param = "name LIKE" + application_id + "%"
+        elif app_search_type != "" and int(app_search_type) == 2:
+            application_id = raw_input("Enter application ID: ")
+            find_param = "id LIKE" + application_id + "%"
+        else:
+            continue
         date_string = datetime.now().strftime("%s")
-        find_id = "id LIKE" + application_id + "%"
-        find_name = "name LIKE" + application_id + "%"
-        query_params = {"limit": str(50), "find": find_id, "find": find_name, "_": date_string}
+        query_params = {"limit": str(50), "find": find_param, "_": date_string}
         url = host + "/v3/apps"
         try:
             response = session.get(url, params=query_params)
@@ -147,21 +156,10 @@ def main():
         print "Logged in successfully"
         print
         print 'Merchant Search'
-        merchant_search_type = raw_input('Enter [1] for search by name or [2] for search by merchant ID: ')
-        merchants = []
-        if int(merchant_search_type) == 1:
-            merchants = search_for_merchant(session, args.host, False)
-        else:
-            merchants = search_for_merchant(session, args.host, True)
+        merchants = search_for_merchant(session, args.host)
         print
         print 'Application Search'
-        app_search_type = raw_input('Enter [1] for search by name or [2] for search by application ID: ')
-        applications = []
-        if int(app_search_type) == 1:
-            applications = search_for_application(session, args.host, False)
-        else:
-            applications = search_for_application(session, args.host, True)
-
+        applications = search_for_application(session, args.host)
         app_push(session, get_ids(applications), get_ids(merchants), args.host)
 
     else:
