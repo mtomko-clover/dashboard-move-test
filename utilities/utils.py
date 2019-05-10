@@ -25,14 +25,18 @@ def enum(**enums):
  
 def chunk(l, n):
     """Yield successive n-sized chunks from l."""
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i + n]
 
-def phone_home(filename, exc_info):
+def phone_home(name, exc_info, recipients=None):
+    if not recipients:
+        recipients = ['rachel@clover.com']
+    if recipients and type(recipients) != list:
+        raise TypeError("'recipients' must be a list")
     type_, value_, traceback_ = exc_info
     ex = traceback.format_exception(type_, value_, traceback_)
-    emails.send(['rachel@clover.com'],
-                'Exception in {filename}'.format(filename=filename),
+    emails.send(recipients,
+                'Exception in {name}'.format(name=name),
                 str(ex),
                 'rachel@clover.com')
 
