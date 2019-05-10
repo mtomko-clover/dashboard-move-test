@@ -80,12 +80,13 @@ def query_p801(query):
     Output: query_output which is tuple of data from the query output
     """
 
-    print( "Query sent in", query)
     ssl_set = {}
+    shard_user = input("What is your Shard id?")
+    shard_PWD = getpass.getpass("What is your password?")
     ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
     db = mysql.connector.connect(host="db-usprod-shard0.corp.clover.com",
-                        user="richelle",
-                        passwd="asWJn9rWa88=", # pw Kess provided originally
+                        user= shard_user,
+                        passwd= shard_PWD, 
                         db="meta" # database you're trying to use
                         )
     cur = db.cursor()

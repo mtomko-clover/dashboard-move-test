@@ -11,6 +11,7 @@ class DAA:
     def __init__(self):
         self.jira = None
         self.app = None
+        self.region = None
 
     # Initialize JIRA
     def auth(self, username):
@@ -53,7 +54,7 @@ class DAA:
             else:
                 self.get_icon(app_info["icon_filename"])
 
-                issue_name = "[US] LOGO/BRAND - {}".format(app_info["app_name"])
+                issue_name = self.region+" LOGO/BRAND - {}".format(app_info["app_name"])
                 issue_description = "Hi [~Christopher.Demetriades],\n{} by {} is attached for your review.\nThanks!".format(app_info["app_name"], app_info["dev_name"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
@@ -69,7 +70,7 @@ class DAA:
                 print("JIRA for this app already exists at {}".format(existing_jira))
                 return existing_jira
             else:
-                issue_name = "[US] {} Privacy Policy".format(app_info["dev_name"])
+                issue_name = "{} {} Privacy Policy".format(self.region, app_info["dev_name"])
                 issue_description = "Hi [~sue.minton@firstdata.com],\n{} by {} privacy policy is linked for your review: {}\nThanks!".format(app_info["app_name"], app_info["dev_name"], app_info["privacy_policy"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
@@ -201,6 +202,22 @@ class DAA:
 
         webbrowser.open_new_tab("https://jira.dev.clover.com/browse/" + str(app_approval))
 
+    def define_region(self):
+        print("Is this app for the EU, US, CAN, or LA?")
+        region_choice = input("> ")
+
+        if region_choice == "EU":
+            self.region = "[EU]"
+        elif region_choice == "US":
+            self.region = "[US]"
+        elif region_choice == "CAN":
+            self.region ="[CAN]"
+        elif region_choice == "LA":
+            self.region = "[LA]"
+        else:
+            print("Sorry, I don't know that region.")
+
+
     def print_menu(self):
         """
         Print menu for DAA script
@@ -218,6 +235,8 @@ class DAA:
             choice = input("> ")
 
             if len(choice) == 13:
+                while self.region == None:
+                    define_region()
                 app_info = self.get_app(choice)
                 for k, v in app_info.items():
                     print("{}: {}\n".format(k, v))
