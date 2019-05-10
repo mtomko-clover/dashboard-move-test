@@ -1,22 +1,16 @@
 import logging
+import sys
 import traceback
 
-from config import USERNAME
+from config import DATASCIENCE_DIR, USERNAME
 from configure_logger import configure_logger
-import emails3
+sys.path.append(DATASCIENCE_DIR)
+from services import emails
 
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
-configure_logger(logger, name="cronjobs", console_output=False)
+configure_logger(logger, name="cronjobs", console_output=True)
 ################################################################################
-
-def enum(**enums):
-    return type('Enum', (), enums)
- 
-def chunk(l, n):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
 
 def email_exception(origin, exc_info, recipients=None):
     if not recipients:
@@ -26,7 +20,7 @@ def email_exception(origin, exc_info, recipients=None):
     sender = USERNAME+"@clover.com"
     type_, value_, traceback_ = exc_info
     ex = traceback.format_exception(type_, value_, traceback_)
-    emails3.send(recipients,
+    emails.send(recipients,
                 "Exception in {origin}".format(origin=origin),
                 str(ex),
                 sender)

@@ -1,3 +1,5 @@
+#!/home/rachel/virtualenvs/tests/bin/python
+
 import inspect
 import json
 import logging
@@ -13,65 +15,70 @@ from card import DOCUMENTED_TEST_CARDS
 from contact_list import TECH_WRITERS
 
 sys.path.append((os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) + '/utilities'))
-import emails3
-from config import USERNAME
+from utils_emails import email_exception
+from clover_api import CloverAPI
+from config import DATASCIENCE_DIR, USERNAME
 from configure_logger import configure_logger
-from utils_basic import email_exception
+sys.path.append(DATASCIENCE_DIR)
+from services import emails
 
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
-configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
+configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=False)
 ################################################################################
 
-def call_devpay_with_test_card(test_card):
-    access_token = os.environ["SANDBOX_API_TOKEN"]
-    merchantId =  os.environ["SANDBOX_TEST_MERCHANT_ID"]
-    target_env = "https://sandbox.dev.clover.com"
-    v2_merchant_path = "/v2/merchant/"
-    headers = {"Authorization": "Bearer " + access_token}
-    url = target_env + v2_merchant_path + merchantId + "/pay/key"
-    response = requests.get(url, headers=headers)
-    response = response.json()
-    modulus = int(response['modulus'])
-    exponent = int(response['exponent'])
-    prefix = str(response['prefix'])
-    key = RSA.construct((modulus, exponent))
-    cipher = PKCS1_OAEP.new(key)
-    encrypted = cipher.encrypt((prefix + test_card.pan).encode())
-    card_encrypted = b64encode(encrypted)
-    url = target_env + v2_merchant_path + merchantId + '/pay'
-    data = {
-        "orderId": os.environ["SANDBOX_DEVPAY_ORDER_ID"],
-        "currency": "usd",
-        "amount": 100,
-        "tipAmount": 0,
-        "taxAmount": 0,
-        "expMonth": test_card.expMonth,
-        "expYear": test_card.expYear,
-        "cvv": test_card.cvv,
-        "cardEncrypted": card_encrypted,
-        "last4": test_card.last4,
-        "first6": test_card.first6,
-        "zip": test_card.zip_code
-    }
-    response = requests.post(url, headers=headers, data=data)
-    response = response.json()
-    return response
-
+API = CloverAPI(
+    base_url="https://sandbox.dev.clover.com",
+    merchant_id=os.environ["SANDBOX_TEST_MERCHANT_ID"],
+    access_token=os.environ["SANDBOX_API_TOKEN"]
+)
 
 def test_test_cards_with_devpay():
-    for c in DOCUMENTED_TEST_CARDS:
-        expected_result = c.results.get("devpay")
-        actual_result = call_devpay_with_test_card(c).get("result")
+    def encrypt_pan(pan):
+        key = RSA.construct((modulus, exponent))
+        cipher = PKCS1_OAEP.new(key)
+        encrypted = cipher.encrypt((prefix + pan).encode())
+        card_encrypted = b64encode(encrypted)
+        return card_encrypted
+
+    def call_devpay(test_card):
+        payload = {
+            "orderId": os.environ["SANDBOX_DEVPAY_ORDER_ID"],
+            "currency": "usd",
+            "amount": 100,
+            "tipAmount": 0,
+            "taxAmount": 0,
+            "expMonth": test_card.expMonth,
+            "expYear": test_card.expYear,
+            "cvv": test_card.cvv,
+            "cardEncrypted": encrypt_pan(test_card.pan),
+            "last4": test_card.last4,
+            "first6": test_card.first6,
+            "zip": test_card.zip_code
+        }
+        response = API.post("/v2/merchant/{mId}/pay", payload)
+        return response
+
+    # Get encryption variables once.
+    pay_key_data = API.get("/v2/merchant/{mId}/pay/key")
+    modulus = int(pay_key_data['modulus'])
+    exponent = int(pay_key_data['exponent'])
+    prefix = str(pay_key_data['prefix'])
+
+    for card in DOCUMENTED_TEST_CARDS:
+        expected_result = card.results.get("devpay")
+        actual_result = call_devpay(card).get("result")
+        message = "Test Card {pan}{delimiter}Actual Result: {actual}{delimiter}Expected Result: {expected}".format(
+            delimiter=" | ", pan=card.pan, expected=expected_result, actual=actual_result)
         try:
             assert actual_result == expected_result
+            logger.info(message)
         except AssertionError:
+            logger.warning(message)
             func_name = inspect.currentframe().f_code.co_name
             sender = USERNAME+"@clover.com"
-            recipients = [sender]
-            # recipients = [sender] + TECH_WRITERS
-            message = "Test Card {pan}\nActual Result: {actual}\nExpected Result: {expected}".format(pan=c.pan, expected=expected_result, actual=actual_result)
-            emails3.send(recipients,
+            recipients = [sender] + TECH_WRITERS
+            emails.send(recipients,
                         "AssertionError in {origin}".format(origin=func_name),
                         message,
                         sender)
@@ -80,7 +87,7 @@ def test_test_cards_with_devpay():
 if __name__ == "__main__":
     filename = os.path.basename(__file__)
     try:
-        test_test_cards_with_devpay()  # Re-write in parallel, why make sync requests
+        test_test_cards_with_devpay()
     except Exception as err:
         logger.exception(err)
         email_exception(filename, sys.exc_info())

@@ -60,7 +60,7 @@ TEST_CARDS = [
                                             "manual": "DECLINED"}),
     TestCard(pan=4005578003333335, results={"devpay": "DECLINED",
                                             "manual": "PARTIAL_AUTH"}),
-    TestCard(pan=6011361000006668, results={"devpay": "APPROVE",
+    TestCard(pan=6011361000006668, results={"devpay": "APPROVED",
                                             "manual": "APPROVED"})
 ]
 LAST4_TEST_CARDS = { c.last4: c for c in TEST_CARDS }
