@@ -84,7 +84,7 @@ def query_p801(query):
     shard_user = input("What is your Shard id?\n> ")
     shard_PWD = getpass.getpass("What is your password?\n> ")
     ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
-    db = mysql.connector.connect(host="db-usprd-shard0.corp.clover.com",
+    db = mysql.connector.connect(host="db-usprod-shard0.corp.clover.com",
                         user= shard_user,
                         passwd= shard_PWD, 
                         db="meta" # database you're trying to use
