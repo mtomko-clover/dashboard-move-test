@@ -12,6 +12,8 @@ class DAA:
         self.jira = None
         self.app = None
         self.region = None
+        self.dbname = None
+        self.dbpass = None
 
     # Initialize JIRA
     def auth(self, username):
@@ -54,7 +56,7 @@ class DAA:
             else:
                 self.get_icon(app_info["icon_filename"])
 
-                issue_name = self.region+" LOGO/BRAND - {}".format(app_info["app_name"])
+                issue_name = "{} LOGO/BRAND - {}".format(self.region, app_info["app_name"])
                 issue_description = "Hi [~Christopher.Demetriades],\n{} by {} is attached for your review.\nThanks!".format(app_info["app_name"], app_info["dev_name"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
@@ -137,8 +139,8 @@ class DAA:
         ssl_set = {}
         ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
         db = mysql.connector.connect(
-            user="gpark",
-            password="asWJn9rWa88=",  # pw Kess provided originally
+            user=self.dbname,
+            password=self.dbpass,
             host="db-usprod-shard0.corp.clover.com",
             db="meta" #database you're trying to use
         )
@@ -228,6 +230,10 @@ class DAA:
         print("Enter JIRA username ex) firstname.lastname")
         username = input("> ")
         self.auth(username)
+        print("Enter Shard username")
+        self.dbname = input("> ")
+        print("Enter Shard password")
+        self.dbpass = getpass.getpass("> ")
 
         adding = True
         while adding:
@@ -236,7 +242,7 @@ class DAA:
 
             if len(choice) == 13:
                 while self.region == None:
-                    define_region()
+                    self.define_region()
                 app_info = self.get_app(choice)
                 for k, v in app_info.items():
                     print("{}: {}\n".format(k, v))
