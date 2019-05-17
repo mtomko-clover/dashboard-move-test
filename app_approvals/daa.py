@@ -12,7 +12,7 @@ class DAA:
         self.jira = None
         self.app = None
         self.region = None
-        self.dbuser = None
+        self.dbname = None
         self.dbpass = None
 
     # Initialize JIRA
@@ -139,7 +139,7 @@ class DAA:
         ssl_set = {}
         ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
         db = mysql.connector.connect(
-            user=self.dbuser,
+            user=self.dbname,
             password=self.dbpass,
             host="db-usprod-shard0.corp.clover.com",
             db="meta" #database you're trying to use
