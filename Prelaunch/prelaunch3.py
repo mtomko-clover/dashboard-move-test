@@ -12,6 +12,8 @@ import  pytz, datetime, shelve
 username = input("LDAP username: ")
 PWD = getpass.getpass('LDAP Password: ') # prompt for Jira password
 DAV = JIRA('https://jira.dev.clover.com', basic_auth=(username, PWD))
+p801_user = input("P801 username: ")
+p801_pass = getpass.getpass("P801 Password: ")
 
 ##########################################################
 ###################### FUNCTIONS #########################
@@ -72,7 +74,7 @@ def update_jira(jira_number,file_name):
     print("\n{} has been updated".format(jira_number))
 
 
-def query_p801(query):
+def query_p801(query, shard_user, shard_PWD):
     """
     Query p801:
     -----------
@@ -81,8 +83,8 @@ def query_p801(query):
     """
 
     ssl_set = {}
-    shard_user = input("What is your Shard id?\n> ")
-    shard_PWD = getpass.getpass("What is your password?\n> ")
+#    shard_user = input("What is your Shard id?\n> ")
+#    shard_PWD = getpass.getpass("What is your password?\n> ")
     ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
     db = mysql.connector.connect(host="db-usprod-shard0.corp.clover.com",
                         user= shard_user,
@@ -97,7 +99,7 @@ def query_p801(query):
     return query_output
 
 
-def auto_credit(last_time):
+def auto_credit(last_time, p801_user, p801_pass):
     """
     Auto-generate the latest developer UUIDs given the last time the script was run.
 
@@ -108,12 +110,12 @@ def auto_credit(last_time):
     formatted_utc_time = str(last_time)
     changed_developer_accts = "SELECT uuid FROM developer WHERE approval_status = \"PENDING\" AND modified_time  > \"" +formatted_utc_time +"\" ORDER BY modified_time asc;"
 
-    uuid_tuple = query_p801(changed_developer_accts)
+    uuid_tuple = query_p801(changed_developer_accts, p801_user, p801_pass)
     stringified_uuids = uuid_tuple_to_string(uuid_tuple)
 
     #If there are any UUIDs in the string, run credit, else do nothing
     if len(stringified_uuids) > 2:
-        credit(stringified_uuids)
+        credit(stringified_uuids, p801_user, p801_pass)
     else:
         print ("No DAV tickets to add.")
 
@@ -140,7 +142,7 @@ def uuid_tuple_to_string(uuid_tuple):
 
 
 
-def credit(uuids):
+def credit(uuids, p801_user, p801_pass):
     """
     Create .txt files for each developer UUID provided:
     -----------
@@ -149,7 +151,8 @@ def credit(uuids):
     """
 
     query = "SELECT name, uuid, email, business_legal_name, business_address, business_city, business_state, business_country, business_postal_code, tin, CONCAT(first_name,' ',last_name), address, city, state, country, postal_code FROM developer WHERE uuid IN " + uuids
-    developer_output = query_p801(query)
+    
+    developer_output = query_p801(query, p801_user, p801_pass)
 
     for developer in developer_output:
         status_string = ""
@@ -407,7 +410,7 @@ def print_menu():
             #the_shelf["last time"] = new_time
 
             
-            auto_credit(utc_time)
+            auto_credit(utc_time, p801_user, p801_pass)
         elif choice == "2":
             print("\nEnter OFAC UUIDs in the following format: ('UUID1', 'UUID2')")
             ofac_uuids = input("> ")
@@ -416,7 +419,7 @@ def print_menu():
             print("\nEnter Credit UUIDs in the following format: ('UUID1', 'UUID2')")
             credit_uuids = input("> ")
             # should look like this ('GVAEY1AB0JVMW','AAC2MMHKJR6N2')
-            credit(credit_uuids)
+            credit(credit_uuids, p801_user, p801_pass)
 
         else:
             choosing = False
