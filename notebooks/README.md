@@ -34,6 +34,7 @@ Before committing, go to Kernel > Restart & Clear Output.
 
 ### Notebooks
 * `app_approval_time_pending.ipynb` Histogram and descriptive statistics of the length of time apps have been waiting to be approved.
+* `app_market_developer_rankings.ipynb` Prototype of tiering based on annualized net revenue and net installs.
 * `developer_percentiles.ipynb` Lagging indicators of developer success (e.g., combined install count across all of their apps).
 * `developer_time_to_first_approval.ipynb` Descriptive statistics of time from prod developer account creation to first approved app.
 * `developers_by_location.ipynb` Find developers located in particular states. Useful for generating email lists for regional events.
