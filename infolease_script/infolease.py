@@ -32,6 +32,8 @@ class Infolease:
 	def __init__(self):
 		self.jira = None
 		self.month = self.gen_month() 	#String with the current month and year.
+		self.shard_name = None
+		self.shard_pwd = None
 
 
 	def auth(self, username):
@@ -73,8 +75,8 @@ class Infolease:
 		ssl_set = {}
 		ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
 		db = MySQLdb.connect(host="p801.corp.clover.com",
-							user="gpark",
-							passwd="asWJn9rWa88=", # pw Kess provided originally
+							user=self.shard_name,
+							passwd=self.shard_pwd, # pw Kess provided originally
 							db="meta", # database you're trying to use
 							ssl=ssl_set)
 		cur = db.cursor()
@@ -139,6 +141,10 @@ class Infolease:
 		print("Enter JIRA username ex) firstname.lastname")
 		username = input("> ")
 		self.auth(username)
+		print("Enter Shard username:")
+		self.shard_name = input(">")
+		print("Enter Shard password:")
+		self.shard_pwd = getpass.getpass(">")
 
 		uuids = self.convert_uuids()
 		dev_data = self.pull_bank_info(uuids)
