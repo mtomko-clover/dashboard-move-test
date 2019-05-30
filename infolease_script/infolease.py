@@ -1,4 +1,4 @@
-import MySQLdb
+import mysql.connector
 from datetime import date
 
 from jira import JIRA
@@ -52,10 +52,7 @@ class Infolease:
 				issue_description = issue_description + dev[key] + "\n"
 			issue_description = issue_description + "\n"
 
-		issue_description = issue_description + "Please pull the developer ABA and DBA for the following UUIDs from Ashwini's Excel file.\n\n"
-
-		for dev in list_of_devs:
-			issue_description = issue_description + dev["UUID"] + "\n"
+		issue_description = issue_description + "I will submit an encrypted email with a corresponding encrypted check.\n\n"
 
 
 
@@ -74,11 +71,11 @@ class Infolease:
 
 		ssl_set = {}
 		ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
-		db = MySQLdb.connect(host="p801.corp.clover.com",
-							user=self.shard_name,
-							passwd=self.shard_pwd, # pw Kess provided originally
-							db="meta", # database you're trying to use
-							ssl=ssl_set)
+		db = mysql.connector.connect(user=self.shard_name,
+							passwd=self.shard_pwd,
+							host="db-usprod-shard0.corp.clover.com", # pw Kess provided originally
+							db="meta" # database you're trying to use
+							)
 		cur = db.cursor()
 		cur.execute(query)
 		query_output = cur.fetchall()
