@@ -1,5 +1,6 @@
 import mysql.connector
 import openpyxl
+#from openpyxl import load_workbook
 import time
 
 # Import jira module for opening new jiras for developer account tracking
@@ -236,7 +237,7 @@ def ofac(uuids):
     # principal = ofac_file.get_sheet_by_name('Principal')
 
     query = "SELECT uuid, name, business_address, business_city, business_state, business_country, business_postal_code, tin, business_legal_name, CONCAT(first_name,' ',last_name), address, city, state, country, postal_code FROM developer WHERE uuid IN " + uuids
-    developer_output = query_p801(query)
+    developer_output = query_p801(query, p801_user, p801_pass)
 
     developer = []
 
