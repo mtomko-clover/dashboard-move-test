@@ -94,8 +94,9 @@ class Environ(BaseEnviron):
                                           countries=None)
         elif environ_type == EnvironType.PROD_EU:
             super(Environ, self).__init__(name="Prod EU",
+                                          name_key="prod_eu",
                                           environ_type=environ_type,
-                                          db=Db("~/.clover/p804r.cfg"),
+                                          db=Db("~/.clover/prod_eu_meta.cfg"),
                                           dev_reports=None,
                                           app_reports=None,
                                           countries=None)
