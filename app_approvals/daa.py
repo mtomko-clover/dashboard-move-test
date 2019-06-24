@@ -14,6 +14,7 @@ class DAA:
         self.region = None
         self.dbname = None
         self.dbpass = None
+        self.url = None
 
     # Initialize JIRA
     def auth(self, username):
@@ -31,7 +32,22 @@ class DAA:
         * app_info - relevant info pulled from p801 in dictionary form
         Output: none - will open Jira and let you know which jira number it was
         """
-        if ticket_type == "app_approval":
+        self.url = "https://www.clover.com/internal/apps/"+app_info["app_uuid"]
+
+        if ticket_type == "QA":
+            existing_jira = self.search_jira("qa " + app_info["app_uuid"], ticket_type)
+
+            if existing_jira:
+                print("JIRA for this app already exists at {}".format(existing_jira))
+                return existing_jira
+            else:
+                issue_name = "QA [US] {} by {} {}".format(app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
+                issue_description = "App ID: {}\n\n{}\n\nApp Description: {}".format(app_info["app_name"], self.url, app_info["description"])
+                new_QA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
+                print("QA DAA has been created")
+                return new_QA
+
+        elif ticket_type == ("app_approval"):
             existing_jira = self.search_jira(app_info["app_uuid"], ticket_type)
 
             if existing_jira:
@@ -40,15 +56,18 @@ class DAA:
                 return existing_jira
             else:
                 issue_name = "[US] {} by {} {}".format(app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
-                issue_description = "App ID: {}\nDev ID: {}".format(app_info["app_uuid"], app_info["dev_uuid"])
+                issue_description = "App ID: {}\nDev ID: {}\n\n{}".format(app_info["app_uuid"], app_info["dev_uuid"], self.url)
 
                 new_DAA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 print("DAA has been created")
                 return new_DAA
 
+
+
+
         elif ticket_type == "logo":
             # search and download the icon to attach
-            existing_jira = self.search_jira(app_info["app_uuid"], ticket_type)
+            existing_jira = self.search_jira(app_info["app_name"], ticket_type)
 
             if existing_jira:
                 print("JIRA for this app already exists at {}".format(existing_jira))
@@ -57,7 +76,7 @@ class DAA:
                 self.get_icon(app_info["icon_filename"])
 
                 issue_name = "{} LOGO/BRAND - {}".format(self.region, app_info["app_name"])
-                issue_description = "Hi [~Christopher.Demetriades],\n{} by {} is attached for your review.\nThanks!".format(app_info["app_name"], app_info["dev_name"])
+                issue_description = "Hi [~christopher.demetriades],\n{} by {} is attached for your review.\nThanks!".format(app_info["app_name"], app_info["dev_name"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 self.jira.add_attachment(issue=new_DLV, attachment=app_info["icon_filename"])
@@ -73,7 +92,7 @@ class DAA:
                 return existing_jira
             else:
                 issue_name = "{} {} Privacy Policy".format(self.region, app_info["dev_name"])
-                issue_description = "Hi [~sue.minton@firstdata.com],\n{} by {} privacy policy is linked for your review: {}\nThanks!".format(app_info["app_name"], app_info["dev_name"], app_info["privacy_policy"])
+                issue_description = "\n{} by {} privacy policy is linked for review: {}\nThanks!".format(app_info["app_name"], app_info["dev_name"], app_info["privacy_policy"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 print("DLV Privacy Policy has been created")
@@ -103,16 +122,21 @@ class DAA:
         * existing_jira - the existing ticket
         * null - when there is no existing ticket
         """
-        if ticket_type == "app_approval":
+        if ticket_type == ("app_approval"):
             try:
                 existing_jira = self.jira.search_issues('text ~ "{}" and project=DAA'.format(query))
                 return existing_jira[0] # gives back Jira no.
             except:
                 return None
+
+        if ticket_type == "qa":
+            try: existing_jira = self.jira.search_issues('text ~ "{}" and project=DAA'.format(query))
+            except:
+                return None
         if ticket_type == "logo":
 
             try:
-                existing_jira = self.jira.search_issues('text ~ "LOGO {}"'.format(query))
+                existing_jira = self.jira.search_issues('text ~ "LOGO {}" and project=DAA'.format(query))
                 return existing_jira[0]
             except:
                 return None
@@ -189,18 +213,21 @@ class DAA:
         app_info = self.get_app(uuid)
 
         app_approval = self.open_jira(app_info, "app_approval")
+        qa_review = self.open_jira(app_info, "QA")
         logo = self.open_jira(app_info, "logo")
         privacy = self.open_jira(app_info, "privacy")
         tos = self.open_jira(app_info, "tos")
 
+        self.jira.create_issue_link("blocks", qa_review, app_approval)
         self.jira.create_issue_link("blocks", logo, app_approval)
-        self.jira.assign_issue(logo, "Christopher.Demetriades")
+        self.jira.assign_issue(logo, "christopher.demetriades")
         print("logo issue linked")
         self.jira.create_issue_link("blocks", privacy, app_approval)
         print("privacy issue linked")
-        self.jira.assign_issue(privacy, "sue.minton@firstdata.com")
+        #self.jira.assign_issue(privacy, "sue.minton@firstdata.com")
         self.jira.create_issue_link("blocks", tos, app_approval)
         print("tos issue linked")
+        self.jira.assign_issue(qa_review, "sampada.gooty")
 
         webbrowser.open_new_tab("https://jira.dev.clover.com/browse/" + str(app_approval))
 
