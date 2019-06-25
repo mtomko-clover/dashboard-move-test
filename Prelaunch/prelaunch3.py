@@ -16,6 +16,9 @@ DAV = JIRA('https://jira.dev.clover.com', basic_auth=(username, PWD))
 p801_user = input("P801 username: ")
 p801_pass = getpass.getpass("P801 Password: ")
 
+#region
+region = None
+
 ##########################################################
 ###################### FUNCTIONS #########################
 ##########################################################
@@ -28,9 +31,9 @@ def open_jira(developer,file_name, status_string):
     * file_name - file_name of the .txt file to attach to jira, in a string
     Output: none - will open Jira and let you know which jira number it was
     """
+    global region
 
-
-    issue_name = "[US] {} {}".format(*developer)
+    issue_name = "["+region+"] {} {}".format(*developer)
     issue_description = "{}\n{}\n{}".format(*developer)
 
     new_DAV = DAV.create_issue(project='DAV', summary=issue_name, description=issue_description + status_string, issuetype={'name': 'Task'})
@@ -66,6 +69,7 @@ def update_jira(jira_number,file_name):
     * file_name - file_name of the .txt file to attach to jira, in a string
     Output: none - will update the jira with the new .txt file for the developer
     """
+    #print("Updated Jira:", jira_number)
     DAV.add_attachment(issue=jira_number,attachment=file_name)
     try:
         DAV.transition_issue(jira_number,'131') # transitions issue to 'Credit' after updating
@@ -82,12 +86,22 @@ def query_p801(query, shard_user, shard_PWD):
     Input: query in string format ex. str(SELECT * FROM developer WHERE uuid IN ('123124234'))
     Output: query_output which is tuple of data from the query output
     """
+    global region
+
+    if region == "US":
+        db_host = "db-usprod-shard0.corp.clover.com"
+    elif region == "EU":
+        db_host = "db-euprod-shard0.corp.clover.com"
+
+    else:
+        print("Error; region not detected")
+        return
 
     ssl_set = {}
 #    shard_user = input("What is your Shard id?\n> ")
 #    shard_PWD = getpass.getpass("What is your password?\n> ")
     ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
-    db = mysql.connector.connect(host="db-usprod-shard0.corp.clover.com",
+    db = mysql.connector.connect(host= db_host,
                         user= shard_user,
                         passwd= shard_PWD, 
                         db="meta" # database you're trying to use
@@ -388,6 +402,17 @@ def open_shelf(txt_files = False):
     return last_time
 
 
+def select_region():
+    print("Please select a region:")
+    global region 
+    entered_region = input("Enter US or EU:")
+    if entered_region == "US" or entered_region == "EU":
+        region = entered_region
+    else:
+        print("I don't recognize that region.")
+    return
+
+
 def print_menu():
     """
     Print menu for this prelaunch script
@@ -395,6 +420,10 @@ def print_menu():
     Input: none
     Output: Credit .txt or OFAC .xlsx file for prelaunch activities
     """
+    global region
+    while region == None:
+        select_region()
+
     global utc_time
     choosing = True
     while choosing:
