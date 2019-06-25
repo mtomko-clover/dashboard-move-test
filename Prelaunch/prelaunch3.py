@@ -428,7 +428,7 @@ def print_menu():
     choosing = True
     while choosing:
         print("""Choose what you would like to run:
-    (1) Create Credit .txt files
+    (1) Create Credit .txt files --DO NOT USE FOR EU REGION YET
     (2) Create OFAC spreadsheet
     (3) Quit
     (4) Override Auto-Credit
