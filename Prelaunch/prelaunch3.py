@@ -166,6 +166,8 @@ def credit(uuids, p801_user, p801_pass):
     Output: none - .txt files will be created for each UUID in the list provided, and saved in the local directory of python file
     """
 
+    global region
+
     query = "SELECT name, uuid, email, business_legal_name, business_address, business_city, business_state, business_country, business_postal_code, tin, CONCAT(first_name,' ',last_name), address, city, state, country, postal_code FROM developer WHERE uuid IN " + uuids
     
     developer_output = query_p801(query, p801_user, p801_pass)
@@ -177,6 +179,8 @@ def credit(uuids, p801_user, p801_pass):
 
         if developer_list[3] == '':
             status_string += "\n\n*Status*\nIndividual\n- {color:red}Credit{color} \n- {color:red}OFAC{color}"
+            if region != "US" or developer_list[7] != ("US" or "USA" or "United States"):
+                status_string +="\n- {color:red}Valid passport{color}"
             count = 3
             while count < 10:
                 del developer_list[3]
@@ -196,6 +200,8 @@ def credit(uuids, p801_user, p801_pass):
         else:
             status_string += "\n\n*Status*\nBusiness\n- {color:red}EIN{color} \n- {color:red}Credit{color}\n- {color:red}OFAC{color}"
             status_string += "\n\nIndividual\n- {color:red}Credit{color} \n- {color:red}OFAC{color}"
+            if region != "US" or developer_list[7] != ("US" or "USA" or "United States"): #Note to Richelle: This function needs to be refactored
+                status_string +="\n- {color:red}Valid passport{color}"                     #to eliminate repition in Individual vs. Biz info entry
             developer_list.insert(3,'')
             developer_list.insert(4, "Corporate Information")
             developer_list.insert(5, "---------------------")
