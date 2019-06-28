@@ -40,10 +40,10 @@ class DAA:
             if existing_jira:
                 print("JIRA for this app already exists at {}".format(existing_jira))
                 return existing_jira
-            else:
+            else: #todo  'parent' : { 'key' : rootnn.key}
                 issue_name = "QA [US] {} by {} {}".format(app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
                 issue_description = "App ID: {}\n\n{}\n\nApp Description: {}".format(app_info["app_name"], self.url, app_info["description"])
-                new_QA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
+                new_QA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={"id" : "5"}, parent={'key': self.app.key})
                 print("QA DAA has been created")
                 return new_QA
 
@@ -60,6 +60,7 @@ class DAA:
 
                 new_DAA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 print("DAA has been created")
+                self.app = new_DAA
                 return new_DAA
 
 
