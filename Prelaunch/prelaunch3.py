@@ -35,6 +35,7 @@ def open_jira(developer,file_name, status_string):
 
     issue_name = "["+region+"] {} {}".format(*developer)
     issue_description = "{}\n{}\n{}".format(*developer)
+#   issue_description = issue_description + "\n\n"
 
     new_DAV = DAV.create_issue(project='DAV', summary=issue_name, description=issue_description + status_string, issuetype={'name': 'Task'})
     DAV.add_attachment(issue=new_DAV,attachment=file_name)
@@ -389,27 +390,31 @@ def open_shelf(txt_files = False):
 
     last_time = ""
 
+    global region
+
 
     with shelve.open("timestamp") as the_shelf:
-        last_time = the_shelf["last time"]
+        last_time = the_shelf[region+" last time"]
+        #last_time = the_shelf["US last time"]
         last_time = last_time.astimezone(pytz.utc)
+
         print("App was last run on", last_time)
 
         if txt_files:
-            the_shelf["last time"] = utc_time
+            the_shelf[region+" last time"] = utc_time
 
-    print(last_time)
     return last_time
 
 
 def select_region():
-    print("Please select a region:")
-    global region 
-    entered_region = input("Enter US or EU:")
-    if entered_region == "US" or entered_region == "EU":
-        region = entered_region
-    else:
-        print("I don't recognize that region.")
+    global region
+    while region == None:
+        print("Please select a region:")
+        entered_region = input("Enter US or EU:")
+        if entered_region == "US" or entered_region == "EU":
+            region = entered_region
+        else:
+            print("I don't recognize that region.")
     return
 
 
@@ -420,15 +425,13 @@ def print_menu():
     Input: none
     Output: Credit .txt or OFAC .xlsx file for prelaunch activities
     """
-    global region
-    while region == None:
-        select_region()
 
     global utc_time
+    select_region()
     choosing = True
     while choosing:
         print("""Choose what you would like to run:
-    (1) Create Credit .txt files --DO NOT USE FOR EU REGION YET
+    (1) Create Credit .txt files (EU or US)
     (2) Create OFAC spreadsheet
     (3) Quit
     (4) Override Auto-Credit
@@ -436,6 +439,13 @@ def print_menu():
         choice = input("> ")
 
         if choice == "1":
+            global region
+            if region:
+                new_reg = input("Select new region? Y or N") #enables a change to the region in order to run the script twice: once for US and once for EU
+                if new_reg == "Y":
+                    region = None
+                    select_region()
+
             utc_time = open_shelf(txt_files = True)
             #the_shelf["last time"] = new_time
 
@@ -446,6 +456,12 @@ def print_menu():
             ofac_uuids = input("> ")
             ofac(ofac_uuids)
         elif choice == "4":
+            if region:
+                new_reg = input("Select new region? Y or N") #enables a change to the region in order to run the script twice: once for US and once for EU
+                if "Y":
+                    region = None
+                    select_region()
+
             print("\nEnter Credit UUIDs in the following format: ('UUID1', 'UUID2')")
             credit_uuids = input("> ")
             # should look like this ('GVAEY1AB0JVMW','AAC2MMHKJR6N2')
