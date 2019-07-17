@@ -29,17 +29,21 @@ logger = logging.getLogger(__name__)
 configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
 ################################################################################
 
-def create_query_apps_submitted_since(date="2017-01-01",
+def create_query_apps_submitted_since(date="2018-10-01",  # Existing prod-us apps were backfilled with 2018-10-30
                                       approval_statuses=["NEW", "PENDING", "APPROVED", "PUBLISHED", "DENIED"]):
     developer_app = Table("developer_app")
     developer = Table("developer")
 
-    q = MySQLQuery.from_(developer_app).join(
+    q = MySQLQuery.from_(
+        developer_app
+    ).join(
         developer
     ).on(
         developer.id == developer_app.developer_id
     ).select(
         developer_app.id,
+        developer_app.name,
+        developer.name,
         developer_app.first_submitted_time,
         developer_app.approval_status
     ).where(
@@ -57,17 +61,20 @@ def create_query_apps_submitted_since(date="2017-01-01",
     return query
 
 
-def create_query_apps_approved_since(date="2014-01-01"):
+def create_query_apps_approved_since(date="2014-06-01"):  # Existing prod-us apps were backfilled with 2014-06-25
     developer_app = Table("developer_app")
     developer = Table("developer")
 
-    q = MySQLQuery.from_(developer_app).join(
+    q = MySQLQuery.from_(
+        developer_app
+    ).join(
         developer
     ).on(
         developer.id == developer_app.developer_id
     ).select(
         developer_app.id,
         developer_app.name,
+        developer.name,
         developer_app.first_submitted_time,
         developer_app.first_approval_time,
         developer_app.approval_status
@@ -85,17 +92,20 @@ def create_query_apps_approved_since(date="2014-01-01"):
     return query
 
 
-def create_query_devs_submitted_since(date="2014-01-01",
+def create_query_devs_submitted_since(date="2013-08-01",  # Earliest prod-us 3p dev submitted 2013-08-01
                                       approval_statuses=["NEW", "PENDING", "APPROVED", "DENIED"]):
     developer = Table("developer")
     account = Table("account")
 
-    q = MySQLQuery.from_(developer).join(
+    q = MySQLQuery.from_(
+        developer
+    ).join(
         account
     ).on(
         developer.owner_account_id == account.id
     ).select(
         developer.id,
+        developer.name,
         developer.first_submitted_time,
         developer.approval_status
     ).where(
@@ -114,7 +124,7 @@ def create_query_devs_submitted_since(date="2014-01-01",
     return query
 
 
-def create_query_devs_approved_since(date="2014-01-01"):
+def create_query_devs_approved_since(date="2013-08-01"):  # Earliest 3p prod-us dev approved 2013-08-01
     developer = Table("developer")
     account = Table("account")
 
@@ -163,14 +173,15 @@ def update_days_pending_rags(environs, rags):
             df["days_pending"] = df["first_submitted_time"].map(lambda x: days_since(x))
             print(df)
             logger.debug("{} {}".format(environ.name, df.shape))
-
             days_pending_data["days_pending_good_title"] += len(df[(df['days_pending']<good_threshold)])
             days_pending_data["days_pending_ok_title"] += len(df[(df['days_pending']>good_threshold) & (df['days_pending']<bad_threshold)])
             days_pending_data["days_pending_bad_title"] += len(df[(df['days_pending']>=bad_threshold)])
+        print(days_pending_data)
         rag.set(bad_title=days_pending_bad_title, bad_value=days_pending_data["days_pending_bad_title"],
                 ok_title=days_pending_ok_title, ok_value=days_pending_data["days_pending_ok_title"],
                 good_title=days_pending_good_title, good_value=days_pending_data["days_pending_good_title"])
         rag.update()
+
 
 def update_recent_approval_counts(environs, widgets):
     start_of_this_week = datetime.datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(weeks=1)
@@ -185,11 +196,13 @@ def update_recent_approval_counts(environs, widgets):
             logger.debug("{} {}".format(environ.name, df.shape))
             approved_data["this_week"] += len(df[(df['first_approval_time']>start_of_this_week)])
             approved_data["last_week"] += len(df[(df['first_approval_time']>start_of_last_week) & (df['first_approval_time']<start_of_this_week)])
+        print(approved_data)
         w.set(approved_data["this_week"], comparison=approved_data["last_week"])
         w.update()
 
 
 def update_amo_approval_dashboard(environs):
+    # Recent Approvals Widgets
     recent_approvals_start_date = (datetime.datetime.utcnow() - relativedelta(weeks=2)).date()
     approved_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_approved_last_7.cfg")
     approved_apps_query = create_query_apps_approved_since(recent_approvals_start_date)
@@ -197,10 +210,11 @@ def update_amo_approval_dashboard(environs):
     approved_devs_query = create_query_devs_approved_since(recent_approvals_start_date)
     update_recent_approval_counts(environs, widgets={approved_apps_widget: approved_apps_query,
                                                      approved_devs_widget: approved_devs_query})
+    # Pending Apps Widgets
     pending_apps_rag = Rag("~/.clover/geckoboard/amo/apps_days_pending_rag.cfg")
     pending_apps_query = create_query_apps_submitted_since(approval_statuses=["PENDING"])
     pending_devs_rag = Rag("~/.clover/geckoboard/amo/devs_days_pending_rag.cfg")
-    pending_devs_query = create_query_devs_submitted_since(date="2018-10-01", approval_statuses=["PENDING"])
+    pending_devs_query = create_query_devs_submitted_since(approval_statuses=["PENDING"])
     update_days_pending_rags(environs, rags={pending_apps_rag: pending_apps_query,
                                              pending_devs_rag: pending_devs_query})
 
@@ -217,4 +231,4 @@ if __name__ == "__main__":
         logger.exception(err)
         phone_home(filename, sys.exc_info())
     finally:
-        map(lambda e: e.db.close(), environs)  # Close database connections..
+        map(lambda e: e.db.close(), environs)  # Close database connections.
