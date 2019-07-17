@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
 ################################################################################
 
-def create_query_apps_submitted_since(date="2018-10-01",  # Existing prod-us apps were backfilled with 2018-10-30
+def create_query_apps_submitted_since(date="2018-10-01",  # Existing prod-us apps were backfilled with 2018-10-30 (eu 2018-10-31)
                                       approval_statuses=["NEW", "PENDING", "APPROVED", "PUBLISHED", "DENIED"]):
     developer_app = Table("developer_app")
     developer = Table("developer")
@@ -61,7 +61,7 @@ def create_query_apps_submitted_since(date="2018-10-01",  # Existing prod-us app
     return query
 
 
-def create_query_apps_approved_since(date="2014-06-01"):  # Existing prod-us apps were backfilled with 2014-06-25
+def create_query_apps_approved_since(date="2014-01-01"):  # Existing prod-us apps were backfilled with 2014-06-25 (eu 2014-01-01)
     developer_app = Table("developer_app")
     developer = Table("developer")
 
@@ -92,7 +92,46 @@ def create_query_apps_approved_since(date="2014-06-01"):  # Existing prod-us app
     return query
 
 
-def create_query_devs_submitted_since(date="2013-08-01",  # Earliest prod-us 3p dev submitted 2013-08-01
+def create_query_apps_published_since():  # Cannot pass a date here because we need to grab all these dates and then select in the dataframe
+    developer_app = Table("developer_app")
+    developer = Table("developer")
+    developer_app_history = Table("developer_app_history")
+
+    q = MySQLQuery.from_(
+        developer_app
+    ).join(
+        developer
+    ).on(
+        developer.id == developer_app.developer_id
+    ).join(
+        developer_app_history
+    ).on(
+        developer_app_history.developer_app_id == developer_app.id
+    ).select(
+        developer_app.id,
+        developer_app.name,
+        developer.name,
+        developer_app.approval_status,
+        fn.Min(developer_app_history.id),
+        (developer_app_history.created_time).as_("first_published_time")
+    ).where(
+        developer.name != "Clover"
+    ).where(
+        developer_app.deleted_time.isnull()
+    ).where(
+        (developer_app.approval_status == "PUBLISHED") &
+        (developer_app_history.approval_status == "PUBLISHED")
+    ).groupby(
+        developer_app_history.developer_app_id,
+        developer_app_history.approval_status
+    ).orderby(developer_app_history.created_time, order=Order.asc)
+
+    logger.debug(q)
+    query = q.get_sql()
+    return query
+
+
+def create_query_devs_submitted_since(date="2013-08-01",  # Earliest prod-us 3p dev submitted 2013-08-01 (eu 2014-03-19)
                                       approval_statuses=["NEW", "PENDING", "APPROVED", "DENIED"]):
     developer = Table("developer")
     account = Table("account")
@@ -124,7 +163,7 @@ def create_query_devs_submitted_since(date="2013-08-01",  # Earliest prod-us 3p 
     return query
 
 
-def create_query_devs_approved_since(date="2013-08-01"):  # Earliest 3p prod-us dev approved 2013-08-01
+def create_query_devs_approved_since(date="2013-08-01"):  # Earliest 3p prod-us dev approved 2013-08-01 (eu 2014-03-19)
     developer = Table("developer")
     account = Table("account")
 
@@ -183,9 +222,14 @@ def update_days_pending_rags(environs, rags):
         rag.update()
 
 
-def update_recent_approval_counts(environs, widgets):
-    start_of_this_week = datetime.datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(weeks=1)
-    start_of_last_week = start_of_this_week - relativedelta(weeks=1)
+def update_recent_approval_published_counts(environs, widgets):
+    start_of_this_week = datetime.datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(days=7)
+    start_of_last_week = start_of_this_week - relativedelta(days=7)
+
+    print()
+    print(start_of_this_week)
+    print(start_of_last_week)
+    print()
 
     for w in widgets:
         approved_data = defaultdict(int)
@@ -194,22 +238,29 @@ def update_recent_approval_counts(environs, widgets):
             df = pd.read_sql(query, con=environ.db.conn)
             print(df)
             logger.debug("{} {}".format(environ.name, df.shape))
-            approved_data["this_week"] += len(df[(df['first_approval_time']>start_of_this_week)])
-            approved_data["last_week"] += len(df[(df['first_approval_time']>start_of_last_week) & (df['first_approval_time']<start_of_this_week)])
+            if "first_published_time" in df.columns:
+                approved_data["this_week"] += len(df[(df['first_published_time']>start_of_this_week)])
+                approved_data["last_week"] += len(df[(df['first_published_time']>start_of_last_week) & (df['first_published_time']<start_of_this_week)])
+            else:
+                approved_data["this_week"] += len(df[(df['first_approval_time']>start_of_this_week)])
+                approved_data["last_week"] += len(df[(df['first_approval_time']>start_of_last_week) & (df['first_approval_time']<start_of_this_week)])
         print(approved_data)
         w.set(approved_data["this_week"], comparison=approved_data["last_week"])
         w.update()
 
 
 def update_amo_approval_dashboard(environs):
-    # Recent Approvals Widgets
-    recent_approvals_start_date = (datetime.datetime.utcnow() - relativedelta(weeks=2)).date()
+    # Recent Approval & Publication Widgets
+    recent_approvals_start_date = (datetime.datetime.utcnow() - relativedelta(days=14)).date()
     approved_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_approved_last_7.cfg")
     approved_apps_query = create_query_apps_approved_since(recent_approvals_start_date)
     approved_devs_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/devs_approved_last_7.cfg")
     approved_devs_query = create_query_devs_approved_since(recent_approvals_start_date)
-    update_recent_approval_counts(environs, widgets={approved_apps_widget: approved_apps_query,
-                                                     approved_devs_widget: approved_devs_query})
+    published_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_published_last_7.cfg")
+    published_apps_query = create_query_apps_published_since()
+    update_recent_approval_published_counts(environs, widgets={approved_apps_widget: approved_apps_query,
+                                                               approved_devs_widget: approved_devs_query,
+                                                               published_apps_widget: published_apps_query})
     # Pending Apps Widgets
     pending_apps_rag = Rag("~/.clover/geckoboard/amo/apps_days_pending_rag.cfg")
     pending_apps_query = create_query_apps_submitted_since(approval_statuses=["PENDING"])
@@ -225,6 +276,7 @@ if __name__ == "__main__":
     environs = [Environ(EnvironType.PROD_US),
                 Environ(EnvironType.PROD_EU)]
     try:
+        create_query_apps_published_since()
         update_amo_approval_dashboard(environs)
         logger.debug("Finished {filename}.".format(filename=filename))
     except Exception as err:
