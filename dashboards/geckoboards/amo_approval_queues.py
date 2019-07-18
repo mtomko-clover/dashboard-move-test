@@ -92,7 +92,7 @@ def create_query_apps_approved_since(date="2014-01-01"):  # Existing prod-us app
     return query
 
 
-def create_query_apps_published_since():  # Cannot pass a date here because we need to grab all these dates and then select in the dataframe
+def create_query_apps_first_published_since():  # Cannot pass a date here because we need to select all rows and then narrow by date in the dataframe
     developer_app = Table("developer_app")
     developer = Table("developer")
     developer_app_history = Table("developer_app_history")
@@ -112,7 +112,6 @@ def create_query_apps_published_since():  # Cannot pass a date here because we n
         developer_app.name,
         developer.name,
         developer_app.approval_status,
-        fn.Min(developer_app_history.id),
         (developer_app_history.created_time).as_("first_published_time")
     ).where(
         developer.name != "Clover"
@@ -122,8 +121,8 @@ def create_query_apps_published_since():  # Cannot pass a date here because we n
         (developer_app.approval_status == "PUBLISHED") &
         (developer_app_history.approval_status == "PUBLISHED")
     ).groupby(
-        developer_app_history.developer_app_id,
-        developer_app_history.approval_status
+        developer_app_history.approval_status,
+        developer_app_history.developer_app_id
     ).orderby(developer_app_history.created_time, order=Order.asc)
 
     logger.debug(q)
@@ -257,7 +256,7 @@ def update_amo_approval_dashboard(environs):
     approved_devs_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/devs_approved_last_7.cfg")
     approved_devs_query = create_query_devs_approved_since(recent_approvals_start_date)
     published_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_published_last_7.cfg")
-    published_apps_query = create_query_apps_published_since()
+    published_apps_query = create_query_apps_first_published_since()
     update_recent_approval_published_counts(environs, widgets={approved_apps_widget: approved_apps_query,
                                                                approved_devs_widget: approved_devs_query,
                                                                published_apps_widget: published_apps_query})
@@ -276,7 +275,6 @@ if __name__ == "__main__":
     environs = [Environ(EnvironType.PROD_US),
                 Environ(EnvironType.PROD_EU)]
     try:
-        create_query_apps_published_since()
         update_amo_approval_dashboard(environs)
         logger.debug("Finished {filename}.".format(filename=filename))
     except Exception as err:
