@@ -6,7 +6,7 @@ import datetime
 import logging
 import os
 import sys
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -26,7 +26,7 @@ from services.geckoboard import NumberAndSecondaryStat, Rag
 
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
-configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
+configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=False)
 ################################################################################
 
 def create_query_apps_submitted_since(date="2018-10-01",  # Existing prod-us apps were backfilled with 2018-10-30 (eu 2018-10-31)
@@ -43,7 +43,6 @@ def create_query_apps_submitted_since(date="2018-10-01",  # Existing prod-us app
     ).select(
         developer_app.id,
         developer_app.name,
-        developer.name,
         developer_app.first_submitted_time,
         developer_app.approval_status
     ).where(
@@ -74,7 +73,6 @@ def create_query_apps_approved_since(date="2014-01-01"):  # Existing prod-us app
     ).select(
         developer_app.id,
         developer_app.name,
-        developer.name,
         developer_app.first_submitted_time,
         developer_app.first_approval_time,
         developer_app.approval_status
@@ -92,7 +90,7 @@ def create_query_apps_approved_since(date="2014-01-01"):  # Existing prod-us app
     return query
 
 
-def create_query_apps_first_published_since():  # Cannot pass a date here because we need to select all rows and then narrow by date in the dataframe
+def create_query_apps_first_published():  # Cannot pass a date here because we need to select all rows and then narrow by date in the dataframe
     developer_app = Table("developer_app")
     developer = Table("developer")
     developer_app_history = Table("developer_app_history")
@@ -110,7 +108,6 @@ def create_query_apps_first_published_since():  # Cannot pass a date here becaus
     ).select(
         developer_app.id,
         developer_app.name,
-        developer.name,
         developer_app.approval_status,
         (developer_app_history.created_time).as_("first_published_time")
     ).where(
@@ -157,7 +154,7 @@ def create_query_devs_submitted_since(date="2013-08-01",  # Earliest prod-us 3p 
         developer.first_submitted_time >= fn.Date(date)
     ).orderby(developer.first_submitted_time, order=Order.asc)
 
-    print(q)
+    logger.debug(q)
     query = q.get_sql()
     return query
 
@@ -186,7 +183,7 @@ def create_query_devs_approved_since(date="2013-08-01"):  # Earliest 3p prod-us 
         developer.first_approval_time >= fn.Date(date)
     ).orderby(developer.first_approval_time, order=Order.asc)
 
-    print(q)
+    logger.debug(q)
     query = q.get_sql()
     return query
 
@@ -197,86 +194,90 @@ def days_since(x):
     return diff.days
 
 
-def update_days_pending_rags(environs, rags):
+def update_days_pending_rags(environs):
+    pending_apps_rag = Rag("~/.clover/geckoboard/amo/apps_days_pending_rag.cfg")
+    pending_apps_query = create_query_apps_submitted_since(approval_statuses=["PENDING"])
+    pending_devs_rag = Rag("~/.clover/geckoboard/amo/devs_days_pending_rag.cfg")
+    pending_devs_query = create_query_devs_submitted_since(approval_statuses=["PENDING"])
+
+    rags = OrderedDict([
+        (pending_apps_rag, pending_apps_query),
+        (pending_devs_rag, pending_devs_query)
+    ])
+
+    bad_threshold = 90
+    good_threshold = 30
+    days_pending_bad_title = "{bad_threshold}+ Days".format(bad_threshold=bad_threshold)
+    days_pending_ok_title = "<{bad_threshold} Days".format(bad_threshold=bad_threshold)
+    days_pending_good_title = "<{good_threshold} Days".format(good_threshold=good_threshold)
+    
     for rag in rags:
         days_pending_data = defaultdict(int)
-        bad_threshold = 90
-        good_threshold = 30
-        days_pending_bad_title = "{bad_threshold}+ Days".format(bad_threshold=bad_threshold)
-        days_pending_ok_title = "<{bad_threshold} Days".format(bad_threshold=bad_threshold)
-        days_pending_good_title = "<{good_threshold} Days".format(good_threshold=good_threshold)
         query = rags[rag]
         for environ in environs:
             df = pd.read_sql(query, con=environ.db.conn)
             df["days_pending"] = df["first_submitted_time"].map(lambda x: days_since(x))
-            print(df)
-            logger.debug("{} {}".format(environ.name, df.shape))
+            logger.info("{} {}".format(environ.name, df.shape[0]))
+            logger.debug(df.tail())
             days_pending_data["days_pending_good_title"] += len(df[(df['days_pending']<good_threshold)])
             days_pending_data["days_pending_ok_title"] += len(df[(df['days_pending']>good_threshold) & (df['days_pending']<bad_threshold)])
             days_pending_data["days_pending_bad_title"] += len(df[(df['days_pending']>=bad_threshold)])
-        print(days_pending_data)
+        logger.debug(days_pending_data)
         rag.set(bad_title=days_pending_bad_title, bad_value=days_pending_data["days_pending_bad_title"],
                 ok_title=days_pending_ok_title, ok_value=days_pending_data["days_pending_ok_title"],
                 good_title=days_pending_good_title, good_value=days_pending_data["days_pending_good_title"])
         rag.update()
 
 
-def update_recent_approval_published_counts(environs, widgets):
-    start_of_this_week = datetime.datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(days=7)
-    start_of_last_week = start_of_this_week - relativedelta(days=7)
+def update_recent_approval_published_count_comparisons(environs):
+    seven_days_ago = (datetime.datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(days=7))
+    fourteen_days_ago = seven_days_ago - relativedelta(days=7)
 
-    print()
-    print(start_of_this_week)
-    print(start_of_last_week)
-    print()
+    approved_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_approved_last_7.cfg")
+    approved_apps_query = create_query_apps_approved_since(fourteen_days_ago.date())
+
+    approved_devs_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/devs_approved_last_7.cfg")
+    approved_devs_query = create_query_devs_approved_since(fourteen_days_ago.date())
+
+    published_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_published_last_7.cfg")
+    published_apps_query = create_query_apps_first_published()
+
+    widgets = OrderedDict([
+        (approved_apps_widget, approved_apps_query),
+        (published_apps_widget, published_apps_query),
+        (approved_devs_widget, approved_devs_query)
+    ])
 
     for w in widgets:
-        approved_data = defaultdict(int)
+        data = defaultdict(int)
         query = widgets[w]
         for environ in environs:
             df = pd.read_sql(query, con=environ.db.conn)
-            print(df)
-            logger.debug("{} {}".format(environ.name, df.shape))
+            logger.debug("{} {}".format(environ.name, df.shape[0]))
             if "first_published_time" in df.columns:
-                approved_data["this_week"] += len(df[(df['first_published_time']>start_of_this_week)])
-                approved_data["last_week"] += len(df[(df['first_published_time']>start_of_last_week) & (df['first_published_time']<start_of_this_week)])
+                logger.debug(df[(df['first_published_time']>seven_days_ago)])
+                logger.debug(df[(df['first_published_time']>fourteen_days_ago) & (df['first_published_time']<seven_days_ago)])
+                data["this_week"] += len(df[(df['first_published_time']>seven_days_ago)])
+                data["last_week"] += len(df[(df['first_published_time']>fourteen_days_ago) & (df['first_published_time']<seven_days_ago)])
             else:
-                approved_data["this_week"] += len(df[(df['first_approval_time']>start_of_this_week)])
-                approved_data["last_week"] += len(df[(df['first_approval_time']>start_of_last_week) & (df['first_approval_time']<start_of_this_week)])
-        print(approved_data)
-        w.set(approved_data["this_week"], comparison=approved_data["last_week"])
+                logger.debug(df)
+                data["this_week"] += len(df[(df['first_approval_time']>seven_days_ago)])
+                data["last_week"] += len(df[(df['first_approval_time']>fourteen_days_ago) & (df['first_approval_time']<seven_days_ago)])
+        logger.debug(data)
+        w.set(data["this_week"], comparison=data["last_week"])
         w.update()
 
-
-def update_amo_approval_dashboard(environs):
-    # Recent Approval & Publication Widgets
-    recent_approvals_start_date = (datetime.datetime.utcnow() - relativedelta(days=14)).date()
-    approved_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_approved_last_7.cfg")
-    approved_apps_query = create_query_apps_approved_since(recent_approvals_start_date)
-    approved_devs_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/devs_approved_last_7.cfg")
-    approved_devs_query = create_query_devs_approved_since(recent_approvals_start_date)
-    published_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_published_last_7.cfg")
-    published_apps_query = create_query_apps_first_published_since()
-    update_recent_approval_published_counts(environs, widgets={approved_apps_widget: approved_apps_query,
-                                                               approved_devs_widget: approved_devs_query,
-                                                               published_apps_widget: published_apps_query})
-    # Pending Apps Widgets
-    pending_apps_rag = Rag("~/.clover/geckoboard/amo/apps_days_pending_rag.cfg")
-    pending_apps_query = create_query_apps_submitted_since(approval_statuses=["PENDING"])
-    pending_devs_rag = Rag("~/.clover/geckoboard/amo/devs_days_pending_rag.cfg")
-    pending_devs_query = create_query_devs_submitted_since(approval_statuses=["PENDING"])
-    update_days_pending_rags(environs, rags={pending_apps_rag: pending_apps_query,
-                                             pending_devs_rag: pending_devs_query})
 
 ################################################################################
 if __name__ == "__main__":
     filename = os.path.basename(__file__)
-    logger.debug("Starting {filename}...".format(filename=filename))
+    logger.info("Starting {filename}...".format(filename=filename))
     environs = [Environ(EnvironType.PROD_US),
                 Environ(EnvironType.PROD_EU)]
     try:
-        update_amo_approval_dashboard(environs)
-        logger.debug("Finished {filename}.".format(filename=filename))
+        update_recent_approval_published_count_comparisons(environs)
+        update_days_pending_rags(environs)
+        logger.info("Finished {filename}.".format(filename=filename))
     except Exception as err:
         logger.exception(err)
         phone_home(filename, sys.exc_info())
