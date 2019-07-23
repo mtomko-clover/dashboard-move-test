@@ -4,7 +4,10 @@ import getpass
 
 self = ()
 
-db = mysql.connector.connect(host="db-usprod-shard0.corp.clover.com", user="susanc", passwd="asWJn9rWa88=", db="meta")
+sharduser = input("Enter your Shard username: ")
+shardpass = getpass.getpass("Enter your Shard password: ")
+
+db = mysql.connector.connect(host="db-usprod-shard0.corp.clover.com", user=sharduser, passwd=shardpass, db="meta")
 
 dev_uuid = input("Enter the developer UUID: ")
 
