@@ -40,15 +40,15 @@ if open_jira == "yes":
                         - If the developer is missing a monthly disbursement, enter 1.
                         - If the developer is missing payment for a specific merchant, enter 2.
                         - If the developer is inquiring about Pending Charges for merchants, enter 3. 
-                        - If you know the developer recently updated their billing, enter 4.""")
+                        - If you know the developer recently updated their billing, enter 4.
+                        - If a developer has authorized a refund and the merchant didn't receive it, enter 5.""")
     if issue_type == "1":
         month = input("What month are they missing the disbursement for? ").lower()
         new_issue = jira.create_issue(
             project='BILL',
             summary='Developer %s missing disbursement for %s' %(dev_uuid, month),
             description=('%s Developer %s (%s), InfoLease Vendor Code %s, has not received disbursements for %s') %(app_country, dev_name, dev_uuid, infolease, month),
-            issuetype={'name': 'Task'},
-            assignee={'name': 'susan.chambers'}
+            issuetype={'name': 'Task'}
         )
 
     if issue_type == "2":
@@ -57,8 +57,7 @@ if open_jira == "yes":
             project='BILL',
             summary='Developer %s missing disbursement for %s' %(dev_uuid, merchant_uuid),
             description=('%s Developer %s (%s), InfoLease Vendor Code %s, has not received disbursements for %s') %(app_country, dev_name, dev_uuid, infolease, merchant_uuid),
-            issuetype={'name': 'Task'},
-            assignee={'name': 'susan.chambers'}
+            issuetype={'name': 'Task'}
         )
     if issue_type == "3":
         merchant_uuid = input("What are the merchant UUIDs? Please enter as UUID1, UUID2, ... ")
@@ -66,8 +65,7 @@ if open_jira == "yes":
             project='BILL',
             summary='Developer %s is showing pending charges for merchant(s): %s' %(dev_uuid, merchant_uuid),
             description=('%s Developer %s (%s), InfoLease Vendor Code %s, shows pending charges for merchant(s): %s') %(app_country, dev_name, dev_uuid, infolease, merchant_uuid),
-            issuetype={'name': 'Task'},
-            assignee={'name': 'susan.chambers'}
+            issuetype={'name': 'Task'}
         )
     if issue_type == "4":
         check_status = input("Have you sent the voided check to Lisa? ").lower()
@@ -95,8 +93,7 @@ if open_jira == "yes":
             project='BILL',
             summary='Developer %s billing needs to be updated' %(dev_uuid),
             description=('%s Developer %s (%s), InfoLease Vendor Code %s, updated their account information in %s. A copy of the voided check has been emailed to Lisa.') %(app_country, dev_name, dev_uuid, infolease, change_date),
-            issuetype={'name': 'Task'},
-            assignee={'name': 'susan.chambers'}
+            issuetype={'name': 'Task'}
         )
 # else:
 #     csv = input("Do you want to download a CSV with the developer banking history?")
