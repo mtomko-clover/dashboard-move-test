@@ -62,10 +62,9 @@ After saving, run `python report_period.py`.
 
 ### Crontab
 ```
-59 23 * * * /home/rachel/devrel-tools/devprog_reporting/dev_logins_to_datastore.sh
-5 0 * * * /home/rachel/devrel-tools/devprog_reporting/dev_logins_to_sheet.sh
-30 0 * * 1 /home/rachel/devrel-tools/devprog_reporting/popular_apps_devs_to_sheet.sh
+29 * * * * /home/rachel/devrel-tools/dashboards/geckoboards/amo_approval_queues.sh
 0 2 1 * * /home/rachel/devrel-tools/devprog_reporting/app_dev_counts_to_sheet.sh
+0 15 * * * /home/rachel/devrel-tools/tests/test_test_cards.sh
 ```
 
 ### Google Sheets
@@ -76,7 +75,7 @@ Scripts that write to Google Sheets do so by using a service account's credentia
 
 Some of the cron jobs update Geckoboards:
 
-* [App and Developer Install Leaderboard](https://app.geckoboard.com/edit/dashboards/280964)
+* [AMO Pending KPIs](https://app.geckoboard.com/edit/dashboards/327915)
 
 ### Adding New Cron Jobs
 

@@ -26,7 +26,7 @@ Python 2.7.13 scripts used to transform Shopify exports for [Developer Kit Month
 ## Developer Program Reporting
 Python 2.7.5 scripts designed to be used on p809 to output quarterly reports. See [devprog_reporting/README.md](https://github.com/kristalinc/devrel-tools/tree/master/devprog_reporting) for instructions.
 
-Also includes scripts that run on p809 as cronjobs to record developer login events and update dashboards.
+Also includes scripts that run on p809 as cronjobs to update dashboards.
 
 ---
 
