@@ -286,8 +286,7 @@ class DAA:
             choice = input("> ")
 
             if len(choice) == 13:
-                while self.region == None:
-                    self.define_region()
+                self.define_region()
                 app_info = self.get_app(choice)
                 for k, v in app_info.items():
                     print("{}: {}\n".format(k, v))
