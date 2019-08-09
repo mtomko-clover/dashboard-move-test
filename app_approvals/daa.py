@@ -10,8 +10,10 @@ import getpass
 class DAA:
     def __init__(self):
         self.jira = None
+        #self.epic_id = None
         self.app = None
         self.region = None
+        self.dbhost = None
         self.dbname = None
         self.dbpass = None
         self.url = None
@@ -107,7 +109,7 @@ class DAA:
                 return existing_jira
             else:
                 issue_name = "{} TOS".format(app_info["dev_name"])
-                issue_description = "Hi [~Carlene.Byers@firstdata.com] and [~Julie.sheibal@firstdata.com],\n{} by {} TOS is linked for your review: {}\nApp Description: {}".format(app_info["app_name"], app_info["dev_name"], app_info["tos"], app_info["description"])
+                issue_description = "The TOS is linked for review: {}\nApp Description: {}".format(app_info["app_name"], app_info["dev_name"], app_info["tos"], app_info["description"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 print("DLV TOS has been created")
@@ -166,7 +168,7 @@ class DAA:
         db = mysql.connector.connect(
             user=self.dbname,
             password=self.dbpass,
-            host="db-usprod-shard0.corp.clover.com",
+            host= self.dbhost,
             db="meta" #database you're trying to use
         )
         cur = db.cursor()
@@ -194,7 +196,7 @@ class DAA:
         Input: app uuid
         Output: app details in dictionary form
         """
-        query = "SELECT app.uuid, app.name, developer.uuid, developer.name, app.filename_icon, app.privacy_policy, app.eula, app.description FROM developer_app AS app JOIN developer ON app.developer_id=developer.id WHERE app.uuid='{}'".format(uuid)
+        query = "SELECT app.uuid, app.name, developer.uuid, developer.name, app.filename_icon, app.privacy_policy, app.eula, app.description, app.package_name, app.site_url, app.application_id FROM developer_app AS app JOIN developer ON app.developer_id=developer.id WHERE app.uuid='{}'".format(uuid)
         app_output = self.query_p801(query)
 
         app_info = {
@@ -205,7 +207,10 @@ class DAA:
             "icon_filename": app_output[0][4],
             "privacy_policy": app_output[0][5],
             "tos": app_output[0][6],
-            "description": app_output[0][7]
+            "description": app_output[0][7],
+            "package name": app_output[0][8],
+            "url": app_output[0][9],
+            "RAID": app_output[0][10]
         }
 
         return app_info
@@ -228,7 +233,16 @@ class DAA:
         #self.jira.assign_issue(privacy, "sue.minton@firstdata.com")
         self.jira.create_issue_link("blocks", tos, app_approval)
         print("tos issue linked")
-        self.jira.assign_issue(qa_review, "sampada.gooty")
+
+        #For the QA ticket, who handles the ticket varies on the region, and the semi-integrration status
+        #In the future, semi-ints may not be handled by Nathan in the EU, but for now they're associated to him.
+        is_semi = input("Does this look like a semi-int? (y or n)")
+        if "euprod" in self.dbhost:
+            self.jira.assign_issue(qa_review, "nathan.binding")
+        elif is_semi == "y":
+            self.jira.assign_issue(qa_review, "paul.petyo")
+        else:
+            self.jira.assign_issue(qa_review, "sampada.gooty")
 
         webbrowser.open_new_tab("https://jira.dev.clover.com/browse/" + str(app_approval))
 
@@ -238,14 +252,17 @@ class DAA:
 
         if region_choice == "EU":
             self.region = "[EU]"
+            self.dbhost = "db-euprod-shard0.corp.clover.com"
         elif region_choice == "US":
             self.region = "[US]"
+            self.dbhost = "db-usprod-shard0.corp.clover.com"
         elif region_choice == "CAN":
             self.region ="[CAN]"
-        elif region_choice == "LA":
-            self.region = "[LA]"
+            self.dbhost = "db-usprod-shard0.corp.clover.com"
+        #elif region_choice == "LA": #No database access yet
+            #self.region = "[LA]"
         else:
-            print("Sorry, I don't know that region.")
+            print("Sorry, I don't have access to that region.")
 
 
     def print_menu(self):
