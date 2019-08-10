@@ -34,7 +34,8 @@ class DAA:
         * app_info - relevant info pulled from p801 in dictionary form
         Output: none - will open Jira and let you know which jira number it was
         """
-        self.url = "https://www.clover.com/internal/apps/"+app_info["app_uuid"]
+
+        self.url = self.url+app_info["app_uuid"]
 
         if ticket_type == "QA":
             existing_jira = self.search_jira("qa " + app_info["app_uuid"], ticket_type)
@@ -43,7 +44,7 @@ class DAA:
                 print("JIRA for this app already exists at {}".format(existing_jira))
                 return existing_jira
             else: #todo  'parent' : { 'key' : rootnn.key}
-                issue_name = "QA [US] {} by {} {}".format(app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
+                issue_name = "QA [{}] {} by {} {}".format(self.region, app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
                 issue_description = "App ID: {}\n\n{}\n\nApp Description: {}".format(app_info["app_name"], self.url, app_info["description"])
                 new_QA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={"id" : "5"}, parent={'key': self.app.key})
                 print("QA DAA has been created")
@@ -57,7 +58,7 @@ class DAA:
                 self.app = existing_jira
                 return existing_jira
             else:
-                issue_name = "[US] {} by {} {}".format(app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
+                issue_name = "{} {} by {} {}".format(self.region, app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
                 issue_description = "App ID: {}\nDev ID: {}\n\n{}".format(app_info["app_uuid"], app_info["dev_uuid"], self.url)
 
                 new_DAA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
@@ -253,12 +254,15 @@ class DAA:
         if region_choice == "EU":
             self.region = "[EU]"
             self.dbhost = "db-euprod-shard0.corp.clover.com"
+            self.url = "https://www.eu.clover.com/internal/apps/"
         elif region_choice == "US":
             self.region = "[US]"
             self.dbhost = "db-usprod-shard0.corp.clover.com"
+            self.url =  "https://www.clover.com/internal/apps/"
         elif region_choice == "CAN":
             self.region ="[CAN]"
             self.dbhost = "db-usprod-shard0.corp.clover.com"
+            self.url =  "https://www.clover.com/internal/apps/"
         #elif region_choice == "LA": #No database access yet
             #self.region = "[LA]"
         else:
