@@ -83,8 +83,9 @@ class DAA:
                 issue_description = "Hi [~christopher.demetriades],\n{} by {} is attached for your review.\nThanks!".format(app_info["app_name"], app_info["dev_name"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
+                if app_info["icon_filename"] is not Null:
                 self.jira.add_attachment(issue=new_DLV, attachment=app_info["icon_filename"])
-                os.remove(app_info["icon_filename"])
+                    os.remove(app_info["icon_filename"])
                 print("DLV LOGO has been created")
                 return new_DLV
 
@@ -183,12 +184,15 @@ class DAA:
         """
         Grab app icon for attaching to logo ticket
         """
-        icon_url = "https://www.clover.com/v2/image/" + icon_filename
+        if icon_filename is not None:
+            icon_url = "https://www.clover.com/v2/image/" + icon_filename
 
-        r = requests.get(icon_url)
-        with open(icon_filename, 'wb') as f:
-            f.write(r.content)
-            print("Saved " + icon_filename)
+            r = requests.get(icon_url)
+            with open(icon_filename, 'wb') as f:
+                f.write(r.content)
+                print("Saved " + icon_filename)
+        else:
+            print("App does not yet include a logo. Please contact developer to add a logo.")
 
     def get_app(self, uuid):
         """
