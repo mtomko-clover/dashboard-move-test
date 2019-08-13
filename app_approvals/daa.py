@@ -38,13 +38,13 @@ class DAA:
         self.url = self.url+app_info["app_uuid"]
 
         if ticket_type == "QA":
-            existing_jira = self.search_jira("qa " + app_info["app_uuid"], ticket_type)
+            existing_jira = self.search_jira("QA " + app_info["app_uuid"], ticket_type)
 
             if existing_jira:
                 print("JIRA for this app already exists at {}".format(existing_jira))
                 return existing_jira
             else: #todo  'parent' : { 'key' : rootnn.key}
-                issue_name = "QA [{}] {} by {} {}".format(self.region, app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
+                issue_name = "QA {} {} by {} {}".format(self.region, app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
                 issue_description = "App ID: {}\n\n{}\n\nApp Description: {}".format(app_info["app_name"], self.url, app_info["description"])
                 new_QA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={"id" : "5"}, parent={'key': self.app.key})
                 print("QA DAA has been created")
@@ -110,7 +110,7 @@ class DAA:
                 return existing_jira
             else:
                 issue_name = "{} TOS".format(app_info["dev_name"])
-                issue_description = "The TOS is linked for review: {}\nApp Description: {}".format(app_info["app_name"], app_info["dev_name"], app_info["tos"], app_info["description"])
+                issue_description = "The TOS is linked for review: {}\n\n*App Description:* {}".format(app_info["app_name"], app_info["dev_name"], app_info["tos"], app_info["description"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 print("DLV TOS has been created")
