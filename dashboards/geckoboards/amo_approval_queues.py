@@ -22,11 +22,11 @@ from utils import phone_home
 from config import DATASCIENCE_DIR
 sys.path.append(DATASCIENCE_DIR)
 from services.db import Db
-from services.geckoboard import NumberAndSecondaryStat, Rag, Leaderboard
+from services.geckoboard import NumberAndSecondaryStat, Rag
 
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
-configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=True)
+configure_logger(logger, name=os.path.splitext(os.path.basename(__file__))[0], console_output=False)
 ################################################################################
 
 def create_query_apps_submitted_since(date="2018-10-01",  # Existing prod-us apps were backfilled with 2018-10-30 (eu 2018-10-31)
