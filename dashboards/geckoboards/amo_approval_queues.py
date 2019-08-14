@@ -22,7 +22,7 @@ from utils import phone_home
 from config import DATASCIENCE_DIR
 sys.path.append(DATASCIENCE_DIR)
 from services.db import Db
-from services.geckoboard import NumberAndSecondaryStat, Rag
+from services.geckoboard import NumberAndSecondaryStat, Rag, Leaderboard
 
 ### LOGGING ####################################################################
 logger = logging.getLogger(__name__)
@@ -237,7 +237,7 @@ def update_recent_approval_published_count_comparisons(environs):
     approved_devs_query = create_query_devs_approved_since(fourteen_days_ago.date())
 
     published_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_published_last_7.cfg")
-    published_apps_query = create_query_apps_published_since()
+    published_apps_query = create_query_apps_published_since(fourteen_days_ago.date())
 
     widgets = OrderedDict([
         (approved_apps_widget, approved_apps_query),
@@ -263,7 +263,6 @@ def update_recent_approval_published_count_comparisons(environs):
         logger.info(data)
         w.set(data["this_week"], comparison=data["last_week"])
         w.update()
-
 
 ################################################################################
 if __name__ == "__main__":
