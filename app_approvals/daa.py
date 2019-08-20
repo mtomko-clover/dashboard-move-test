@@ -83,8 +83,8 @@ class DAA:
                 issue_description = "Hi [~christopher.demetriades],\n{} by {} is attached for your review.\nThanks!".format(app_info["app_name"], app_info["dev_name"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
-                if app_info["icon_filename"] is not Null:
-                self.jira.add_attachment(issue=new_DLV, attachment=app_info["icon_filename"])
+                if app_info["icon_filename"] is not None:
+                    self.jira.add_attachment(issue=new_DLV, attachment=app_info["icon_filename"])
                     os.remove(app_info["icon_filename"])
                 print("DLV LOGO has been created")
                 return new_DLV
