@@ -111,7 +111,7 @@ class DAA:
                 return existing_jira
             else:
                 issue_name = "{} TOS".format(app_info["dev_name"])
-                issue_description = "The TOS is linked for review: {}\n\n*App Description:* {}".format(app_info["app_name"], app_info["dev_name"], app_info["tos"], app_info["description"])
+                issue_description = "The TOS for {} is linked for review: {}\n\n*App Description:* {}".format(app_info["app_name"], app_info["tos"], app_info["description"])
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 print("DLV TOS has been created")
