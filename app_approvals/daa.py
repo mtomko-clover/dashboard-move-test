@@ -38,7 +38,7 @@ class DAA:
         self.url = self.url+app_info["app_uuid"]
 
         if ticket_type == "QA":
-            existing_jira = self.search_jira("QA " + app_info["app_uuid"], ticket_type)
+            existing_jira = self.search_jira("QA " + self.region + " " + app_info["app_uuid"], ticket_type)
 
             if existing_jira:
                 print("JIRA for this app already exists at {}".format(existing_jira))
@@ -51,13 +51,16 @@ class DAA:
                 return new_QA
 
         elif ticket_type == ("app_approval"):
-            existing_jira = self.search_jira(app_info["app_uuid"], ticket_type)
+            existing_jira = self.search_jira(self.region+ " " + app_info["app_uuid"], ticket_type)
+            
 
             if existing_jira:
+                app_exists = True
                 print("JIRA for this app already exists at {}".format(existing_jira))
                 self.app = existing_jira
                 return existing_jira
             else:
+                app_exists = False
                 issue_name = "{} {} by {} {}".format(self.region, app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
                 issue_description = "App ID: {}\nDev ID: {}\n\n{}".format(app_info["app_uuid"], app_info["dev_uuid"], self.url)
 
@@ -141,19 +144,19 @@ class DAA:
         if ticket_type == "logo":
 
             try:
-                existing_jira = self.jira.search_issues('text ~ "LOGO {}" and project=DAA'.format(query))
+                existing_jira = self.jira.search_issues('text ~ "LOGO/BRAND {}" and project=DLV and issue in linkedIssues({})'.format(query, self.app))
                 return existing_jira[0]
             except:
                 return None
         if ticket_type == "privacy":
             try:
-                existing_jira = self.jira.search_issues('text ~ "{} Privacy" and project=DLV'.format(query))
+                existing_jira = self.jira.search_issues('text ~ "{} Privacy" and project=DLV and issue in linkedIssues({})'.format(query, self.app))
                 return existing_jira[0]
             except:
                 return None
         if ticket_type == "tos":
             try:
-                existing_jira = self.jira.search_issues('text ~ "{} TOS" and project=DLV'.format(query))
+                existing_jira = self.jira.search_issues('text ~ "{} TOS" and project=DLV and issue in linkedIssues({})'.format(query, self.app))
                 return existing_jira[0]
             except:
                 return None
@@ -288,6 +291,9 @@ class DAA:
         print("Enter Shard password")
         self.dbpass = getpass.getpass("> ")
 
+
+
+
         adding = True
         while adding:
             print("Enter to App UUID to create DAA ticket for:")
@@ -297,7 +303,7 @@ class DAA:
                 self.define_region()
                 app_info = self.get_app(choice)
                 for k, v in app_info.items():
-                    print("{}: {}\n".format(k, v))
+                    print("{}: {}\nß".format(k, v))
 
                 print("Do you want to continue? Enter (y/n)")
                 choice2 = input("> ")
