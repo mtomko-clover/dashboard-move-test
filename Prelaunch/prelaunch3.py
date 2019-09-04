@@ -306,7 +306,13 @@ def add_to_ofac_master(developer,number_of_developers):
     Output: none - Master OFAC .xlsx file will be updated with developers
     """
     # Open the Master OFAC file
-    master_file = openpyxl.load_workbook('Master OFAC_WLF_CLV MMDDYYYY.xlsx')
+    #First check region to open correct workbook
+    global region
+    if region == "US":
+        master_file = openpyxl.load_workbook('Master OFAC_WLF_CLV MMDDYYYY.xlsx')
+    else:
+        master_file = openpyxl.load_workbook('Master '+region+' OFAC_WLF_CLV MMDDYYYY.xlsx')
+
     master_business = master_file.get_sheet_by_name('Business')
     master_principal = master_file.get_sheet_by_name('Principal')
 
@@ -387,7 +393,10 @@ def add_to_ofac_master(developer,number_of_developers):
             cell = principal_sheet[dev_idx]
             master_principal[cell] = developer[num][dev_idx+9]
 
-    master_file.save("Master OFAC_WLF_CLV MMDDYYYY.xlsx")
+    if region == "US":
+        master_file.save("Master OFAC_WLF_CLV MMDDYYYY.xlsx")
+    else:
+        master_file.save("Master "+ region +" OFAC_WLF_CLV MMDDYYYY.xlsx")
     print("Developers added to Master OFAC")
 
 def open_shelf(txt_files = False):
@@ -433,9 +442,12 @@ def print_menu():
     """
 
     global utc_time
-    select_region()
+    
     choosing = True
     while choosing:
+        global region
+        region = None
+        select_region()
         print("""Choose what you would like to run:
     (1) Create Credit .txt files (EU or US)
     (2) Create OFAC spreadsheet
@@ -445,12 +457,6 @@ def print_menu():
         choice = input("> ")
 
         if choice == "1":
-            global region
-            if region:
-                new_reg = input("Select new region? Y or N") #enables a change to the region in order to run the script twice: once for US and once for EU
-                if new_reg == "Y":
-                    region = None
-                    select_region()
 
             utc_time = open_shelf(txt_files = True)
             #the_shelf["last time"] = new_time
@@ -461,13 +467,8 @@ def print_menu():
             print("\nEnter OFAC UUIDs in the following format: ('UUID1', 'UUID2')")
             ofac_uuids = input("> ")
             ofac(ofac_uuids)
+            
         elif choice == "4":
-            if region:
-                new_reg = input("Select new region? Y or N") #enables a change to the region in order to run the script twice: once for US and once for EU
-                if "Y":
-                    region = None
-                    select_region()
-
             print("\nEnter Credit UUIDs in the following format: ('UUID1', 'UUID2')")
             credit_uuids = input("> ")
             # should look like this ('GVAEY1AB0JVMW','AAC2MMHKJR6N2')
