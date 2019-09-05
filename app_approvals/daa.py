@@ -296,14 +296,16 @@ class DAA:
 
         adding = True
         while adding:
+            self.region = None
             print("Enter to App UUID to create DAA ticket for:")
             choice = input("> ")
 
             if len(choice) == 13:
-                self.define_region()
+                while not self.region:
+                    self.define_region()
                 app_info = self.get_app(choice)
                 for k, v in app_info.items():
-                    print("{}: {}\nß".format(k, v))
+                    print("{}: {}\n".format(k, v))
 
                 print("Do you want to continue? Enter (y/n)")
                 choice2 = input("> ")
