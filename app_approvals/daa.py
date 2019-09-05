@@ -254,9 +254,8 @@ class DAA:
 
         webbrowser.open_new_tab("https://jira.dev.clover.com/browse/" + str(app_approval))
 
-    def define_region(self):
-        print("Is this app for the EU, US, CAN, or LA?")
-        region_choice = input("> ")
+    def define_region(self, region_choice):
+
 
         if region_choice == "EU":
             self.region = "[EU]"
@@ -302,7 +301,9 @@ class DAA:
 
             if len(choice) == 13:
                 while not self.region:
-                    self.define_region()
+                    print("Is this app for the EU, US, CAN, or LA?")
+                    region_choice = input("> ")
+                    self.define_region(region_choice)
                 app_info = self.get_app(choice)
                 for k, v in app_info.items():
                     print("{}: {}\n".format(k, v))
