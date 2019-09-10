@@ -43,7 +43,7 @@ class Infolease:
 	def create_jira(self, list_of_devs):
 		issue_name = "[US] Developer Info to be Modified in Infolease {}".format(self.month)
 
-		issue_description = """Hi [~lisa], the following developers need their infolease information updated:\n\n"""
+		issue_description = """Hi [~rusheen.watson], the following developers need their infolease information updated:\n\n"""
 
 		for dev in list_of_devs:
 			for key in dev:
