@@ -36,6 +36,7 @@ class DAA:
         """
 
         self.url = self.url+app_info["app_uuid"]
+        permissions_string = self.permissions_to_string(app_info)
 
         if ticket_type == "QA":
             existing_jira = self.search_jira("QA " + self.region + " " + app_info["app_uuid"], ticket_type)
@@ -45,7 +46,7 @@ class DAA:
                 return existing_jira
             else: #todo  'parent' : { 'key' : rootnn.key}
                 issue_name = "QA {} {} by {} {}".format(self.region, app_info["app_name"], app_info["dev_name"], app_info["app_uuid"])
-                issue_description = "App ID: {}\n\n{}\n\nApp Description: {}".format(app_info["app_name"], self.url, app_info["description"])
+                issue_description = "App ID: {}\n\n{}\n\nApp Description: {}\n\nPermissions requested:\n{}".format(app_info["app_name"], self.url, app_info["description"], permissions_string)
                 new_QA = self.jira.create_issue(project='DAA', summary=issue_name, description=issue_description, issuetype={"id" : "5"}, parent={'key': self.app.key})
                 print("QA DAA has been created")
                 return new_QA
@@ -100,7 +101,7 @@ class DAA:
                 return existing_jira
             else:
                 issue_name = "{} {} Privacy Policy".format(self.region, app_info["dev_name"])
-                issue_description = "\n{} by {} privacy policy is linked for review: {}\nThanks!".format(app_info["app_name"], app_info["dev_name"], app_info["privacy_policy"])
+                issue_description = "\n{} by {} privacy policy is linked for review: {}\n\n Permissions requested: \n\n{}\n\nThanks!".format(app_info["app_name"], app_info["dev_name"], app_info["privacy_policy"], permissions_string)
 
                 new_DLV = self.jira.create_issue(project='DLV', summary=issue_name, description=issue_description, issuetype={'name': 'Task'})
                 print("DLV Privacy Policy has been created")
@@ -204,7 +205,7 @@ class DAA:
         Input: app uuid
         Output: app details in dictionary form
         """
-        query = "SELECT app.uuid, app.name, developer.uuid, developer.name, app.filename_icon, app.privacy_policy, app.eula, app.description, app.package_name, app.site_url, app.application_id FROM developer_app AS app JOIN developer ON app.developer_id=developer.id WHERE app.uuid='{}'".format(uuid)
+        query = "SELECT app.uuid, app.name, developer.uuid, developer.name, app.filename_icon, app.privacy_policy, app.eula, app.description, app.package_name, app.site_url, app.application_id, app.permission_customers_read, app.permission_customers_write, app.permission_merchant_read, app.permission_merchant_write, app.permission_inventory_read, app.permission_inventory_write, app.permission_orders_read, app.permission_orders_write, app.permission_payments_read, app.permission_payments_write, app.permission_employees_read, app.permission_employees_write, app.permission_process_cards FROM developer_app AS app JOIN developer ON app.developer_id=developer.id WHERE app.uuid='{}'".format(uuid)
         app_output = self.query_p801(query)
 
         app_info = {
@@ -218,10 +219,27 @@ class DAA:
             "description": app_output[0][7],
             "package name": app_output[0][8],
             "url": app_output[0][9],
-            "RAID": app_output[0][10]
+            "RAID": app_output[0][10],
+            "permissions": {"Merchant read": app_output[0][13], "Merchant write": app_output[0][14],
+                            "Employees read": app_output[0][21], "Employees write": app_output[0][22], 
+                            "Orders read": app_output[0][17], "Orders write": app_output[0][18], 
+                            "Inventory read": app_output[0][15], "Inventory write": app_output[0][16],
+                            "Customers read":app_output[0][11], "Customers write":app_output[0][12], 
+                            "Payments read": app_output[0][19], "Payments write": app_output[0][20], 
+                            "Process credit cards": app_output[0][23]}
         }
 
         return app_info
+
+    def permissions_to_string(self, app_dict):
+        permission_string = ""
+        for key in app_dict["permissions"]:
+            permission_int = int(app_dict["permissions"][key])
+            if permission_int == 1:
+                permission_string += key+"\n"
+            else:
+                continue
+        return permission_string
 
     def create_jiras(self, uuid):
         app_info = self.get_app(uuid)
