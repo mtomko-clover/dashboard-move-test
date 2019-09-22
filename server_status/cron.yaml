@@ -1,0 +1,9 @@
+cron:
+- description: check sandbox every 1 min
+  url: /merchant
+  schedule: every 1 mins from 01:30 to 23:59
+  timezone: America/Tijuana
+- description: check sandbox every 1 min at night
+  url: /merchant
+  schedule: every 1 mins from 00:00 to 01:00
+  timezone: America/Tijuana
