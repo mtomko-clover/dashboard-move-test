@@ -1,54 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sandbox Status</title>
+    <title>Server Status</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
-  </head>
-  <body>
-  <section class="section">
-    <div class="container">
-      <h1 class="title">
-        Sandbox Status
-      </h1>
-      <div class="columns is-mobile">
-        <div class="column">
-            Endpoint
-        </div>
-        <div class="column">
-            Status
-        </div>
-      </div>
-      <div class="columns is-mobile">
+</head>
+
+<body>
+    <section class="section">
+        <h1 class="title">
+            Server Status
+        </h1>
+        <div class="columns is-mobile">
             <div class="column">
-                <div class="box">
-                    Merchant
-                </div>
+                Endpoint
             </div>
             <div class="column">
-                <div class="box">
-                    <article class="media">
-                        <div class="media-left">
-                            {% if icon %}
-                                <span class="icon has-text-success">
-                                    <i class="fa fa-lg fa-check-square"></i>
-                                </span>
-                            {% else %}
-                                <span class="icon has-text-warning">
-                                    <i class="fa fa-lg fa-warning"></i>
-                                </span>
-                            {% endif %}
-                        </div>
-                        <div class="media-content">
-                            {{ merchantStatus }}
-                        </div>
-                    </article>
-                </div>
+                Status
             </div>
         </div>
-    </div>
-  </section>
-  </body>
+</body>
+
 </html>
