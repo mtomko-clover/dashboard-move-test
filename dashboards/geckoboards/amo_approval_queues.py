@@ -43,6 +43,7 @@ def create_query_apps_submitted_since(date="2018-10-01",  # Existing prod-us app
     ).select(
         developer_app.id,
         developer_app.name,
+        developer.name,
         developer_app.first_submitted_time,
         developer_app.approval_status
     ).where(
@@ -73,6 +74,7 @@ def create_query_apps_approved_since(date="2014-01-01"):  # Existing prod-us app
     ).select(
         developer_app.id,
         developer_app.name,
+        developer.name,
         developer_app.first_submitted_time,
         developer_app.first_approval_time,
         developer_app.approval_status
@@ -90,10 +92,9 @@ def create_query_apps_approved_since(date="2014-01-01"):  # Existing prod-us app
     return query
 
 
-def create_query_apps_first_published():  # Cannot pass a date here because we need to select all rows and then narrow by date in the dataframe
+def create_query_apps_published_since(date="2014-04-01"):
     developer_app = Table("developer_app")
     developer = Table("developer")
-    developer_app_history = Table("developer_app_history")
 
     q = MySQLQuery.from_(
         developer_app
@@ -101,26 +102,22 @@ def create_query_apps_first_published():  # Cannot pass a date here because we n
         developer
     ).on(
         developer.id == developer_app.developer_id
-    ).join(
-        developer_app_history
-    ).on(
-        developer_app_history.developer_app_id == developer_app.id
     ).select(
         developer_app.id,
         developer_app.name,
-        developer_app.approval_status,
-        (developer_app_history.created_time).as_("first_published_time")
+        developer.name,
+        developer_app.first_submitted_time,
+        developer_app.first_approval_time,
+        developer_app.first_published_time,
+        developer_app.approval_status
     ).where(
         developer.name != "Clover"
     ).where(
-        developer_app.deleted_time.isnull()
+        (developer_app.deleted_time.isnull()) &
+        (developer_app.first_published_time.notnull())
     ).where(
-        (developer_app.approval_status == "PUBLISHED") &
-        (developer_app_history.approval_status == "PUBLISHED")
-    ).groupby(
-        developer_app_history.approval_status,
-        developer_app_history.developer_app_id
-    ).orderby(developer_app_history.created_time, order=Order.asc)
+        developer_app.first_published_time >= fn.Date(date)
+    ).orderby(developer_app.first_published_time, order=Order.asc)
 
     logger.debug(q)
     query = q.get_sql()
@@ -217,12 +214,12 @@ def update_days_pending_rags(environs):
         for environ in environs:
             df = pd.read_sql(query, con=environ.db.conn)
             df["days_pending"] = df["first_submitted_time"].map(lambda x: days_since(x))
-            logger.info("{} {}".format(environ.name, df.shape[0]))
+            logger.debug("{} {}".format(environ.name, df.shape[0]))
             logger.debug(df.tail())
             days_pending_data["days_pending_good_title"] += len(df[(df['days_pending']<good_threshold)])
             days_pending_data["days_pending_ok_title"] += len(df[(df['days_pending']>good_threshold) & (df['days_pending']<bad_threshold)])
             days_pending_data["days_pending_bad_title"] += len(df[(df['days_pending']>=bad_threshold)])
-        logger.debug(days_pending_data)
+        logger.info(days_pending_data)
         rag.set(bad_title=days_pending_bad_title, bad_value=days_pending_data["days_pending_bad_title"],
                 ok_title=days_pending_ok_title, ok_value=days_pending_data["days_pending_ok_title"],
                 good_title=days_pending_good_title, good_value=days_pending_data["days_pending_good_title"])
@@ -240,7 +237,7 @@ def update_recent_approval_published_count_comparisons(environs):
     approved_devs_query = create_query_devs_approved_since(fourteen_days_ago.date())
 
     published_apps_widget = NumberAndSecondaryStat("~/.clover/geckoboard/amo/apps_published_last_7.cfg")
-    published_apps_query = create_query_apps_first_published()
+    published_apps_query = create_query_apps_published_since(fourteen_days_ago.date())
 
     widgets = OrderedDict([
         (approved_apps_widget, approved_apps_query),
@@ -263,10 +260,9 @@ def update_recent_approval_published_count_comparisons(environs):
                 logger.debug(df)
                 data["this_week"] += len(df[(df['first_approval_time']>seven_days_ago)])
                 data["last_week"] += len(df[(df['first_approval_time']>fourteen_days_ago) & (df['first_approval_time']<seven_days_ago)])
-        logger.debug(data)
+        logger.info(data)
         w.set(data["this_week"], comparison=data["last_week"])
         w.update()
-
 
 ################################################################################
 if __name__ == "__main__":

@@ -1,0 +1,27 @@
+<div class="columns is-mobile">
+    <div class="column">
+        <div class="box">
+            {{ endpointURL }}
+        </div>
+    </div>
+    <div class="column">
+        <div class="box">
+            <article class="media">
+                <div class="media-left">
+                    {% if icon %}
+                    <span class="icon has-text-success">
+                        <i class="fa fa-lg fa-check-square"></i>
+                    </span>
+                    {% else %}
+                    <span class="icon has-text-warning">
+                        <i class="fa fa-lg fa-warning"></i>
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="media-content">
+                    {{ endpointStatus }}
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
