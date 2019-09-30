@@ -3,9 +3,12 @@ import json
 import os
 import requests
 import webapp2
-# import threading
+
+# Comment for local testing
 from google.appengine.ext.webapp import template
 
+# Uncomment for local testing
+# import threading
 
 sandbox_api_token='18635815-8df9-ef35-ef99-fec03f3854c2'
 # Invalid token to simulate server down status
@@ -21,11 +24,11 @@ sandboxdev_merchant_id='4H4YEKJWMASZ1'
 sandboxdev_url='sandboxdev.dev.clover.com'
 sandboxdev_merchant_url='https://' + sandboxdev_url + '/v3/merchants/' + sandboxdev_merchant_id + '?access_token=' + sandboxdev_api_token
 
-# docs_url='docs.clover.com'
 
-# slack_webhook='https://hooks.slack.com/services/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'
-# Slack test webhook
-slack_webhook='https://hooks.slack.com/services/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'
+slack_webhook='https://hooks.slack.com/services/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'
+
+# For testing (sends Slack notifications to Frank Faustino)
+# slack_webhook='https://hooks.slack.com/services/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'
 
 class Endpoint:
     def __init__(self, name, url):
@@ -37,52 +40,41 @@ class Endpoint:
 
 sandbox=Endpoint(sandbox_url, sandbox_merchant_url)
 sandboxdev=Endpoint(sandboxdev_url, sandboxdev_merchant_url)
-# docs=Endpoint(docs_url, 'https://' + docs_url)
-
-endpoints=[sandbox, sandboxdev]
-
-def round_time(dt=None, round_to=60):
-    if dt == None : dt = datetime.datetime.now()
-    seconds = (dt.replace(tzinfo=None) - dt.min).seconds
-    return dt + datetime.timedelta(0, seconds, -dt.microsecond)
 
 class EndpointTester(webapp2.RequestHandler):
-    def tester(self, endpoint):
-        try:
-            response = requests.get(endpoint.url)
+    def get(self):
+        response=None
 
-            if response.status_code == 200:
-                if not endpoint.is_up:
-                    endpoint.is_up=True
-                    endpoint.last_time_down=round_time(datetime.datetime.now())
-                    slack_webhook_payload={'text':endpoint.name + ' is up! It was down for %s' % (endpoint.last_time_down - endpoint.down_start_time)}
+        for endpoint in [sandbox, sandboxdev]:
+            try:
+                response=requests.get(endpoint.url)
+                response.raise_for_status()
+            except:
+                if endpoint.is_up:
+                    print('\n---------down first time: ' + 'code ' + str(response.status_code) + '/ text ' + response.text)
+                    endpoint.down_start_time=datetime.datetime.now().replace(microsecond=0,second=0)
+                    endpoint.is_up=False
+                    requests.post(slack_webhook, data=json.dumps({'text':endpoint.name + ' is down!'}))
+                else:
+                    print('\n---------down again: ' + 'code ' + str(response.status_code) + '/ text ' + response.text)
+                    slack_webhook_payload={'text':endpoint.name + ' has been down for %s' % (datetime.datetime.now().replace(microsecond=0,second=0) - endpoint.down_start_time)}
+                    print(slack_webhook_payload)
                     requests.post(slack_webhook, data=json.dumps(slack_webhook_payload))
             else:
-                raise
-        except:
-            # Uh oh. Endpoint is down
-            if endpoint.is_up:
-                endpoint.down_start_time=round_time(datetime.datetime.now())
-                endpoint.is_up=False
-                requests.post(slack_webhook, data=json.dumps({'text':endpoint.name + ' is down!'}))
-            else:
-                slack_webhook_payload={'text':endpoint.name + ' has been down for %s' % (round_time(datetime.datetime.now()) - endpoint.down_start_time)}
-                requests.post(slack_webhook, data=json.dumps(slack_webhook_payload))
-
-    def get(self):
-        global endpoints
-
-        for endpoint in endpoints:
-            self.tester(endpoint)
+                if not endpoint.is_up:
+                    print('\n---------up yay!: ' + 'code ' + str(response.status_code) + '/ text ' + response.text)
+                    endpoint.is_up=True
+                    endpoint.last_down_time=datetime.datetime.now().replace(microsecond=0,second=0)
+                    slack_webhook_payload={'text':endpoint.name + ' is up! It was down for %s' % (endpoint.last_down_time - endpoint.down_start_time)}
+                    print(slack_webhook_payload)
+                    requests.post(slack_webhook, data=json.dumps(slack_webhook_payload))
 
 
 class Home(webapp2.RequestHandler):
     def get(self):
-        global endpoints
-
         self.response.write(template.render('index.html', {}))
 
-        for endpoint in endpoints:
+        for endpoint in [sandbox, sandboxdev]:
             last_down=' - Last down %s' % (endpoint.last_time_down) if endpoint.last_time_down else ''
             down_for=' - Down for %s' % (datetime.datetime.now() - endpoint.down_start_time) if endpoint.down_start_time else ''
             if endpoint.is_up:
