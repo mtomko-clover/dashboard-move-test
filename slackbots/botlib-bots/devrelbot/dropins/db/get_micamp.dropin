@@ -1,0 +1,75 @@
+{
+  "cmd" : "get",
+  "object" : "micamp",
+  "modifier" : "",
+  "role": "default",
+  "help": "get hipaa micamp",
+  "description" : "get hipaa micamp project full install details",
+  "options" : [
+    {
+      "param": 0,
+      "default" : true,
+      "header" : "MiCamp ISV CareStack Pay App Installs",
+      "SQL" : [
+      
+            "SELECT m.id as 'MiCamp App',",
+            "       m.uuid as '',",
+            "       m.NAME as '',",
+            "       m.modified_time as 'modified',",
+            "       SUBSTRING_INDEX(SUBSTRING_INDEX(gateway.config, '\"mid\":\"', -1), '\",', 1) as 'MID'",
+            "FROM   meta.merchant m",
+            "       LEFT OUTER JOIN meta.merchant_app ma",
+            "                    ON ma.merchant_id = m.id",
+            "       LEFT OUTER JOIN meta.merchant_gateway gateway",
+            "                    ON gateway.merchant_id = m.id",
+            "WHERE  ma.app_id = 20143",
+            "       AND ma.deleted_time IS NULL",
+            "       AND m.name like '%{inputs}%'",
+            "ORDER  BY m.modified_time; ",
+        
+      ]
+    },
+    {
+      "param": 0,
+      "default" : true,
+      "header" : "MiCamp CareStack Merchant Plan Installs",
+      "SQL" : [
+            "SELECT m.id as 'Merch Plan',",
+            "       m.uuid as '',",
+            "       m.NAME as '',",
+            "       m.modified_time as 'modified',",
+            "       SUBSTRING_INDEX(SUBSTRING_INDEX(gateway.config, '\"mid\":\"', -1), '\",', 1) as 'MID'",
+            "FROM   meta.merchant m",
+            "       LEFT OUTER JOIN meta.merchant_gateway gateway",
+            "                    ON gateway.merchant_id = m.id",
+            "WHERE  m.merchant_plan_id = 161",
+            "ORDER  BY m.modified_time; "
+        
+      ]
+    },
+    {
+      "param": 0,
+      "default" : true,
+      "header" : "CareStack Merchants with off-plan apps (needs deleting/maintenance)",
+      "SQL" : [
+            " SELECT id, ",
+            "        (SELECT NAME ",
+            "         FROM   developer_app dev ",
+            "         WHERE  dev.id = merchant_app.app_id)    AS NAME, ",
+            "        (SELECT NAME ",
+            "         FROM   merchant m ",
+            "         WHERE  m.id = merchant_app.merchant_id) AS merchant ",
+            " FROM   merchant_app ",
+            " WHERE  merchant_id IN (SELECT id ",
+            "                        FROM   merchant ",
+            "                        WHERE  merchant_plan_id = 161) ",
+            "        AND app_id NOT IN (SELECT developer_app_id ",
+            "                           FROM   app_app_bundle ",
+            "                           WHERE  app_bundle_id = (SELECT app_bundle_id ",
+            "                                                   FROM   merchant_plan ",
+            "                                                   WHERE  id = 161)) ",
+            "        AND deleted_time IS NULL; "
+      ]
+    }
+  ]
+}

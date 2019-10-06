@@ -1,0 +1,49 @@
+# User     Roles  | Name
+U5T4N4AKZ|admin|Bret Smith
+U0735H51A|admin|Mark Kessinger
+U7S3CN6Q4|default|Joel
+U37P6ME9Y|default|Mike Brooking
+
+# Misc Champions
+U6KAEB493|default|Daniel James
+U6N9NQ52M|default|Eric Rowe
+U7VNHS7HA|default|Matt Willson
+U5ZH99W1Y|default|Rachel A
+U04PPMXNV|default|Ryan
+UJU80HYSY|default|Lauren Worthington
+
+# Managers
+U0516SQ95|default|Tim
+U0DLSV0QY|default|Steve Braun
+U1EJ3REAY|default|Shalini
+
+# DevOps
+UGAV4F1L2|default|Dusty
+UK32NP5L2|default|Pete Cleary
+
+# Billing and Boarding
+U6G49BTEW|default|Alan George
+U51FBU9LH|default|Ben Kirk
+U7NK3C2NR|default|Doreen
+U5PJKKQ1L|default|Jon Nordby
+
+# DevRel COS
+UKE0KDZCL|default|Trey Cottingham
+UKLUNB8MA|default|Andy Brooks
+UKEEUSU4Q|default|Brie Ruse
+UCLUJ3RRB|default|Dex Cook
+ULAJH6XA7|default|Sonny Espinoza
+UL9G1CD71|default|Michael Szekley
+ULPRSHEVD|default|Mike Tomko
+ULQ4XHDQE|default|Paul Petyo
+
+# DevRel SV
+U0297EKMB|default|Arjan
+ULAMPKALT|default|Ram
+U3YTPUVV1|default|Rachel Ramsay
+UAGUKLPMM|default|Richelle
+UKM2GLCJY|default|Ricardo Ventura
+U7S2XFLBV|default|Chetan
+UJFFDAQ85|default|Emily Lucek
+ULMKF350U|default|Sreya
+

@@ -1,0 +1,22 @@
+{
+  "cmd": "get",
+  "object": "lag",
+  "modifier": "p801",
+  "role": "default",
+  "help": "get lag p801",
+  "description": "Display how far the replication is lagging to p801",
+  "options": [
+    {
+      "param": 0,
+      "default": true,
+      "description": "Display how far the replication is lagging to p801",
+      "SQL": [
+        "select TIMESTAMPDIFF(minute, ts, current_timestamp()) as minutes_behind,",
+        "current_timestamp() as currentTime,",
+        "ts, server_id, file, position, relay_master_log_file, exec_master_log_pos from meta.heartbeat;"
+      ],
+      "header": "P801 Lag",
+      "aggregation": null
+    }
+  ]
+}

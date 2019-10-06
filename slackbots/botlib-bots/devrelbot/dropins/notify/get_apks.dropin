@@ -1,0 +1,20 @@
+{
+  "description": "Run the get apks command every morning and afternoon",
+  "enabled": true,
+  "channel": "#semi-dev-rel",
+  "interval": {
+    "seconds": 30
+  },
+  "quiet": true,
+  "cron": {
+    "day_of_week": "mon,tue,wed,thu,fri",
+    "hour": "7,14,16",
+    "minute": "45",
+    "timezone": "America/Denver"
+  },
+  "user": "U37P6ME9Y",
+  "message": "<!channel> isvbot executing scheduled `get apks`",
+  "commands": [
+    "get apks"
+  ]
+}

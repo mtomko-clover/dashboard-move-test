@@ -1,0 +1,28 @@
+{
+  "cmd": "get",
+  "object": "privateapp",
+  "modifier": "devs",
+  "role": "default",
+  "help": "get privateapp devs",
+  "description": "get list of approved private app developers",
+  "options": [
+    {
+      "option": "",
+      "default": true,
+      "description": "",
+      "header": "Private App Devs",
+      "SQL" : [
+        "SELECT dev.uuid,",
+        "       dev.NAME,",
+        "       Count(*) AS 'apps'",
+        "FROM   developer_app app",
+        "       INNER JOIN developer dev",
+        "               ON dev.id = app.developer_id",
+        "WHERE  app.approval_status = 'APPROVED'",
+        "GROUP  BY dev.uuid,",
+        "          dev.NAME",
+        "ORDER  BY dev.NAME"
+      ]
+    }
+  ]
+}

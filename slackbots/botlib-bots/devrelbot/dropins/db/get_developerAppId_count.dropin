@@ -1,0 +1,25 @@
+{
+  "cmd" : "get",
+  "object" : "paymentextra",
+  "modifier" : "developerappid",
+  "role": "default",
+  "help": "get paymentextra developerappid",
+  "description" : "Retrieve developerAppIds for ISV payments for last n hour(s), n defaults to 8",
+  "options" : [
+    {
+      "default" : true,
+      "defaultinputs": ["8"],
+      "description" : "Retrieve count of developerAppId payments",
+      "SQL" : [
+        "select developerAppId, count(*) from (select SUBSTRING(nextVal,(LOCATE('\"developerAppId\":\"', nextVal) + 18),",
+        "LOCATE('\"',nextVal, LOCATE('\"developerAppId\":\"', nextVal) + 19) - (LOCATE('\"developerAppId\":\"', nextVal) + 18)) as developerAppId",
+        "from (select value as nextVal from orders.payment_extra where payment_id in ",
+        "(select id from orders.payment where client_created_time >= DATE_SUB(NOW(), interval {inputs} hour)) and type = 'application_tracking') as daValues) as daResult group by developerAppId order by count(*) desc;"
+      ],
+      "header" : "Holla at ya Integrators!:",
+      "aggregation" : null
+    }
+  ]
+}
+
+

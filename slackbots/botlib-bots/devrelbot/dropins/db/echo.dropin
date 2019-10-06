@@ -1,0 +1,25 @@
+{
+  "enabled": false,
+  "cmd": "echo",
+  "object": "timestamps",
+  "modifier": "",
+  "role": "default",
+  "help": "echo processed arguments",
+  "description": "Display how far the replication is lagging to p801",
+  "options": [
+    {
+      "param": 0,
+      "default": true,
+      "requires_start_time": true,
+      "requires_end_time": true,
+      "description": "Echo command line arguments for debugging",
+      "SQL": [
+        "select {start_time}, {end_time}",
+        "FROM dual;"
+      ],
+      "header": "Start End Timestamps from {start_time} to {end_time}",
+      "detailed_help": "",
+      "aggregation": null
+    }
+  ]
+}

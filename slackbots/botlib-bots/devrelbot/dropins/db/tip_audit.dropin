@@ -1,0 +1,51 @@
+{
+  "cmd": "audit",
+  "modifier": "transactions",
+  "object": "merchant",
+  "role": "default",
+  "help": "audit merchant transactions <MERCHANT_UUID|GROUP>",
+  "description": "audit merchant transactions audit report",
+  "options": [
+    {
+      "option": "a",
+      "default": false,
+      "description": "Get a transaction audit report all merchants",
+      "SQL": [
+        "SELECT SUBSTRING_INDEX(mg.partner_uuid,':',1) 'merchant_id', m.name 'business_name',gt.id, p.uuid payment_uuid, ",
+        "p.amount pymt_amt, p.tip_amount, p.gateway_tx_id, p.created_time AS 'Payment Created Time', p.offline, ",
+        "gt.merchant_gateway_id, gt.created_time AS 'Gateway Created Time', ",
+        "gt.amount gtwy_amt, gt.type, gt.response_code, gt.first4, gt.last4, gt.card_type, gt.authcode ",
+        "FROM orders.gateway_tx gt LEFT OUTER JOIN orders.payment p ON gt.id=p.gateway_tx_id ",
+        "LEFT OUTER JOIN meta.merchant_gateway mg ON gt.merchant_gateway_id=mg.id ",
+        "LEFT OUTER JOIN meta.merchant m ON mg.merchant_id=m.id ",
+        "LEFT OUTER JOIN meta.merchant_placement mp ON m.id=mp.merchant_id WHERE ",
+        "gt.type='auth' ",
+        "AND gt.created_time>= DATE_SUB(NOW(), interval 24 hour) ",
+        "GROUP BY gt.id HAVING gt.amount!=(sum(p.amount+p.tip_amount))"
+      ],
+      "header": "Audit Tip Transactions - Last 24 hours for all merchants",
+      "aggregation": null
+    },
+    {
+      "param": 0,
+      "default": true,
+      "description": "Get a transaction audit report for the given merchant or group",
+      "SQL": [
+        "SELECT SUBSTRING_INDEX(mg.partner_uuid,':',1) 'merchant_id', m.name 'business_name',gt.id, p.uuid payment_uuid, ",
+        "p.amount pymt_amt, p.tip_amount, p.gateway_tx_id, p.created_time AS 'Payment Created Time', p.offline, ",
+        "gt.merchant_gateway_id, gt.created_time AS 'Gateway Created Time', ",
+        "gt.amount gtwy_amt, gt.type, gt.response_code, gt.first4, gt.last4, gt.card_type, gt.authcode ",
+        "FROM orders.gateway_tx gt LEFT OUTER JOIN orders.payment p ON gt.id=p.gateway_tx_id ",
+        "LEFT OUTER JOIN meta.merchant_gateway mg ON gt.merchant_gateway_id=mg.id ",
+        "LEFT OUTER JOIN meta.merchant m ON mg.merchant_id=m.id ",
+        "LEFT OUTER JOIN meta.merchant_placement mp ON m.id=mp.merchant_id WHERE ",
+        "gt.merchant_gateway_id IN (SELECT DISTINCT merchant_gateway_id FROM meta.merchant WHERE uuid IN ({inputs}))",
+        "AND gt.type='auth' ",
+        "AND gt.created_time>= DATE_SUB(NOW(), interval 24 hour) ",
+        "GROUP BY gt.id HAVING gt.amount!=(sum(p.amount+p.tip_amount))"
+      ],
+      "header": "Audit Tip Transactions - Last 24 hours for {inputs}",
+      "aggregation": null
+    }
+  ]
+}

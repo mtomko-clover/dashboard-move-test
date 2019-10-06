@@ -1,0 +1,91 @@
+{
+  "cmd": "get",
+  "object": "device",
+  "modifier": "info",
+  "role": "default",
+  "help": "get device info <SERIAL_NUMBER>",
+  "description": "get device information",
+  "options": [
+    {
+      "param": 0,
+      "format": "vertical",
+      "default": true,
+      "loop": true,
+      "description": "get device information",
+      "SQL": [
+        "SELECT m.uuid AS 'MID', m.name AS 'Merchant',d.serial AS 'Serial',d.id as 'Device ID',LOWER(HEX(d.uuid)) AS 'UUID',",
+        "dp.chip_uid as 'Chip UID', dp.imei as 'IMEI',",
+        "dp.activation_code AS 'Activation Code',d.model AS 'Model',rom.description AS 'MB ROM', sbrom.description AS 'SB ROM',",
+        "dp.provisioned_time AS 'Provisioned', dp.activated_time AS 'Activated',d.deleted_time AS 'Deleted' ",
+        "FROM meta.device d ",
+        "JOIN meta.device_provision dp ON d.device_provision_id = dp.id ",
+        "JOIN meta.merchant m ON dp.merchant_id = m.id ",
+        "LEFT JOIN meta.rom rom on d.current_rom_id=rom.id ",
+        "LEFT JOIN meta.rom sbrom on d.sb_rom_id=sbrom.id ",
+        "WHERE serial IN ({inputs}) ",
+        "ORDER BY dp.activated_time DESC LIMIT 1"
+      ],
+      "header": "Device Info - {target}",
+      "aggregation": null
+    },
+    {
+      "option": "g",
+      "param": 0,
+      "default": false,
+      "description": "get device information by merchant or group",
+      "SQL": [
+        "SELECT device_type.name AS 'Name', device.model AS 'Model', LPAD(count(*),7,' ') AS '# Devices' FROM meta.device ",
+        "JOIN meta.device_type ON device.device_type_id=device_type.id ",
+        "WHERE device_provision_id IN (SELECT id from meta.device_provision where merchant_id ",
+        "IN (SELECT id from meta.merchant where uuid IN ({inputs}))) ",
+        "AND meta.device.deleted_time IS NULL GROUP BY model"
+      ],
+      "header": "Provisioned Devices Info - {target}",
+      "aggregation": null
+    },
+    {
+      "option": "s",
+      "param": 0,
+      "default": false,
+      "description": "get device software versions",
+      "SQL": [
+        "SELECT dva.name, da.app_package_name, av.version_name, FROM_UNIXTIME(da.app_update_time/1000) ",
+        "FROM meta.device_app da ",
+        "LEFT OUTER JOIN meta.developer_app dva ON da.app_package_name = dva.package_name ",
+        "LEFT OUTER JOIN meta.android_version av ON dva.id = av.developer_app_id ",
+        "WHERE da.app_version_code = av.version AND da.device_id = ",
+        "(SELECT d.id ",
+        "FROM meta.device d ",
+        "LEFT OUTER JOIN meta.device_provision dp ON d.device_provision_id = dp.id ",
+        "WHERE d.serial = {inputs} AND d.device_provision_id IS NOT NULL ",
+        "ORDER BY dp.activated_time DESC LIMIT 1) ",
+        "ORDER BY dva.name"
+      ],
+      "header": "Software Version Info - {target}",
+      "aggregation": null
+    },
+    {
+      "option": "i",
+      "param": 0,
+      "format": "vertical",
+      "default": false,
+      "loop": true,
+      "description": "get device information by device id",
+      "SQL": [
+        "SELECT m.uuid AS 'MID', m.name AS 'Merchant',d.serial AS 'Serial',d.id as 'Device ID',LOWER(HEX(d.uuid)) AS 'UUID',",
+        "dp.chip_uid as 'Chip UID', dp.imei as 'IMEI',",
+        "dp.activation_code AS 'Activation Code',d.model AS 'Model',rom.description AS 'MB ROM', sbrom.description AS 'SB ROM',",
+        "dp.provisioned_time AS 'Provisioned', dp.activated_time AS 'Activated',d.deleted_time AS 'Deleted' ",
+        "FROM meta.device d ",
+        "JOIN meta.device_provision dp ON d.device_provision_id = dp.id ",
+        "JOIN meta.merchant m ON dp.merchant_id = m.id ",
+        "LEFT JOIN meta.rom rom on d.current_rom_id=rom.id ",
+        "LEFT JOIN meta.rom sbrom on d.sb_rom_id=sbrom.id ",
+        "WHERE d.id IN ({inputs}) ",
+        "ORDER BY dp.activated_time DESC LIMIT 1"
+      ],
+      "header": "Device Info - {target}",
+      "aggregation": null
+    }
+  ]
+}

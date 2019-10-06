@@ -1,0 +1,15 @@
+{
+  "channel": "#isvbot-test",
+  "interval": {
+    "seconds": 30
+  },
+  "cron": "",
+  "user": "U6G49BTEW",
+  "message": "<!here> Notifier: Unknown errors in last hour",
+  "commands": [
+    "get unknown errors 1"
+  ],
+  "enabled": false,
+  "quiet":true,
+  "description": "Get the unknown errors every hour"
+}

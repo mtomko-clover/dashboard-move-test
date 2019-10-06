@@ -1,0 +1,24 @@
+{
+  "cmd": "get",
+  "object": "published",
+  "modifier": "appcount",
+  "role": "default",
+  "help": "get published appcount",
+  "description": "get the count of published apps",
+  "options": [
+    {
+      "option": "",
+      "default": true,
+      "description": "",
+      "header": "# of published apps",
+      "SQL" : [
+        "SELECT Count(*)",
+        "FROM   developer_app",
+        "WHERE  approval_status = 'PUBLISHED'",
+        "       AND hidden = 0",
+        "       AND system_app = 0",
+        "       AND deleted_time IS NULL"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "cmd": "get",
+  "object": "merchant",
+  "modifier": "transactions",
+  "role": "default",
+  "help": "get merchant transactions <MERCHANT_UUID|GROUP>",
+  "description": "Get transaction information for a merchant",
+  "options": [
+    {
+      "param": 0,
+      "default": true,
+      "description": "Get transaction information for a merchant",
+      "SQL": [
+        "SELECT COALESCE(meta.merchant.uuid,'Total') AS MID, name AS 'Merchant Name',",
+        "LPAD(format(COUNT(*),0),13,' ') AS '# Txs', ",
+        "LPAD(concat('$',format(sum(amount)/100, 2)),13,' ') as Amount, ",
+        "LPAD(concat('$', format(COALESCE(sum(tip_amount),0)/100, 2)),13,' ') AS 'Tip Amount',",
+        "LPAD(concat('$', format(COALESCE(sum(tax_amount),0)/100, 2)),13,' ') AS 'Tax Amount' FROM orders.payment ",
+        "JOIN meta.merchant ON orders.payment.merchant_id=meta.merchant.id",
+        "WHERE client_created_time >= DATE_SUB(NOW(), interval 24 hour) AND merchant_id IN (SELECT id FROM meta.merchant ",
+        "WHERE uuid IN ({inputs})) ",
+        "GROUP BY name ",
+        "UNION ",
+        "SELECT 'TOTAL', '', ",
+        "LPAD(format(COUNT(*),0),13,' ') AS '# Txs', ",
+        "LPAD(concat('$',format(sum(amount)/100, 2)),13,' ') as Amount, ",
+        "LPAD(concat('$', format(COALESCE(sum(tip_amount),0)/100, 2)),13,' ') AS 'Tip Amount',",
+        "LPAD(concat('$', format(COALESCE(sum(tax_amount),0)/100, 2)),13,' ') AS 'Tax Amount' FROM orders.payment ",
+        "JOIN meta.merchant ON orders.payment.merchant_id=meta.merchant.id",
+        "WHERE client_created_time >= DATE_SUB(NOW(), interval 24 hour) AND merchant_id IN (SELECT id FROM meta.merchant ",
+        "WHERE uuid IN ({inputs})) "
+      ],
+      "header": "Merchant Transactions - Last 24 hours",
+      "aggregation": null
+    },
+       {
+      "option": "c",
+      "param": 0,
+      "default": false,
+      "description": "Get transaction information for a merchant",
+      "SQL": [
+        "select m.name, m.uuid, date_format(o.client_created_time, '%m/%d %H') hour, SUM(case when p.result = 'success' then 1 else 0 end) success,",
+        "SUM(case when p.result != 'success' then 1 else 0 end) not_succ, SUM(case when p.result = 'success' and ",
+        "p.gateway_tx_id is not null then 1 else 0 end)",
+        "card, SUM(case when p.result = 'success' and p.gateway_tx_id is null and cash_tendered > 0 then 1 else 0 end) cash,",
+        "SUM(case when p.result = 'success' and p.gateway_tx_id is null and cash_tendered is null then 1 else 0 end) other,",
+        "TRUNCATE(SUM(p.offline is not null and p.offline = 1 and p.result = 'success')/COUNT(*)*100,2) '%off'",
+        "FROM (select * FROM orders.orders where client_created_time >= DATE_SUB(NOW(), interval 24 hour) AND ",
+        "merchant_id = (select id from meta.merchant where uuid = {inputs})) o ",
+        "JOIN meta.merchant m on m.id = o.merchant_id JOIN orders.payment p on p.order_id = o.id group by hour"
+      ],
+      "header": "Merchant Transactions - Last 24 hours",
+      "aggregation": null
+    }
+  ]
+}

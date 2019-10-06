@@ -1,0 +1,50 @@
+{
+  "cmd": "get",
+  "object": "app",
+  "modifier": "versions",
+  "role": "default",
+  "help": "get app versions <Merchant Group UUID>",
+  "description": "get app versions",
+  "options": [
+    {
+      "param": 0,
+      "default": true,
+      "description": "get app versions",
+      "SQL": [
+        "SELECT name AS 'Name', package_name AS 'Package Name', version_name AS 'Version' FROM ",
+        "(SELECT da.name, da.package_name , av.version_name FROM meta.merchant_group_android_version mgav ",
+        "LEFT OUTER JOIN meta.merchant_group mg ON mgav.merchant_group_id = mg.id ",
+        "LEFT OUTER JOIN meta.developer_app da ON mgav.developer_app_id = da.id ",
+        "LEFT OUTER JOIN meta.android_version av ON mgav.android_version_id = av.id ",
+        "WHERE mgav.merchant_group_id IN (SELECT id FROM meta.merchant_group where uuid IN ({inputs}))) a ",
+        "UNION ",
+        "(SELECT da.name, da.package_name, av.version_name ",
+        "FROM meta.developer_app da ",
+        "JOIN meta.android_version av ON da.android_version_id = av.id ",
+        "WHERE da.id NOT IN (SELECT developer_app_id FROM meta.merchant_group_android_version ",
+        "WHERE merchant_group_id IN (SELECT id FROM meta.merchant_group where uuid IN ({inputs}))) ",
+        "AND developer_id=0 AND da.approval_status='PUBLISHED') ",
+        "ORDER BY name "
+      ],
+      "header": "App Versions",
+      "aggregation": null
+    },
+        {
+      "option": "x",
+      "param": 0,
+      "default": false,
+      "description": "get app versions strictly defined in MG",
+      "SQL": [
+        "SELECT name AS 'Name', package_name AS 'Package Name', version_name AS 'Version' FROM ",
+        "(SELECT da.name, da.package_name , av.version_name FROM meta.merchant_group_android_version mgav ",
+        "LEFT OUTER JOIN meta.merchant_group mg ON mgav.merchant_group_id = mg.id ",
+        "LEFT OUTER JOIN meta.developer_app da ON mgav.developer_app_id = da.id ",
+        "LEFT OUTER JOIN meta.android_version av ON mgav.android_version_id = av.id ",
+        "WHERE mgav.merchant_group_id IN (SELECT id FROM meta.merchant_group where uuid IN ({inputs}))) a ",
+        "ORDER BY name "
+      ],
+      "header": "App Versions",
+      "aggregation": null
+    }
+  ]
+}

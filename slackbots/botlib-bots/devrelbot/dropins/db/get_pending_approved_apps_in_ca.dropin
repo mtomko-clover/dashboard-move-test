@@ -1,0 +1,33 @@
+{
+  "cmd": "get",
+  "object": "pendingcanadian",
+  "modifier": "apps",
+  "role": "default",
+  "help": "get pendingcanadian apps",
+  "description": "Check Pending/Approved Apps in Canada App Market",
+  "options": [
+    {
+      "param": 0,
+      "default": true,
+      "description": "Check Pending/Approved Apps in Canada App Market",
+      "header": "Pending Canadian Apps",
+      "SQL": [
+        "select ",
+        "       developer.name, ",
+        "       developer_app.name, ",
+        "       developer_app.uuid, ",
+        "       developer_app.approval_status, ",
+        "       app_subscription_country.active ",
+        "FROM   meta.app_subscription_country ",
+        "JOIN   meta.app_subscription on app_subscription_id = meta.app_subscription.id ",
+        "JOIN   meta.developer_app on app_subscription.developer_app_id = meta.developer_app.id ",
+        "JOIN   meta.developer on developer_app.developer_id = meta.developer.id ",
+        "WHERE  meta.app_subscription_country.country = 'CA' ",
+        "  and  meta.developer_app.approval_status in ('pending') ",
+        "  and  not meta.developer.name = 'Clover' ",
+        "group  by meta.developer_app.id;"
+      ],
+      "aggregation": null
+    }
+  ]
+}

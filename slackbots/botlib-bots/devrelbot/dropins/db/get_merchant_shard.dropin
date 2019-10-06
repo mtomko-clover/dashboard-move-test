@@ -1,0 +1,22 @@
+{
+  "cmd": "get",
+  "object": "merchant",
+  "modifier": "shard",
+  "role": "default",
+  "help": "get merchant shard <MERCHANT_UUID>",
+  "description": "Get orders shard number for merchant",
+  "options": [
+    {
+      "param": 0,
+      "default": true,
+      "description": "Get orders shard number for merchant",
+      "SQL": [
+        "SELECT * ",
+        "FROM meta.merchant_placement ",
+        "WHERE merchant_id in (select id from meta.merchant where uuid = {inputs})"
+      ],
+      "header": "Orders Shard Number",
+      "aggregation": null
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "cmd": "get",
+  "object": "activation",
+  "modifier": "code",
+  "role": "default",
+  "help": "get activation code <SERIAL_NUMBER>",
+  "description": "Get activation code details for a device",
+  "options": [
+    {
+      "param": 0,
+      "default": true,
+      "description": "Get activation code details for a device",
+      "SQL": [
+        "select serial_number, activation_code, activated_time, modified_time ",
+        "from meta.device_provision ",
+        "where serial_number IN ({inputs})"
+      ],
+      "header": "Activation Code",
+      "aggregation": null
+    }
+  ]
+}

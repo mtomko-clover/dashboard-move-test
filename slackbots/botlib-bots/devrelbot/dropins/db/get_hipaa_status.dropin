@@ -1,0 +1,57 @@
+{
+  "cmd": "get",
+  "object": "hipaa",
+  "modifier": "",
+  "role": "default",
+  "help": "get hipaa",
+  "description": "get hipaa micamp project full install details",
+  "options": [
+    {
+      "param": 0,
+      "option": "p",
+      "default": true,
+      "description": "Get MiCamp CareStack Pay App #",
+      "SQL": [
+        "SELECT COUNT(*) as 'MiCamp CareStack Pay App #'",
+        "FROM   meta.merchant m",
+        "       LEFT OUTER JOIN meta.merchant_app ma",
+        "                    ON ma.merchant_id = m.id",
+        "WHERE  ma.app_id = 20143",
+        "       AND ma.deleted_time IS NULL"
+      ],
+      "header": "MiCamp CareStack Pay App #"
+    },
+    {
+      "option": "c",
+      "param": 0,
+      "default": true,
+      "description": "Get MiCamp CareStack Merchant Plan #",
+      "SQL": [
+        "SELECT COUNT(*) as 'MiCamp CareStack Merchant Plan #'",
+        "FROM   meta.merchant",
+        "WHERE  merchant_plan_id = 161"
+      ],
+      "header": "MiCamp CareStack Merchant Plan #"
+    },
+    {
+      "option": "i",
+      "param": 0,
+      "default": true,
+      "description": "Get Merch Plan Info",
+      "SQL": [
+        "SELECT m.id as 'Merch Plan',",
+        "       m.uuid as '',",
+        "       m.NAME as '',",
+        "       m.modified_time as 'modified',",
+        "       SUBSTRING_INDEX(SUBSTRING_INDEX(gateway.config, '\"mid\":\"', -1), '\",', 1) as 'MID'",
+        "FROM   meta.merchant m",
+        "       LEFT OUTER JOIN meta.merchant_gateway gateway",
+        "                    ON gateway.merchant_id = m.id",
+        "WHERE  m.merchant_plan_id = 161",
+        "       AND m.modified_time > SUBDATE(now(), INTERVAL 1 week)",
+        "ORDER  BY m.modified_time; "
+      ],
+      "header": "Merch Plan Info This Week"
+    }
+  ]
+}

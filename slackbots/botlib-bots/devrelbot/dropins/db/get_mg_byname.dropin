@@ -1,0 +1,22 @@
+{
+  "cmd": "get",
+  "object": "mg",
+  "modifier": "byname",
+  "role": "default",
+  "help": "get mg byname <Name to query>",
+  "description": "Find merchant groups by name",
+  "options": [
+    {
+      "param": 0,
+      "default": true,
+      "expand_groups": false,
+      "description": "Find merchant groups by name - use % for LIKE syntax",
+      "format": "vertical",
+      "SQL": [
+        "SELECT id,uuid,name,modified_time FROM meta.merchant_group WHERE NAME LIKE CONCAT('%',{inputs},'%') AND deleted_time IS NULL"
+      ],
+      "header": "Merchant Group Info",
+      "aggregation": null
+    }
+  ]
+}

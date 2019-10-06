@@ -1,0 +1,47 @@
+{
+  "cmd" : "get",
+  "object" : "apks",
+  "modifier" : "",
+  "role": "default",
+  "help": "get apks",
+  "description" : "get current apk approval queue links",
+  "options" : [
+    {
+      "param": 0,
+      "default" : true,
+      "description" : "Get current apk approval queue links",
+      "SQL" : [
+
+        " select ",
+
+        "    concat('https://www.clover.com/internal/apps/',app.uuid,'/apks - ', app.name,' by ', dev.name, IF(app.approval_status='PUBLISHED', ' (public) ', ' (private) '), app.uuid) as '', ",
+        "    ",
+        "    (select count(1)",
+        "      from meta.android_version",
+        "     where android_version.developer_app_id = app.id",
+        "       and approval_status in ('APPROVED', 'PUBLISHED')",
+        "       and created_at < apk.created_at) as ''",
+
+        " from meta.android_version apk ",
+        " left outer join meta.developer_app app on apk.developer_app_id = app.id",
+        "inner join meta.developer dev on app.developer_id = dev.id",
+
+        " where apk.approval_status = 'PENDING' and app.approval_status in ('APPROVED', 'PUBLISHED') ",
+        "   and (select count(1)",
+        "          from meta.android_version",
+        "         where android_version.developer_app_id = app.id and approval_status in ('PENDING', 'APPROVED', 'PUBLISHED')",
+        "           and created_at > apk.created_at) = 0",
+
+        " order by (select count(1)",
+        "             from meta.android_version",
+        "            where android_version.developer_app_id = app.id",
+        "              and approval_status in ('APPROVED', 'PUBLISHED')",
+        "              and created_at < apk.created_at) DESC, ",
+        "       app.name"
+
+      ],
+      "header" : "Busy Android Developers",
+      "aggregation" : null
+    }
+  ]
+}

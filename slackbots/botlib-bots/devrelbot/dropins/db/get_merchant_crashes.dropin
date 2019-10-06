@@ -1,0 +1,25 @@
+{
+  "cmd": "get",
+  "object": "merchant",
+  "modifier": "crashes",
+  "role": "default",
+  "help": "get merchant crashes <MID|GROUP>",
+  "description": "Get Merchant crashes in the last 2 weeks",
+  "options": [
+    {
+      "default": true,
+      "description": "Get Merchant crashes in the last 2 weeks",
+      "SQL": [
+        "SELECT m.uuid AS 'Merchant',d.serial AS 'Device Serial',cr.created_time AS 'Created Time', cr.signature AS 'Signature' ",
+        "FROM meta.crash_report cr ",
+        "JOIN meta.merchant m ON cr.merchant_id = m.id ",
+        "JOIN meta.device d ON cr.device_id=d.id ",
+        "WHERE merchant_id IN (SELECT id from meta.merchant m where uuid IN ({inputs})) ",
+        "AND cr.created_time >= DATE_SUB(NOW(), interval 2 week) ",
+        "ORDER BY cr.created_time "
+      ],
+      "header": "Merchant Crashes in Last 2 Weeks",
+      "aggregation": null
+    }
+  ]
+}

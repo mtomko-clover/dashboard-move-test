@@ -1,0 +1,15 @@
+{
+  "channel": "#isvbot-test",
+  "interval": {
+    "seconds": 30
+  },
+  "cron": "",
+  "user": "U37P6ME9Y",
+  "message": "<!channel> test notifier: Executing get lag p801",
+  "commands": [
+    "get lag p801"
+  ],
+  "enabled": false,
+  "quiet": true,
+  "description": "Run the get lag p801 command every 10 minutes"
+}

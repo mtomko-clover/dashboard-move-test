@@ -1,0 +1,22 @@
+{
+  "cmd" : "get",
+  "object" : "weekly",
+  "modifier" : "crashes",
+  "role": "default",
+  "help": "get weekly crashes",
+  "description" : "Retrieves last weeks (com.clover.remote)crash groups",
+  "options" : [
+    {
+      "default" : true,
+      "description" : "Retrieves last weeks (com.clover.remote)crash groups",
+      "SQL" : [
+        "select CAST(SUM(res.theCount) AS SIGNED) as total, url, package_name from (SELECT urg.occurrences as theCount, Concat(\"https://jira.dev.clover.com/browse/\", urg.issue_tracking_id)",
+        " AS url, ur.app_package_name as package_name FROM meta.unified_report ur JOIN meta.unified_report_group urg ON urg.id = ur.unified_report_group_id",
+        " JOIN meta.unified_report_stack_trace urst ON urst.id = ur.stack_trace_id WHERE urg.occurrences > 100 AND ur.app_package_name like \"%com.clover.remote%\" AND urg.last_occurrence_time >= DATE_SUB(NOW(), interval 7 day) AND urg.issue_tracking_id IS NOT NULL",
+        " GROUP BY urg.id ORDER BY urg.occurrences DESC) as res GROUP BY url ORDER BY total DESC;"
+      ],
+      "header" : "Fix it! Like our merchants sanity depends on it!:",
+      "aggregation" : null
+    }
+  ]
+}
