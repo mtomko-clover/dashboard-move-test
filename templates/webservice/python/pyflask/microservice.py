@@ -29,7 +29,12 @@ class AutoSuccess(Resource):
 class AutoFail(Resource):
     def get(self):
         return {"status":"fail", "message":"auto-fail"}
-
+        
+class AutoEcho(Resource):
+    def get(self):
+        return {"status":"success", "message":"POST to endpoint to receive your message back"}
+    def post(self):
+        return {"status":"success", "message":request.get_data().decode('utf-8')}
 
 class DefaultHandler(Resource):
     def get(self):
@@ -47,24 +52,21 @@ def combine_url_safe(one, two):
     output += two.lstrip('/')
     return output
 
-# helper func to add a webservice endpoint to flask
-def add_route(path, handler_class):
-    api.add_resource(combine_url_safe(root, path), handler_class)
-
    
 ##
 ## =======================================================================================
 ## Set up webservice endpoints
 ##        
 
-# DART standards
-add_route('/', DefaultHandler)
-
-add_route('/health', AutoSuccess)
-add_route('/health/succeed', AutoSuccess)
-add_route('/health/fail', AutoFail)
-add_route('/test', AutoSuccess)
-add_route('/admin', AutoSuccess)
+# DART standard infrastructure endpoints: admin, health, test integration points
+# note: for real REST pattern, flask errors if same class is used for multiple resource definitions. 
+#       Assign a custom endpoint="unique-name" value to work around it if appropriate.
+api.add_resource(AutoSuccess, combine_url_safe(root, '/health'), endpoint="health")
+api.add_resource(AutoSuccess, combine_url_safe(root, '/health/succeed'))
+api.add_resource(AutoFail,    combine_url_safe(root, '/health/fail'))
+api.add_resource(AutoSuccess, combine_url_safe(root, '/test'), endpoint="test")
+api.add_resource(AutoSuccess, combine_url_safe(root, '/admin'), endpoint="admin")
+api.add_resource(AutoEcho,    combine_url_safe(root, '/admin/echo'))
 
 # Custom endpoints (or call your initializer from __main__ section below)
 
@@ -88,3 +90,4 @@ if __name__ == '__main__':
 # todo: build in db libs to the template? Or is that a different template?
 # todo: metrics integration
 # todo: text translation integration
+# todo: auth/security pattern
