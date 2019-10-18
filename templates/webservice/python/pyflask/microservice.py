@@ -22,13 +22,18 @@ root = '/'
 ## 
 
 class AutoSuccess(Resource):
-    def get(Self):
+    def get(self):
         return {"status":"success", "message":"auto-succeed"}
 
 
 class AutoFail(Resource):
-    def get(Self):
+    def get(self):
         return {"status":"fail", "message":"auto-fail"}
+
+
+class DefaultHandler(Resource):
+    def get(self):
+        return {"status":"success", "message":"auto-succeed", "details": "need real server status details as appropriate"}
 
 ##
 ## =======================================================================================
@@ -37,7 +42,7 @@ class AutoFail(Resource):
 
 def combine_url_safe(one, two):
     output = one
-    if !output.endswith('/'):
+    if not output.endswith('/'):
         output += '/'
     output += two.lstrip('/')
     return output
@@ -53,7 +58,7 @@ def add_route(path, handler_class):
 ##        
 
 # DART standards
-add_route('/', RootHandler)
+add_route('/', DefaultHandler)
 
 add_route('/health', AutoSuccess)
 add_route('/health/succeed', AutoSuccess)
@@ -76,3 +81,10 @@ if __name__ == '__main__':
     #               debug=True / debug=False
     # todo: move to standard yaml config file
     app.run(host='0.0.0.0', port=2048, debug=True)  
+
+
+
+# todo: setup standard config file pattern (yaml, I think)
+# todo: build in db libs to the template? Or is that a different template?
+# todo: metrics integration
+# todo: text translation integration
