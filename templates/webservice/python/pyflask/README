@@ -1,0 +1,2 @@
+This is a python 3 based microservice / webservice using Flask / FlaskResful libraries to provide webservice actions
+Copy this template and add product/action routes and handlers to create a standard DART team microservice
