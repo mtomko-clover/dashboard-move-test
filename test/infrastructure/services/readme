@@ -1,0 +1,5 @@
+test infrascture services - microservices, data access and reporting, etc.
+plan:
+ - services to report test results "from anywhere"
+ - services to manage creating tests and test runs
+ - services to allow test dashboard reporting
