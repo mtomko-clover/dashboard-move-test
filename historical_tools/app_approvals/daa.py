@@ -268,7 +268,7 @@ class DAA:
         elif is_semi == "y":
             self.jira.assign_issue(qa_review, "paul.petyo")
         else:
-            self.jira.assign_issue(qa_review, "sampada.gooty")
+            self.jira.assign_issue(qa_review, "sonny.espinoza")
 
         webbrowser.open_new_tab("https://jira.dev.clover.com/browse/" + str(app_approval))
 
