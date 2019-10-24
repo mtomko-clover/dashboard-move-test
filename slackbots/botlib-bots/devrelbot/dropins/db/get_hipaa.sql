@@ -1,5 +1,5 @@
 --@enabled true
-
+USE meta;
 SELECT DISTINCT(merchant_app.merchant_id), (SELECT NAME
     FROM   merchant
     WHERE  merchant.id = merchant_app.merchant_id) AS 'Name'
