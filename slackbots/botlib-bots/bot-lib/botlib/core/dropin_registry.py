@@ -82,7 +82,11 @@ class DropinRegistry:
                             drop_in = DbSqlDropin(pathname)
 
                         if not drop_in.enabled:
+                            print('disabled dropin file: ' + str(pathname))
                             continue
+                        
+                        print ('loaded ' + str(drop_in.command) +'.'+ str(drop_in.obj) +'.'+ str(drop_in.modifier) + ' from ' + str(pathname))
+
                         cmdtuple = drop_in.command, drop_in.obj, drop_in.modifier
                         self.dropinregistry[cmdtuple] = drop_in
                         if drop_in.command in self.cmdregistry:
