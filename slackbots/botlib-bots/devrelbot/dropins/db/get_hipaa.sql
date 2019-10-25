@@ -1,5 +1,5 @@
 -- @enabled true
--- @help: get hipaa merchants who have apps needing uninstall
+-- @help: get hipaa
 -- get hipaa merchants which need apps removed
 USE meta;
 SELECT DISTINCT(merchant_app.merchant_id), (SELECT NAME
