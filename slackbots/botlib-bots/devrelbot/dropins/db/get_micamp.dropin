@@ -25,7 +25,7 @@
             "WHERE  ma.app_id = 20143",
             "       AND ma.deleted_time IS NULL",
             "       AND m.name like '%{inputs}%'",
-            "ORDER  BY m.modified_time; ",
+            "ORDER  BY m.modified_time; "
         
       ]
     },
