@@ -2,3 +2,9 @@
 *.pyc
 *secrets.sh
 
+# production config files (usually there's a .dist sample version)
+bot.yaml
+
+# code editor user files: vs code, ...
+**/.vscode
+
