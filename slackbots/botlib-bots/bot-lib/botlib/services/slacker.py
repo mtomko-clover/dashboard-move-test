@@ -153,10 +153,10 @@ class Slacker():
         # Direct Message
         if channel.startswith('D'):
             return True
-        #if channel.startswith('G'):
-            # Make sure it is a direct mention
-        if self.botid in msg['text']:
-            return True
+        # Make sure it is a direct mention
+        if msg is not None and msg['text'] is not None:
+            if self.botid in msg['text']:
+                return True
 
         return False
 
