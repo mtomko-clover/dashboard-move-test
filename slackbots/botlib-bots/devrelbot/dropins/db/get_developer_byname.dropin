@@ -4,7 +4,7 @@
   "modifier": "byname",
   "role": "default",
   "help": "get developer byname <Name to query>",
-  "description": "get merchant info by name",
+  "description": "get developer info by name",
   "options": [
     {
       "param": 0,
@@ -12,10 +12,10 @@
       "expand_groups": false,
       "description": "get developer info by name - use ' for embedded spaces",
       "SQL": [
-        "SELECT m.id AS 'ID',m.uuid AS 'UUID', m.name AS 'Name', SUBSTRING_INDEX(mg.partner_uuid, ':', 1) AS MID,m.modified_time AS 'Modified Time' ",
-        "FROM meta.merchant m ",
-        "JOIN meta.merchant_gateway mg ON m.merchant_gateway_id=mg.id ",
-        "WHERE NAME LIKE CONCAT('%',{inputs},'%')"
+        "USE meta;",
+        "SELECT id, uuid, name, approval_status, email, business_legal_name AS 'Business Name', address, city, state, postal_code AS 'Zip' ",
+        "FROM developer ",
+        "WHERE NAME LIKE CONCAT('%',{inputs},'%') limit 25;"
       ],
       "header": "Merchant Info",
       "aggregation": null
