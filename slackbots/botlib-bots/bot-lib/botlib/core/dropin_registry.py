@@ -15,6 +15,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from botlib.core.command_dispatcher import CommandDispatcher
 from botlib.core.command_parser import CommandParser
 from botlib.extensions.dropin.db_dropin import DBDropin
+from botlib.extensions.dropin.db_sql import DbSqlDropin
 from botlib.extensions.dropin.groupinfo import GroupInfo
 from botlib.extensions.dropin.notifier_dropin import NotifierDropin
 from botlib.security import acl
@@ -74,8 +75,12 @@ class DropinRegistry:
                         drop_in = NotifierDropin(pathname)
                         if drop_in.enabled:
                             self.notifier_registry.append(drop_in)
-                    elif expanded_path.endswith('db') and (pathname.endswith('.dropin')):
-                        drop_in = DBDropin(pathname)
+                    elif expanded_path.endswith('db') and (pathname.endswith('.dropin') or pathname.endswith('.sql')):
+                        if pathname.endswith('.dropin'):
+                            drop_in = DBDropin(pathname)
+                        elif pathname.endswith('.sql'):
+                            drop_in = DbSqlDropin(pathname)
+
                         if not drop_in.enabled:
                             continue
                         cmdtuple = drop_in.command, drop_in.obj, drop_in.modifier
