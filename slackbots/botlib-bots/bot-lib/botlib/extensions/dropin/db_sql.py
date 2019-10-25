@@ -79,8 +79,12 @@ class DbSqlDropin(DropinBase):
 
             if not self.options:
                 self.options = self.defaultoptions
+
+            print(self)
         except Exception as ex:
             # log it
+            print('error converting sql to dropin:')
+            print (ex)
             raise ex
 
 class DbSqlDropinOption(DropinBaseOption):
