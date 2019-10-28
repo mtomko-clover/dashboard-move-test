@@ -7,7 +7,6 @@ import time
 from jira import JIRA
 import getpass
 import  pytz, datetime, shelve
-import os.path
 
 
 # Initialize JIRA
