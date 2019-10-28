@@ -1,10 +1,10 @@
 {
   "cmd": "get",
-  "object": "hipaa",
+  "object": "hipaa2",
   "modifier": "",
   "role": "default",
-  "help": "get hipaa",
-  "description": "get hipaa micamp project full install details",
+  "help": "get hipaa2",
+  "description": "get hipaa2 - micamp project full install details",
   "options": [
     {
       "param": 0,
