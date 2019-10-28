@@ -49,7 +49,7 @@ class DbSqlDropin(DropinBase):
                         if not hasSql:
                           description += ' ' + line.strip()
                     else:
-                        hasSql = true;
+                        hasSql = True
                         sql += ' ' + line.strip()
                         if sql.endswith(';'):
                             blocks.append(sql)
