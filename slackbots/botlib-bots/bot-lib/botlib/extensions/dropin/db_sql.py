@@ -68,7 +68,7 @@ class DbSqlDropin(DropinBase):
             self.role = attributes.get('role', 'default')
             self.description = description
             self.type = attributes.get('type', '')
-            self.help = attributes.get('help', self.command + ' ' + self.obj + ' ' + self.modifier + ': ' + description[1, 20])
+            self.help = attributes.get('help', self.command + ' ' + self.obj + ' ' + self.modifier + ': ' + description[1:20])
             self.options = {}
             self.defaultoptions = {}
             self.defoptionlist = []
