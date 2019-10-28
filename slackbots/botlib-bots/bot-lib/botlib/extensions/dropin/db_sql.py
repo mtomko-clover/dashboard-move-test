@@ -29,10 +29,13 @@ class DbSqlDropin(DropinBase):
             # File Contents
             blocks = []
             attributes = {}
+            description = ''
+            hasSql = False
 
             with open(filepath) as file:
-                line = file.readline()
                 sql = ''
+
+                line = file.readline()
                 while line:
                     attributeMatch = re.search('^\\s*--\\s*@(\\w+)\\b\\s*[=:]?\\s*(.*)$', line)
                     commentMatch = re.search('^\\s*--.*$|^\\s*$', line)
@@ -43,9 +46,10 @@ class DbSqlDropin(DropinBase):
                         print('   : [' + value + ']')
                         attributes[attribute] = value
                     elif commentMatch is not None:
-                        print('comment')
+                        if not hasSql:
+                          description += ' ' + line.strip()
                     else:
-                        print('sql ' + line.strip())
+                        hasSql = true;
                         sql += ' ' + line.strip()
                         if sql.endswith(';'):
                             blocks.append(sql)
