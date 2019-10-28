@@ -5,7 +5,6 @@ from botlib.extensions.dropin.dropin_base import DropinBase, DropinBaseOption
 
 logger = logging.getLogger(__name__)
 
-
 class DbSqlDropin(DropinBase):
     def __init__(self, filepath):
         try:
@@ -38,7 +37,7 @@ class DbSqlDropin(DropinBase):
                 line = file.readline()
                 while line:
                     attributeMatch = re.search('^\\s*--\\s*@(\\w+)\\b\\s*[=:]?\\s*(.*)$', line)
-                    commentMatch = re.search('^\\s*--.*$|^\\s*$', line)
+                    commentMatch = re.search('^\\s*--\\s*(.*)$|^\\s*$', line)
                     if attributeMatch is not None:
                         attribute = attributeMatch.group(1).strip()
                         value = attributeMatch.group(2).strip() if attributeMatch.group(2) is not None else ''
@@ -47,7 +46,7 @@ class DbSqlDropin(DropinBase):
                         attributes[attribute] = value
                     elif commentMatch is not None:
                         if not hasSql:
-                          description += ' ' + line.strip()
+                          description += ' ' + commentMatch.group(1).strip() if commentMatch.group(1) is not None else ''
                     else:
                         hasSql = True
                         sql += ' ' + line.strip()
@@ -66,25 +65,30 @@ class DbSqlDropin(DropinBase):
             self.obj = obj
             self.modifier = modifier
             self.role = attributes.get('role', 'default')
-            self.description = description
+            self.description = description.strip()
             self.type = attributes.get('type', '')
-            self.help = attributes.get('help', self.command + ' ' + self.obj + ' ' + self.modifier + ': ' + description[1:20])
+            self.help = attributes.get('help', self.command + ' ' + self.obj + ' ' + self.modifier + ':' + self.description[0:20])
             self.options = {}
             self.defaultoptions = {}
             self.defoptionlist = []
 
             for sql in blocks:
                 item = {'sql': sql, 'header': 'Results'}
-                option = DropinBaseOption(item)
+                option = DbSqlDropinOption(item)
                 if option.default:
                     self.defoptionlist.append(option)
-                self.options[option.option] = option
+                self.options[option.option] = option #this line is suspicious. Useful? Overwrites same empty value?
 
 
             if not self.options:
+                print('  overwriting options with default options')
                 self.options = self.defaultoptions
 
-            print(self)
+            # print('desc, help, role, command')
+            # print(self.description)
+            # print(self.help)
+            # print(self.role)
+            # print(self.command  + '.' + self.obj  + '.' + modifier)
         except Exception as ex:
             # log it
             print('error converting sql to dropin:')
