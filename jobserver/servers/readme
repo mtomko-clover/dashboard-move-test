@@ -1,0 +1,4 @@
+servers for the job orchestration server
+- job dispatcher
+- job executor (N loadbalanced copies serving the dispatcher)
+- job scheduler (queue jobs for displatcher per schedule details)

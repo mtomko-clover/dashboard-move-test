@@ -45,8 +45,7 @@ class Slacker():
             for user in users:
                 if 'name' in user and user.get('name') == self.bot_name:
                     return user.get('id')
-        else:
-            print('could not find bot user with the name ' + self.bot_name)
+        print('could not find bot user with the name ' + self.bot_name)
 
     def connect(self):
         while not self.slack_client.server.websocket:
@@ -153,8 +152,8 @@ class Slacker():
         # Direct Message
         if channel.startswith('D'):
             return True
-        if channel.startswith('G'):
-            # Make sure it is a direct mention
+        # Make sure it is a direct mention
+        if msg is not None and msg['text'] is not None:
             if self.botid in msg['text']:
                 return True
 

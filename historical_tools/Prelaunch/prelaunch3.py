@@ -407,16 +407,25 @@ def open_shelf(txt_files = False):
 
     global region
 
-
-    with shelve.open("timestamp") as the_shelf:
+    try:
+        the_shelf = shelve.open("timestamp")
         last_time = the_shelf[region+" last time"]
-        #last_time = the_shelf["US last time"]
-        last_time = last_time.astimezone(pytz.utc)
+    except KeyError:
+        the_shelf = shelve.open("timestamp.db")
+        last_time - the_shelf[region+" last time"]
 
-        print("App was last run on", last_time)
 
-        if txt_files:
-            the_shelf[region+" last time"] = utc_time
+
+
+    #last_time = the_shelf["US last time"]ß
+    last_time = last_time.astimezone(pytz.utc)
+
+    print("App was last run on", last_time)
+
+    if txt_files:
+        the_shelf[region+" last time"] = utc_time
+
+    the_shelf.close()
 
     return last_time
 
