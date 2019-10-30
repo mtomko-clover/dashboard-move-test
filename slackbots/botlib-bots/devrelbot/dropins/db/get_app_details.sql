@@ -1,7 +1,4 @@
--- @enabled true
--- @help: get app details <App UUID>
--- get more info on apps by searching their UUID
-USE meta;
+-- Get more info on apps by searching their UUID "get app details <App UUID>"
 SELECT uuid, name, approval_status, package_name AS 'APK Name', application_id AS 'RAID'
-    FROM developer_app
+    FROM meta.developer_app
     WHERE uuid = {inputs};
