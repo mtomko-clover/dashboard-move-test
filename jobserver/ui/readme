@@ -1,0 +1,6 @@
+uis for the job orchestration server
+- manual job ordering ui
+- CRUD job table
+- CRUD job schedule
+- view job queue
+- view/query historical jobs and results, with rerun as appropriate

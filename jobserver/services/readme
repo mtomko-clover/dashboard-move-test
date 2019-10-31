@@ -1,0 +1,5 @@
+services for the job orchestration server
+- services for the server actions - fetch, update, schedule
+- services for manual job queuing
+- CRUD jobs
+- services for the job order ui

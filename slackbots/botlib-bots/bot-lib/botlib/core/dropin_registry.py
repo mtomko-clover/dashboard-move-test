@@ -15,6 +15,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from botlib.core.command_dispatcher import CommandDispatcher
 from botlib.core.command_parser import CommandParser
 from botlib.extensions.dropin.db_dropin import DBDropin
+from botlib.extensions.dropin.db_sql import DbSqlDropin
 from botlib.extensions.dropin.groupinfo import GroupInfo
 from botlib.extensions.dropin.notifier_dropin import NotifierDropin
 from botlib.security import acl
@@ -74,27 +75,39 @@ class DropinRegistry:
                         drop_in = NotifierDropin(pathname)
                         if drop_in.enabled:
                             self.notifier_registry.append(drop_in)
-                    elif expanded_path.endswith('db') and (pathname.endswith('.dropin')):
-                        drop_in = DBDropin(pathname)
-                        if not drop_in.enabled:
-                            continue
-                        cmdtuple = drop_in.command, drop_in.obj, drop_in.modifier
-                        self.dropinregistry[cmdtuple] = drop_in
-                        if drop_in.command in self.cmdregistry:
-                            self.cmdregistry[drop_in.command].add(drop_in)
-                        else:
-                            self.cmdregistry[drop_in.command] = {drop_in}
+                    elif expanded_path.endswith('db') and (pathname.endswith('.dropin') or pathname.endswith('.sql')):
+                        try:
+                            if pathname.endswith('.dropin'):
+                                drop_in = DBDropin(pathname)
+                            elif pathname.endswith('.sql'):
+                                drop_in = DbSqlDropin(pathname)
 
-                        key = drop_in.command, drop_in.obj
-                        if key in self.objregistry:
-                            self.objregistry[key].add(drop_in)
-                        else:
-                            self.objregistry[key] = {drop_in}
-                        # Build the RBAC
-                        # # resources
-                        # for resource in resources:
-                        acl.add_resource(drop_in.obj)
-                        acl.allow(drop_in.role, drop_in.command, drop_in.obj)
+                            if not drop_in.enabled:
+                                print('disabled dropin file: ' + str(pathname))
+                                continue
+                            
+                            print ('loaded ' + str(drop_in.command) +'.'+ str(drop_in.obj) +'.'+ str(drop_in.modifier) + ' from ' + str(pathname))
+
+                            cmdtuple = drop_in.command, drop_in.obj, drop_in.modifier
+                            self.dropinregistry[cmdtuple] = drop_in
+                            if drop_in.command in self.cmdregistry:
+                                self.cmdregistry[drop_in.command].add(drop_in)
+                            else:
+                                self.cmdregistry[drop_in.command] = {drop_in}
+
+                            key = drop_in.command, drop_in.obj
+                            if key in self.objregistry:
+                                self.objregistry[key].add(drop_in)
+                            else:
+                                self.objregistry[key] = {drop_in}
+                            # Build the RBAC
+                            # # resources
+                            # for resource in resources:
+                            acl.add_resource(drop_in.obj)
+                            acl.allow(drop_in.role, drop_in.command, drop_in.obj)
+                        except:
+                            print('error loading from ' + str(pathname))
+                            raise
                     elif expanded_path.endswith('rest') and (pathname.endswith('.dropin')):
                         # @TODO - add rest dropin support
                         pass
