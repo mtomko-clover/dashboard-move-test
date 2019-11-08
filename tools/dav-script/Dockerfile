@@ -7,5 +7,6 @@ RUN pip install -r /requirements.txt
 COPY ./script /app
 WORKDIR /app
 
+# ENTRYPOINT [ "/bin/bash" ]
 ENTRYPOINT ["python3"]
 CMD ["dav.py"]

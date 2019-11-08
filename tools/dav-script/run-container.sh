@@ -1,1 +1,1 @@
-docker run -it --rm dav
+docker run -it --rm -v $(readlink -f config):/config dav
