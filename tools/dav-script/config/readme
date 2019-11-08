@@ -1,0 +1,2 @@
+directory for runtime configs imported into docker. Specifically, create a secrets.yaml file (you can use the secrets.yaml.template file or make-secrets.py if they exist)
+and it will be available in the container but ignored in the git project

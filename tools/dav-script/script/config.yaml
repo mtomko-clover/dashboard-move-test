@@ -1,0 +1,6 @@
+jira: https://jira.dev.clover.com
+db:
+  US: db-usprod-shard0.corp.clover.com
+  EU: db-euprod-shard0.corp.clover.com
+  LA: db-laprod-shard0.corp.clover.com
+  SB: sandbox.dev.clover.com

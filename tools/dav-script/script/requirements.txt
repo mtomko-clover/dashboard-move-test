@@ -1,0 +1,7 @@
+mysql-connector-python
+pytz
+datetime
+jira
+openpyxl
+pyyaml
+pymysql
