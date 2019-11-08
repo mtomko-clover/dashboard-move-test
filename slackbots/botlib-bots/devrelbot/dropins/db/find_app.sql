@@ -9,8 +9,9 @@ select app.uuid,
        developer.name as 'dev',
        developer.uuid as 'dev uuid',
        developer.approval_status as 'dev status'
-  from developer_app app
- inner join developer on app.developer_id = developer.id
+  from meta.developer_app app
+ inner join meta.developer 
+    on app.developer_id = developer.id
  where (app.uuid like '%{inputs}%'
     or app.name like '%{inputs}%'
     or app.package_name like '%{inputs}%'
@@ -34,8 +35,8 @@ select app.uuid,
 
 -- @header # Matching Apps
 select count(*) as ''
-  from developer_app app
- inner join developer on app.developer_id = developer.id
+  from meta.developer_app app
+ inner join meta.developer on app.developer_id = developer.id
  where (app.uuid like '%{inputs}%'
     or app.name like '%{inputs}%'
     or app.package_name like '%{inputs}%'
