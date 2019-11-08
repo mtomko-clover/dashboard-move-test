@@ -1,4 +1,6 @@
-import mysql.connector
+#import mysql.connector
+import pymysql
+import pymysql.cursors
 import openpyxl
 #from openpyxl import load_workbook
 import time
@@ -87,19 +89,25 @@ def query_p801(query, db_host, shard_user, shard_PWD):
     Output: query_output which is tuple of data from the query output
     """
 
+    print('query db')
+
     ssl_set = {}
 #    shard_user = input("What is your Shard id?\n> ")
 #    shard_PWD = getpass.getpass("What is your password?\n> ")
     ssl_set["cipher"] = "DHE-RSA-AES256-SHA"
-    db = mysql.connector.connect(host= db_host,
-                        user= shard_user,
-                        passwd= shard_PWD, 
-                        db="meta" # database you're trying to use
+    db = mysql.connector.connect(host = db_host,
+                        user = shard_user,
+                        passwd = shard_PWD, 
+                        db = "meta", # database you're trying to use
+                        use_pure = True,
+                        ssl=ssl_set
                         )
     cur = db.cursor()
     cur.execute(query)
     query_output = cur.fetchall()
     db.close()
+
+    print('query db complete')
 
     return query_output
 
@@ -155,7 +163,12 @@ def credit(uuids, db_host, p801_user, p801_pass, jira_host, jira_user, jira_pass
     Output: none - .txt files will be created for each UUID in the list provided, and saved in the local directory of python file
     """
 
+    print("building text files: credit()")
+
     global region
+
+    # Jira connection
+    DAV = JIRA(jira_host, basic_auth=(jira_user, jira_pass))
 
     query = "SELECT name, uuid, email, business_legal_name, business_address, business_city, business_state, business_country, business_postal_code, tin, CONCAT(first_name,' ',last_name), address, city, state, country, postal_code FROM developer WHERE uuid IN " + uuids
     
@@ -218,23 +231,23 @@ def credit(uuids, db_host, p801_user, p801_pass, jira_host, jira_user, jira_pass
 
         # Output to .txt file and open Jira
         file_name = "text_files/{}.txt".format(developer_list[0])
+        print(" - " + file_name)
         file = open(file_name,'w')
         file.write(developer_str)
         file.write("\n\n")
 
         file.close()
 
-        # Jira
-        DAV = JIRA(jira_host, basic_auth=(jira_user, jira_pass))
-
         # Check for an existing JIRA if it exists
         uuid = str(developer_list[1])
         existing_jira = search_jira(uuid, DAV)
 
         if existing_jira == None:
-            open_jira(developer, file_name, status_string, DAV)
+            print('would create jira - skipping')
+            # open_jira(developer, file_name, status_string, DAV)
         else:
-            update_jira(existing_jira, file_name, DAV)
+            print('would update jira - skipping')
+            # update_jira(existing_jira, file_name, DAV)
 
 
 def ofac(uuids, db_host, p801_user, p801_pass):

@@ -48,23 +48,24 @@ if config.is_file():
     with config.open() as configfile:
         configvalues = yaml.load(configfile, Loader=yaml.FullLoader)
 
-    if 'db' in configvalues:
-        if 'US' in configvalues['db']:
-            values["db"]["US"] = configvalues['db']['US']
-        if 'EU' in configvalues['db']:
-            values["db"]["EU"] = configvalues['db']['EU']
-        if 'LA' in configvalues['db']:
-            values["db"]["LA"] = configvalues['db']['LA']
-    if 'jira' in configvalues:
-        values["jira"] = configvalues["jira"]
+    # if 'db' in configvalues:
+    #     if 'US' in configvalues['db']:
+    #         values["db"]["US"] = configvalues['db']['US']
+    #     if 'EU' in configvalues['db']:
+    #         values["db"]["EU"] = configvalues['db']['EU']
+    #     if 'LA' in configvalues['db']:
+    #         values["db"]["LA"] = configvalues['db']['LA']
+    # if 'jira' in configvalues:
+    #     values["jira"] = configvalues["jira"]
+    values = configvalues
 else:
     print('no config file, using presets')
 
 # Load secret.yaml values - these values are never checked in github and are imported to docker
-secrets = Path('secrets.yaml')
+secrets = Path('/config/secrets.yaml')
 if secrets.is_file():
     with secrets.open() as secretsfile:
-        secretsvalues = yaml.load(secre, Loader=yaml.FullLoader)
+        secretsvalues = yaml.load(secretsfile, Loader=yaml.FullLoader)
 else:
     print('no secrets.yaml file, cannot continue. (refer to secrets.yaml.template for format)')
     secretsvalues = {}
