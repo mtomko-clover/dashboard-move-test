@@ -18,7 +18,8 @@ select count(*)
    and android_version.approval_status in ('APPROVED_PENDING_SIGNING','APPROVED','PUBLISHED');
 
 -- @header Recent Merchants (limit 15)
-select merchant.uuid,
+select ROW_NUMBER(),
+       merchant.uuid,
        merchant.name,
        DATE_FORMAT(merchant_app.created_time, '%Y-%m-%d') as 'installed',
        IF(ABS(merchant_app.created_time - merchant_app.modified_time) > 10, DATE_FORMAT(merchant_app.modified_time, '%Y-%m-%d'), '') as 'modified'
