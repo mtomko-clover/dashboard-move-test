@@ -10,7 +10,7 @@ select count(*) as ''
    and merchant_app.deleted_time is null;
 
 -- @header Approved APK versions
-select count(*)
+select count(*) = 'Approved APK count'
   from meta.android_version
  inner join meta.developer_app 
     on android_version.developer_app_id = developer_app.id
@@ -18,8 +18,7 @@ select count(*)
    and android_version.approval_status in ('APPROVED_PENDING_SIGNING','APPROVED','PUBLISHED');
 
 -- @header Recent Merchants (limit 15)
-select ROW_NUMBER(),
-       merchant.uuid,
+select merchant.uuid,
        merchant.name,
        DATE_FORMAT(merchant_app.created_time, '%Y-%m-%d') as 'installed',
        IF(ABS(merchant_app.created_time - merchant_app.modified_time) > 10, DATE_FORMAT(merchant_app.modified_time, '%Y-%m-%d'), '') as 'modified'
