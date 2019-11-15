@@ -17,6 +17,11 @@ U0516SQ95|default|Tim
 U0DLSV0QY|default|Steve Braun
 U1EJ3REAY|default|Shalini
 
+# Wider Clover
+U0297FJ45|default|John Beatty
+U0297EM21|default|Mark Schulze
+U7C49CJMN|default|Jason
+
 # DevOps
 UGAV4F1L2|default|Dusty
 UK32NP5L2|default|Pete Cleary
@@ -37,6 +42,7 @@ UL9G1CD71|default|Michael Szekley
 ULPRSHEVD|default|Mike Tomko
 ULQ4XHDQE|default|Paul Petyo
 UN0HSV211|default|Lori Heles
+UMJS1FQMQ|default|Lauri Cerneck
 UJQH29PM0|default|Kaily Kessinger
 
 # DevRel SV
