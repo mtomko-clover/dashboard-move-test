@@ -4,6 +4,7 @@ import yaml
 from pathlib import Path
 from DAVlib import *
 from SlackLib import *
+from datetime import date, timedelta
 
 validation = True
 
@@ -31,9 +32,11 @@ if args.region == "ask":
         args.region = 'US'
         print(f"  using {args.region}")
 if args.date == "ask":
-    args.date = input('start date [2019-11-1]: ')
+    yesterday = date.today() - timedelta(days=1)
+    yesterday.strftime('&Y-%m-%d')
+    args.date = input(f'start date [{yesterday}]: ')
     if args.date == '':
-        args.date='2019-11-1'
+        args.date=yesterday
         print(f"  using {args.date}")
 
 print(f"running for {args.region} region from {args.date}")
@@ -125,6 +128,7 @@ if validation:
 
     # call the lib to create jiras and text files
     devs = update_developers_by_date(utc_start_time, db_url, db_user, db_pass, jira_url, jira_user, jira_pass, args.region, dry_run)
-    print(f"{devs} new or updated developers in region {args.region} since {args.date}")
+    print(devs)
+    print(f" * {devs.total} new or updated developers in region {args.region} since {args.date}; {devs.created} jiras filed, {devs.updated} jiras updated, {devs.skipped} unchanged skipped.")
 
-    update_slack(f"DAV script: {devs} new or updated developers in region {args.region} since {args.date}", slack_host, slack_channels)
+    update_slack(f"DAV script: {devs} new or updated submitted 'pending' developers in region {args.region} since {args.date}", slack_host, slack_channels)

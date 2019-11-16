@@ -1,8 +1,12 @@
 from collections import namedtuple
+import re
 import getpass
+import hashlib
 import datetime
+import difflib
 import pymysql
 from dav_jira import *
+
 
 def query_metadb(query, db_host, shard_user, shard_PWD):
     """
@@ -68,11 +72,12 @@ def update_developers_by_date(last_time, db_host, db_user, db_pass, jira_host, j
         # print(str(files).replace('},', '},\n'))
 
         # merge (create/update) Jiras with data from db
-        jira_create_update_with_files(files, jira_host, jira_user, jira_pass, dry_run)
+        created, updated, skipped = jira_create_update_with_files(files, jira_host, jira_user, jira_pass, dry_run)
     else:
+        created, updated, skipped = 0, 0, 0
         print ("No DAV tickets to add.")
     
-    return record_count
+    return namedtuple('Result', ('total', 'created', 'updated', 'skipped'))(record_count, created, updated, skipped)
 
 
 def uuid_tuple_to_string(uuid_tuple):
@@ -141,25 +146,25 @@ def create_text_and_credit_files_from_db(uuids, db_host, db_user, db_pass, regio
         dev = namedtuple('Developer', developer.keys())(*developer.values())
         # print(dev)
 
-        status_string += f"{dev.name}\n"
-        status_string += f"{dev.uuid}\n"
-        status_string += f"{dev.email}\n\n"
-        developer_str += f"{dev.name}\n"
-        developer_str += f"{dev.uuid}\n"
-        developer_str += f"{dev.email}\n\n"
+        status_string += f"{dev.name or '<missing>'}\n"
+        status_string += f"{dev.uuid or '<missing>'}\n"
+        status_string += f"{dev.email or '<missing>'}\n\n"
+        developer_str += f"{dev.name or '<missing>'}\n"
+        developer_str += f"{dev.uuid or '<missing>'}\n"
+        developer_str += f"{dev.email or '<missing>'}\n\n"
         
         # Optional Business sections
         if dev.business_legal_name is not None:
             status_string += "\n\n*Status*\nBusiness\n- {color:red}EIN{color} \n- {color:red}Credit{color}\n- {color:red}OFAC{color}"
             developer_str += "Corporate Information\n"
             developer_str += "---------------------\n"
-            developer_str += f"Business Name: {dev.business_legal_name}\n"
-            developer_str += f"Address: {dev.business_address}\n"
-            developer_str += f"City: {dev.business_city}\n"
-            developer_str += f"State: {dev.business_state}\n"
-            developer_str += f"Country: {dev.business_country}\n"
-            developer_str += f"Postal Code: {dev.business_postal_code}\n"
-            developer_str += f"EIN/Tax ID: {dev.tin}\n\n"
+            developer_str += f"Business Name: {dev.business_legal_name or ''}\n"
+            developer_str += f"Address: {dev.business_address or ''}\n"
+            developer_str += f"City: {dev.business_city or ''}\n"
+            developer_str += f"State: {dev.business_state or ''}\n"
+            developer_str += f"Country: {dev.business_country or ''}\n"
+            developer_str += f"Postal Code: {dev.business_postal_code or ''}\n"
+            developer_str += f"EIN/Tax ID: {dev.tin or ''}\n\n"
 
         # Required Individual sections
         status_string += "\n\n*Status*\nIndividual\n- {color:red}Credit{color} \n- {color:red}OFAC{color}\n"
@@ -168,12 +173,12 @@ def create_text_and_credit_files_from_db(uuids, db_host, db_user, db_pass, regio
         status_string += "\n\n"
         developer_str += "Individual Information\n"
         developer_str += "----------------------\n"
-        developer_str += f"Name: {dev.individual_name}\n"
-        developer_str += f"Address: {dev.address}\n"
-        developer_str += f"City: {dev.city}\n"
-        developer_str += f"State: {dev.state}\n"
-        developer_str += f"Country: {dev.country}\n"
-        developer_str += f"Postal Code: {dev.postal_code}\n\n"
+        developer_str += f"Name: {dev.individual_name or ''}\n"
+        developer_str += f"Address: {dev.address or ''}\n"
+        developer_str += f"City: {dev.city or ''}\n"
+        developer_str += f"State: {dev.state or ''}\n"
+        developer_str += f"Country: {dev.country or ''}\n"
+        developer_str += f"Postal Code: {dev.postal_code or ''}\n\n\n"
 
         # print("== file:")
         # print(developer_str)
@@ -181,22 +186,31 @@ def create_text_and_credit_files_from_db(uuids, db_host, db_user, db_pass, regio
         # print("== jira:")
         # print(status_string)
 
-        # Output to .txt file - refactor question: should this func just return data and let Jira func create files if it needs them?
-        file_name = f"text_files/{dev.name}.txt"
+        filename = f"{dev.name}.txt"
+
+        # Output to .txt file - TODO: refactor/remove
+        # file_name = f"text_files/{filename}"
         # print(" - " + file_name)
-        file = open(file_name,'w')
-        file.write(developer_str)
-        file.write("\n\n")
-        file.close()
+        # file = open(file_name,'w', encoding='utf-8')
+        # file.write(developer_str)
+        # file.close()
 
         title=f"[{region}] {dev.name}  {dev.uuid}"
 
-        credit_files.append({'uuid': dev.uuid, 'title': title, 'file': file_name, 'jira': status_string, 'region': region})
+        credit_files.append({'uuid': dev.uuid, 'title': title, 'filename': filename, 'data': developer_str, 'jira': status_string, 'region': region})
 
     #print('== files:')
     #print(listdir('text_files'))
 
     return credit_files
+
+# change a string (text attachment) to be comparable ignoring whitespace and blank lines
+def CannonicalizeString(string):
+    value = string.strip()
+    value = value.replace('\r','').replace('\n', '; ').replace('\t', '    ')
+    value = re.sub(r' +', ' ', value)
+    value = value.replace(';', '\n')
+    return value
 
 def jira_create_update_with_files(credit_files, jira_host, jira_user, jira_pass, dry_run):
     """
@@ -222,22 +236,61 @@ def jira_create_update_with_files(credit_files, jira_host, jira_user, jira_pass,
         # print(file)
         uuid = file.uuid
         title = file.title
-        file_name = file.file
+        file_data = CannonicalizeString(file.data)
         description = file.jira
         region = file.region
         # print(uuid)
-        # print(file_name)
+        # print(file.filename)
         # print('description', description)
         jira_id = search_jira(uuid, DAV)
 
         if jira_id == None:
             print('  - no jira, CREATE NEW')
-            open_jira(title, description, file_name, DAV, dry_run)
+            open_jira(title, description, file.filename, file.data, DAV, dry_run)
             created += 1
         else:
             print(jira_id)
-            print(f'  - existing jira, UPDATE {jira_id}  {title}')
-            updated += 1
+            print(f'  - existing jira, maybe UPDATE {jira_id}  {title}')
+
+            attachments = get_attachments(jira_id, DAV)
+            dupe = False
+            for attachment in attachments:
+                if attachment.mimeType == 'text/plain':
+                    # print(f'  : attachment {attachment.filename}')
+                    attach = CannonicalizeString(str(attachment.get().decode('utf-8')))
+
+                    if attach == file_data:
+                        # print(' + attachments match')
+                        dupe = True
+                        break
+                    else:
+                        print(' - nonmatching attachment')
+
+                        # print details and diff on cannonicalized attachments - verify good diff or not
+                        prefix = '\n     | '
+                        print(' -- original and contents --\n')
+                        print(prefix + file_data.replace('\n', prefix))
+                        print('\n -- ------------------- --\n')
+                        print(prefix + attach.replace('\n', prefix))
+                        print('\n -- attachment contents --')
+
+                        print('\n -- diff --')
+                        for i,s in enumerate(difflib.ndiff(file_data, attach)):
+                            if s[0]==' ': continue
+                            elif s[0]=='-':
+                                print(u'   Delete "{}" from position {}'.format(s[-1],i))
+                            elif s[0]=='+':
+                                print(u'   Add "{}" to position {}'.format(s[-1],i))    
+                        print('\n -- diff --')
+                        print()   
+            if not dupe:
+                print(' no matching attachment, attaching new data')
+                update_jira(jira_id, file.filename, file.data, DAV, dry_run)
+                updated += 1
+            else:
+                print(' found matching attachment, skipping updating')
+                skipped += 1
+            
 
         # Check for an existing JIRA if it exists
         ### uuid = str(developer_list[1])
@@ -249,5 +302,6 @@ def jira_create_update_with_files(credit_files, jira_host, jira_user, jira_pass,
         ### else:
         ###     print('would update jira - skipping')
         ###     # update_jira(existing_jira, file_name, DAV)
-
+    print()
     print(f'jiras_create_update_with_files complete: {created} created, {updated} updated, {skipped} skipped as already current')
+    return created, updated, skipped
