@@ -3,6 +3,8 @@ import argparse
 import yaml
 from pathlib import Path
 from DAVlib import *
+from SlackLib import *
+from datetime import date, timedelta
 
 validation = True
 
@@ -25,9 +27,17 @@ parser.add_argument("date", nargs='?', default='ask')
 args = parser.parse_args()
 
 if args.region == "ask":
-    args.region = input('region (US, EU, or LA): ').upper()
+    args.region = input('region (US, EU, or LA) [US]: ').upper()
+    if args.region == '':
+        args.region = 'US'
+        print(f"  using {args.region}")
 if args.date == "ask":
-    args.date = input('start date: ')
+    yesterday = date.today() - timedelta(days=1)
+    yesterday.strftime('&Y-%m-%d')
+    args.date = input(f'start date [{yesterday}]: ')
+    if args.date == '':
+        args.date=yesterday
+        print(f"  using {args.date}")
 
 print(f"running for {args.region} region from {args.date}")
 
@@ -47,16 +57,6 @@ config = Path('config.yaml')
 if config.is_file():
     with config.open() as configfile:
         configvalues = yaml.load(configfile, Loader=yaml.FullLoader)
-
-    # if 'db' in configvalues:
-    #     if 'US' in configvalues['db']:
-    #         values["db"]["US"] = configvalues['db']['US']
-    #     if 'EU' in configvalues['db']:
-    #         values["db"]["EU"] = configvalues['db']['EU']
-    #     if 'LA' in configvalues['db']:
-    #         values["db"]["LA"] = configvalues['db']['LA']
-    # if 'jira' in configvalues:
-    #     values["jira"] = configvalues["jira"]
     values = configvalues
 else:
     print('no config file, using presets')
@@ -115,6 +115,11 @@ if validation:
     jira_pass = secretsvalues["jira_password"]
     utc_start_time = args.date
 
+    slack_host=values["slack"]
+    slack_channels=values["slack-channels"]
+
+    dry_run = False
+
     ##
     ## Validation Done
     ##
@@ -122,4 +127,8 @@ if validation:
     print(f"using database {values['db'][args.region]}")
 
     # call the lib to create jiras and text files
-    auto_credit(utc_start_time, db_url, db_user, db_pass, jira_url, jira_user, jira_pass)
+    devs = update_developers_by_date(utc_start_time, db_url, db_user, db_pass, jira_url, jira_user, jira_pass, args.region, dry_run)
+    print(devs)
+    print(f" * {devs.total} new or updated developers in region {args.region} since {args.date}; {devs.created} jiras filed, {devs.updated} jiras updated, {devs.skipped} unchanged skipped.")
+
+    update_slack(f"DAV script: {devs} new or updated submitted 'pending' developers in region {args.region} since {args.date}", slack_host, slack_channels)
