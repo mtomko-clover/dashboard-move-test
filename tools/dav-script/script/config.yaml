@@ -1,5 +1,8 @@
 jira: https://jira.dev.clover.com
+slack: https://clover.com
+slack-channels: devrel; devrel-bots
 db:
   US: db-usprod-shard0.corp.clover.com
   EU: db-euprod-shard0.corp.clover.com
   LA: db-laprod-shard0.corp.clover.com
+  SB: sandbox.dev.clover.com

@@ -17,6 +17,11 @@ U0516SQ95|default|Tim
 U0DLSV0QY|default|Steve Braun
 U1EJ3REAY|default|Shalini
 
+# Wider Clover
+U0297FJ45|default|John Beatty
+U0297EM21|default|Mark Schulze
+U7C49CJMN|default|Jason
+
 # DevOps
 UGAV4F1L2|default|Dusty
 UK32NP5L2|default|Pete Cleary
@@ -36,6 +41,9 @@ ULAJH6XA7|default|Sonny Espinoza
 UL9G1CD71|default|Michael Szekley
 ULPRSHEVD|default|Mike Tomko
 ULQ4XHDQE|default|Paul Petyo
+UN0HSV211|default|Lori Heles
+UMJS1FQMQ|default|Lauri Cerneck
+UJQH29PM0|default|Kaily Kessinger
 
 # DevRel SV
 U0297EKMB|default|Arjan
@@ -46,4 +54,9 @@ UKM2GLCJY|default|Ricardo Ventura
 U7S2XFLBV|default|Chetan
 UJFFDAQ85|default|Emily Lucek
 ULMKF350U|default|Sreya
+UH28J6BTM|default|Frank Faustino
+UKMGKKXNU|default|Nicholas Ho
+UN2537X6Z|default|Aditya Vikram Singh
+UMSQ5BWS0|default|Maricris Bonzo
+UJ304EQ77|default|Nazanin
 
