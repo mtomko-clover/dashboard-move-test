@@ -1,0 +1,125 @@
+@import '~antd/dist/antd.css';
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+    --color-darkest: #343F3E;
+    --color-dark: #505A5B;
+    --color-medium: #8F91A2;
+    --color-light: #6ADA99;
+    --color-lightest: #DCEDFF;
+    --color-success: #57C13F;
+    --color-failure: #C70909;
+}
+
+input{
+    border-radius: 5px;
+}
+
+button{
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.App {
+}
+
+.App-header {
+}
+
+.center-text{
+    text-align: center;
+}
+
+.margin-above{
+    margin-top: 20px;
+}
+
+.margin-below{
+    margin-bottom: 20px;
+}
+
+.margin-after{
+    margin-right: 10px;
+}
+
+.margin-before{
+    margin-left: 10px;
+}
+
+.padding-before{
+    padding:10px;
+}
+
+.no-margin{
+    margin: 0px;
+}
+
+.filler{
+    flex-grow: 1;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.row-end{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.csv-reader-input{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+}
+
+.white-text{
+    color:white;
+}
+
+.merchant-results{
+    padding-right: 20px;
+}
+
+.login-dropdown{
+    width: 300px;
+    font-size: 20px;
+    height: 50px;
+    padding-left:10px;
+    margin-bottom: 15px;
+}
+
+.login-dropdown-element{
+    font-size: 20px;
+    height: 50px;
+    text-align: center;
+    vertical-align: center;
+    padding-top: 15px;
+}
+
+.blue-background{
+    background: var(--color-light);
+    color: white;
+}
+
+.success-icon {
+    color: var(--color-success);
+}
+
+.failure-icon {
+    color: var(--color-failure);
+}
+
+
