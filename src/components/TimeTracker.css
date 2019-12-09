@@ -1,0 +1,15 @@
+.timer-title{
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 30px;
+}
+
+.stopwatch-timer{
+    font-size: 24px;
+    margin-right: 30px;
+    width: 80px;
+}
+
+.filler{
+    flex-grow: 1;
+}
