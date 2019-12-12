@@ -1,3 +1,3 @@
 export enum ROLES {
-  TSE,TAM, BA
+  TSE,TAM, SE
 }

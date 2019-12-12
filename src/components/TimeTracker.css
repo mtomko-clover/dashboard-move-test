@@ -1,11 +1,11 @@
 .timer-title{
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     margin-right: 30px;
 }
 
 .stopwatch-timer{
-    font-size: 24px;
+    font-size: 20px;
     margin-right: 30px;
     width: 80px;
 }
@@ -13,3 +13,33 @@
 .filler{
     flex-grow: 1;
 }
+
+.add-task{
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.dropdown{
+    font-size: 16px;
+}
+
+.category{
+    white-space: nowrap;
+    margin-right: 50px;
+    font-size: 18px;
+}
+
+.render-time{
+    font-size: 18px;
+}
+
+.display-title{
+    font-size: 24px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    border-bottom: 1px solid black;
+}
+
+

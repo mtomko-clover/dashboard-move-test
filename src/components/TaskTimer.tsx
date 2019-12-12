@@ -1,17 +1,20 @@
 import * as React from "react";
 import {ChangeEvent, Component, KeyboardEvent} from "react";
-import {Dropdown, Menu, Button, Icon, Select} from "antd";
+import {Dropdown, Menu, Button, Icon, notification} from "antd";
 import styled from "styled-components";
 import './TimeTracker.css';
 import {ROLES} from "../models/RoleCategories";
-import {BA_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
+import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
 import {ClickParam} from "antd/es/menu";
+import CategoryDropdown from "./CategoryDropdown";
 
 const ms = require('pretty-ms');
 
 interface TimerProps {
-    setDuration:(name: string, duration: number, category: any) => any;
-    role: ROLES
+    setDuration:(name: string, duration: number, category: any, key: any) => any;
+    role: ROLES,
+    index: any,
+    deleteTask:(key: any) => void
 }
 
 interface State {
@@ -34,7 +37,7 @@ const TaskTimerContainer = styled.div`
 const NameInput = styled.input`
     padding: 10px;
     font-size: 14px;
-    margin-right: 20px;
+    margin-right: 50px;
 `;
 
 const TimerButton = styled.button`
@@ -48,18 +51,18 @@ const FilterDiv = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;  
-  margin-right: 20px;
+  margin-right: 50px;
 `;
 
 const FilterLabel = styled.label`
-  font-weight: bold;
   white-space: nowrap;
   margin-right: 10px;
+  font-size: 18px;
 `;
 
-let timer: any = null;
 
 export class TaskTimer extends Component<TimerProps, State> {
+    timer: any;
     constructor(props: any){
         super(props);
         this.getCategories = this.getCategories.bind(this);
@@ -81,17 +84,32 @@ export class TaskTimer extends Component<TimerProps, State> {
         this.handleNameEntry = this.handleNameEntry.bind(this);
         this.renderCategories = this.renderCategories.bind(this);
         this.setCategory = this.setCategory.bind(this);
+        this.deleteTask = this.deleteTask.bind(this);
+        this.setCategory = this.setCategory.bind(this);
     }
 
     startTimer(): void {
-        this.setState({
-            isOn: true,
-            time: this.state.time,
-            start: Date.now() - this.state.time
+        if(this.state.name.length > 0) {
+            this.setState({
+                isOn: true,
+                time: this.state.time,
+                start: Date.now() - this.state.time
+            });
+            this.timer = setInterval(() => this.setState({
+                time: Date.now() - this.state.start
+            }), 1);
+        } else {
+            this.showEnterName();
+        }
+    }
+
+    showEnterName(){
+        notification.open({
+            message: "Attention",
+            description: "Please Enter a Task Name",
+            icon: <i className="fas fa-exclamation-triangle"/>,
+            placement: "topLeft"
         });
-        timer = setInterval(() => this.setState({
-            time: Date.now() - this.state.start
-        }), 1);
     }
 
     editName(){
@@ -100,12 +118,16 @@ export class TaskTimer extends Component<TimerProps, State> {
 
     stopTimer() {
         this.setState({isOn: false});
-        clearInterval(timer);
+        clearInterval(this.timer);
     }
 
     saveTime() {
-        this.props.setDuration(this.state.name, this.state.time, this.state.category);
+        this.props.setDuration(this.state.name, this.state.time, this.state.category, this.props.index);
         this.setState({time: 0, isOn: false});
+    }
+
+    deleteTask() {
+        this.props.deleteTask(this.props.index);
     }
 
     handleNameChange(e: ChangeEvent<any>): void {
@@ -120,8 +142,8 @@ export class TaskTimer extends Component<TimerProps, State> {
 
     getCategories(): any{
         let categories: any = null;
-        if(this.props.role === ROLES.BA){
-            categories = BA_Categories;
+        if(this.props.role === ROLES.SE){
+            categories = SE_Categories;
         } else if (this.props.role === ROLES.TAM){
             categories = TAM_Categories;
         } else if (this.props.role === ROLES.TSE){
@@ -134,7 +156,7 @@ export class TaskTimer extends Component<TimerProps, State> {
         const categories: any = this.getCategories();
         const elements = [];
         for (let category in categories) {
-            const menuItem = <Menu.Item key={category}
+            const menuItem = <Menu.Item key={category} className="dropdown"
                                         onClick={this.setCategory}>{category}</Menu.Item>;
             elements.push(menuItem);
         }
@@ -143,16 +165,16 @@ export class TaskTimer extends Component<TimerProps, State> {
 
     renderCategories(): React.ReactElement {
         const categories = this.categoriesDropdown();
-            return (
-                <FilterDiv>
-                    {this.renderLabel("Category: ")}
-                    <Dropdown className="margin-start" overlay={categories}>
-                        <Button>
-                            {this.state.category} <Icon type="down"/>
-                        </Button>
-                    </Dropdown>
-                </FilterDiv>
-            )
+        return (
+            <FilterDiv>
+                {this.renderLabel("Category: ")}
+                <Dropdown className="margin-start" overlay={categories}>
+                    <Button size="large">
+                        {this.state.category} <Icon type="down"/>
+                    </Button>
+                </Dropdown>
+            </FilterDiv>
+        )
     }
 
 
@@ -160,9 +182,7 @@ export class TaskTimer extends Component<TimerProps, State> {
         return <FilterLabel>{text}</FilterLabel>
     }
 
-    setCategory = (e: ClickParam) => {
-        const category = e.key;
-        // @ts-ignore
+    setCategory = (category: any) => {
         this.setState({
             category: category
         });
@@ -186,12 +206,14 @@ export class TaskTimer extends Component<TimerProps, State> {
             <TaskTimerContainer>
                 {this.state.editing && <NameInput placeholder="Enter Task Name" type="text" value={this.state.name} onChange={this.handleNameChange} onKeyPress={this.handleNameEntry}/>}
                 {!this.state.editing && <div onClick={this.editName} className="timer-title">{this.state.name}</div>}
+                <CategoryDropdown role={this.props.role} setCategory={this.setCategory}/>
                 <div className="stopwatch-timer">{ms(this.state.time, {colonNotation: true})}</div>
-                {this.renderCategories()}
                 {start}
                 {resume}
                 {stop}
                 {reset}
+                <div className="filler"/>
+                <div onClick={this.deleteTask}><i className="far fa-trash-alt fa-2x"/></div>
             </TaskTimerContainer>
         )
     }

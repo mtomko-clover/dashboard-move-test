@@ -1,5 +1,18 @@
 @import '~antd/dist/antd.css';
 
+:root {
+  --color-darkest: #343F3E;
+  --color-dark: #505A5B;
+  --color-medium: #8F91A2;
+  --color-light: #6ADA99;
+  --color-lightest: #DCEDFF;
+  --color-success: #57C13F;
+  --color-failure: #C70909;
+}
+
+#root{
+  height: 100%;
+}
 
 body {
   margin: 0;
@@ -8,6 +21,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
 }
 
 code {
@@ -24,6 +38,14 @@ code {
   flex-direction: row;
 }
 
+.center-align{
+  align-items: center;
+}
+
 .ant-btn {
     border-radius: 0;
+}
+
+.green {
+  color: var(--color-success);
 }

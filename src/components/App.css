@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  height: 100%;
 }
 
 .App-logo {
@@ -21,9 +21,26 @@
   color: #09d3ac;
 }
 
+.header{
+  background: #2FCB71;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.header_title{
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+  margin-right: 30px;
+}
+
 .time_tracking{
   text-decoration: none;
-  border: 1px solid black;
-  border-radius: 5px;
   padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
 }
