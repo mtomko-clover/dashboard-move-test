@@ -1,12 +1,12 @@
-import * as React from "react";
-import {ChangeEvent, Component, KeyboardEvent} from "react";
 import {Dropdown, Menu, Button, Icon, notification} from "antd";
+import React, {ChangeEvent, Component, KeyboardEvent} from "react";
 import styled from "styled-components";
+
 import './TimeTracker.css';
+import CategoryDropdown from "./CategoryDropdown";
 import {ROLES} from "../models/RoleCategories";
 import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
-import {ClickParam} from "antd/es/menu";
-import CategoryDropdown from "./CategoryDropdown";
+// import {ClickParam} from "antd/es/menu";
 
 const ms = require('pretty-ms');
 

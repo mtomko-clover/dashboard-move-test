@@ -1,13 +1,14 @@
-import {Component} from "react";
-import * as React from "react";
-import './TimeTracker.css';
-import styled from "styled-components";
-import Task from "../models/Task";
-import {ROLES} from "../models/RoleCategories";
-import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
 import {Button, Dropdown, Icon, Menu} from "antd";
 import {ClickParam} from "antd/es/menu";
-const ms = require('pretty-ms');
+import React, {Component} from "react";
+import styled from "styled-components";
+
+import './TimeTracker.css';
+import {ROLES} from "../models/RoleCategories";
+// import Task from "../models/Task";
+import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
+
+// const ms = require('pretty-ms');
 
 interface CategoryProps {
     role: ROLES

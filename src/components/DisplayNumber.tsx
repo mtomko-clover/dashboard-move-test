@@ -1,7 +1,7 @@
-import * as React from "react";
-import {Component} from "react";
+import React, {Component} from "react";
 import styled from "styled-components";
-import PieChart from "./PieChart";
+
+// import PieChart from "./PieChart";
 
 
 interface DisplayProps {
@@ -46,9 +46,9 @@ const Number = styled.div`
 
 export default class DisplayNumber extends Component<DisplayProps, any> {
 
-    constructor(props: any) {
-        super(props);
-    }
+    // constructor(props: any) {
+    //     super(props);
+    // }
 
     render(): React.ReactNode {
         return (

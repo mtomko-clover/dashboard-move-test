@@ -1,9 +1,9 @@
-import * as React from "react";
-import {Component} from "react";
+// import axios from "axios";
+import React, {Component} from "react";
 import styled from "styled-components";
+
 import PieChart from "./PieChart";
 import DisplayNumber from "./DisplayNumber";
-import axios from "axios";
 
 
 interface State {
@@ -68,55 +68,55 @@ export default class TeamDashboard extends Component<DashboardProps, State> {
     //TODO rename
     runJoelsScript = async (appId: string) => {
         console.log("running Joels Script");
-        const response = await axios({
-            method: 'post',
-            url: `/app_by_id`,
-            headers: { 'Content-Type': 'application/json' },
-            data: {
-                app_id : appId
-            },
-        });
+        // const response = await axios({
+        //     method: "post",
+        //     url: `/app_by_id`,
+        //     headers: { "Content-Type": "application/json" },
+        //     data: {
+        //         app_id : appId
+        //     },
+        // });
 
-        let singleResponse = {
-            "status": "success",
-            "page": 1,
-            "page-size": 32767,
-            "sort": [
-                "name"
-            ],
-            "count": 1,
-            "data": [
-                {
-                    "key": "0YYDJSPRXWRSM",
-                    "uuid": "0YYDJSPRXWRSM",
-                    "name": "Ticket Sales and Redemptions ",
-                    "distribution": "PUBLIC",
-                    "video_url": null,
-                    "activation_url": null,
-                    "package_name": "net.tickett.ticket_sales_and_redemptions",
-                    "site_url": "https://tsr.tickett.net/web",
-                    "application_id": null,
-                    "filename_icon": "Adnroidtsrimg100x100.png_en_US_5117047644941971054.png",
-                    "privacy_policy": "https://www.tickett.net/privacy-policy/",
-                    "eula": "https://tickett.net/downloads/TicketSalesRedemptions_Terms.html",
-                    "approval_status_modified_time": "2019-08-29",
-                    "first_submitted_time": "2019-08-29",
-                    "created_time": "2019-08-29",
-                    "dev_uuid": "QWH5AMNE9KXQ2",
-                    "dev_name": "Tickett Enterprises Ltd",
-                    "dev_approval_status": "APPROVED",
-                    "jira": "DAA-725",
-                    "owner": "ricardo.ventura",
-                    "jira_status": "Open",
-                    "jira_dlv_logo": null,
-                    "jira_dlv_logo_status": null,
-                    "jira_dlv_privacy": null,
-                    "jira_dlv_privacy_status": null,
-                    "jira_dlv_eula": null,
-                    "jira_dlv_eula_status": null
-                }
-            ]
-        }
+        // let singleResponse = {
+        //     "status": "success",
+        //     "page": 1,
+        //     "page-size": 32767,
+        //     "sort": [
+        //         "name"
+        //     ],
+        //     "count": 1,
+        //     "data": [
+        //         {
+        //             "key": "0YYDJSPRXWRSM",
+        //             "uuid": "0YYDJSPRXWRSM",
+        //             "name": "Ticket Sales and Redemptions ",
+        //             "distribution": "PUBLIC",
+        //             "video_url": null,
+        //             "activation_url": null,
+        //             "package_name": "net.tickett.ticket_sales_and_redemptions",
+        //             "site_url": "https://tsr.tickett.net/web",
+        //             "application_id": null,
+        //             "filename_icon": "Adnroidtsrimg100x100.png_en_US_5117047644941971054.png",
+        //             "privacy_policy": "https://www.tickett.net/privacy-policy/",
+        //             "eula": "https://tickett.net/downloads/TicketSalesRedemptions_Terms.html",
+        //             "approval_status_modified_time": "2019-08-29",
+        //             "first_submitted_time": "2019-08-29",
+        //             "created_time": "2019-08-29",
+        //             "dev_uuid": "QWH5AMNE9KXQ2",
+        //             "dev_name": "Tickett Enterprises Ltd",
+        //             "dev_approval_status": "APPROVED",
+        //             "jira": "DAA-725",
+        //             "owner": "ricardo.ventura",
+        //             "jira_status": "Open",
+        //             "jira_dlv_logo": null,
+        //             "jira_dlv_logo_status": null,
+        //             "jira_dlv_privacy": null,
+        //             "jira_dlv_privacy_status": null,
+        //             "jira_dlv_eula": null,
+        //             "jira_dlv_eula_status": null
+        //         }
+        //     ]
+        // }
     };
 
     //TODO rename
