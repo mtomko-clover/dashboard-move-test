@@ -49,3 +49,20 @@ code {
 .green {
   color: var(--color-success);
 }
+
+.login-dropdown{
+  width: 300px;
+  font-size: 20px;
+  height: 50px;
+  padding-left:10px;
+  margin-bottom: 15px;
+}
+
+.blue-background{
+  background: var(--color-light);
+  color: white;
+}
+
+.heyo{
+    margin-bottom: 50px;
+}
