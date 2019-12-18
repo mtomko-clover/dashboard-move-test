@@ -1,14 +1,15 @@
-import * as React from "react";
-import {Component, ReactElement} from "react";
+import React, {Component, ReactElement} from "react";
 import {TaskTimer} from "./TaskTimer";
-import Task from "../models/Task";
-import CompletedTask from "./CompletedTask";
 import styled from "styled-components";
-import {ROLES} from "../models/RoleCategories";
-import './TimeTracker.css';
+
+import "./TimeTracker.css";
+import CompletedTask from "./CompletedTask";
 import EditTask from "./EditTask";
-const uuid  = require('react-uuid');
-const ms = require('pretty-ms');
+import Task from "../models/Task";
+import {ROLES} from "../models/RoleCategories";
+
+const uuid  = require("react-uuid");
+// const ms = require("pretty-ms");
 
 interface State {
     phoneCallDuration: number

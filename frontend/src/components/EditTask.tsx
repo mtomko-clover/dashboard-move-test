@@ -1,12 +1,13 @@
-import {ChangeEvent, Component} from "react";
-import * as React from "react";
-import './TimeTracker.css';
 import Modal from "antd/lib/modal";
-import Task from "../models/Task";
+import React, {ChangeEvent, Component} from "react";
 import styled from "styled-components";
-import {ROLES} from "../models/RoleCategories";
+
+import './TimeTracker.css';
 import CategoryDropdown from "./CategoryDropdown";
-const ms = require('pretty-ms');
+import {ROLES} from "../models/RoleCategories";
+import Task from "../models/Task";
+
+// const ms = require('pretty-ms');
 
 interface TaskProps {
     showModal: boolean

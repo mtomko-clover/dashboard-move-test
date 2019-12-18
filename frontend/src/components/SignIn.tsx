@@ -1,13 +1,12 @@
-import * as React from "react";
-import {ChangeEvent, Component} from "react";
 import {Dropdown, Icon, Menu} from "antd";
 import {ClickParam} from "antd/es/menu";
+import React, {ChangeEvent, Component} from "react";
+import { RouteComponentProps } from "react-router-dom";
 import styled from "styled-components";
-import {Environment, Environments} from "../utils/Enviornments";
-import createHistory from "history/createBrowserHistory"
-import {CookiesUtil} from "../utils/CookiesUtil";
-import {Cookies} from "../utils/Cookies";
 
+import {Environment, Environments} from "../utils/Environments";
+import {Cookies} from "../utils/Cookies";
+import {CookiesUtil} from "../utils/CookiesUtil";
 
 interface State {
     username: string,
@@ -15,16 +14,16 @@ interface State {
     environment: string
 }
 
-interface SignInProps {
+interface SignInProps extends RouteComponentProps {
     parentHandleSignIn:(username: string, password: string, env: string) => any;
 }
 
-const Row = styled.div`
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-`;
+// const Row = styled.div`
+//     padding: 10px;
+//     display: flex;
+//     flex-direction: row;
+//     align-items: center;
+// `;
 
 const Login = styled.div`
     width: 300px;
@@ -52,10 +51,9 @@ export class SignIn extends Component<SignInProps, State> {
             password: "",
             environment: "dev1"
         };
-        const history = createHistory();
         let signedIn = CookiesUtil.getCookie(Cookies.SESSION_ID);
-        if(signedIn){
-            history.push("/TimeTracker");
+        if (signedIn) {
+            this.props.history.push("/TimeTracker");
         }
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -63,17 +61,17 @@ export class SignIn extends Component<SignInProps, State> {
     }
 
     handleUsernameChange(e: ChangeEvent<any>): void {
-        this.setState( {username: e.target.value});
+        this.setState({username: e.target.value});
     }
 
     handlePasswordChange(e: ChangeEvent<any>): void {
-        this.setState( {password: e.target.value});
+        this.setState({password: e.target.value});
     }
 
     handleLogin(e: ChangeEvent<any>): void {
         console.log("handleLogin Clicked");
         this.props.parentHandleSignIn(this.state.username, this.state.password, this.state.environment).then((data: any) => {
-                // console.log('logged in');
+            // console.log("logged in");
                 // console.log(data);
             }
         );
