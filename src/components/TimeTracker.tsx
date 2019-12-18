@@ -24,6 +24,7 @@ const TimeTrackingContainer = styled.div`
     width: 80%;
     margin: auto;
     background: #f5f3f2;
+    margin-top: 50px;
 `;
 
 const AddTaskButton = styled.button`
