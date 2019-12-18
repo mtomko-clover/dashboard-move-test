@@ -74,9 +74,9 @@ export class App extends Component<any, State> {
         return (
             <div className="App">
                 <Header logout={this.logout} sessionId={this.state.sessionId} />
-                    <Route path="/" exact render={(props) => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
-                    <Route path="/Home" component={TeamDashboard}/>
-                    <Route path="/TimeTracker" component={TimeTracker} />
+                <Route path="/" exact render={(props) => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
+                <Route path="/Home" component={TeamDashboard}/>
+                <Route path="/TimeTracker" component={TimeTracker} />
             </div>
         );
     }
