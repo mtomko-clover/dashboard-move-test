@@ -3,14 +3,16 @@ import axios from "axios";
 import Cookie from "js-cookie";
 import React, {Component} from "react";
 import {Route, withRouter} from "react-router-dom";
+import {ThemeProvider} from 'styled-components'
+import Header from "../Header";
+import SignIn from "../SignIn";
+import TeamDashboard from "../TeamDashboard";
+import TimeTracker from "../TimeTracker";
 
-import "./App.css";
-import * as Constants from "../utils/Constants";
-import {Environment, Environments} from "../utils/Environments";
-import Header from "./Header";
-import {SignIn} from "./SignIn";
-import TeamDashboard from "./TeamDashboard";
-import TimeTracker from "./TimeTracker";
+import {GlobalStyles, theme} from '../../styles'
+import {AppContainer} from './App.styles'
+import * as Constants from "../../utils/Constants";
+import {Environment, Environments} from "../../utils/Environments";
 
 
 interface State {
@@ -72,12 +74,15 @@ export class App extends Component<any, State> {
 
     render(): React.ReactNode {
         return (
-            <div className="App">
-                <Header logout={this.logout} sessionId={this.state.sessionId} />
-                <Route path="/" exact render={(props) => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
-                <Route path="/Home" component={TeamDashboard}/>
-                <Route path="/TimeTracker" component={TimeTracker} />
-            </div>
+            <ThemeProvider theme={theme}>
+                <AppContainer>
+                    <GlobalStyles />
+                    <Header logout={this.logout} sessionId={this.state.sessionId} />
+                    <Route path="/" exact render={(props) => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
+                    <Route path="/Home" component={TeamDashboard}/>
+                    <Route path="/TimeTracker" component={TimeTracker} />
+                </AppContainer>
+            </ThemeProvider>
         );
     }
 

@@ -42,7 +42,7 @@ const LoginInput = styled.input`
 `;
 
 
-export class SignIn extends Component<SignInProps, State> {
+export default class SignIn extends Component<SignInProps, State> {
 
     constructor(props: any) {
         super(props);
