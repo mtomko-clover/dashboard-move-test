@@ -12,10 +12,9 @@ interface ChartProps {
 
 const Chart = styled.div`
   margin: 20px;
-  height: 500px;
-  width: 500px;
-  border: 1px solid black;
-  border-radius: 5px;
+  height: 300px;
+  width: 300px;
+  background: white;
   display: flex;
   align-items: center;
 `;
@@ -53,6 +52,7 @@ export default class PieChart extends Component<ChartProps, any> {
 
         let legend = new am4charts.Legend();
         legend.align = "center";
+        legend.position = "right";
         legend.contentAlign = "center";
         legend.horizontalCenter = "middle";
         pieSeries.legendSettings.valueText = "{value}";
