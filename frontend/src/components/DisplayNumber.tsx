@@ -13,10 +13,11 @@ interface DisplayProps {
 const DisplayContainer = styled.div`
     display: flex;
     flex-direction: column;
-    border: solid 1px grey;
+    border: none;
     border-radius: 5px;
     align-items: center;
     margin: 10px 30px;
+    box-shadow: ${({ theme }) => theme.boxShadow}
 `;
 
 const Title = styled.div`

@@ -10,10 +10,6 @@
     width: 80px;
 }
 
-.filler{
-    flex-grow: 1;
-}
-
 .add-task{
     padding: 10px;
     display: flex;
