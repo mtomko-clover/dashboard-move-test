@@ -18,7 +18,6 @@ const AppOverviewContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: left;
-    width: 30%;
     background: white;
 `;
 
