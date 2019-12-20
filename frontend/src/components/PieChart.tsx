@@ -33,7 +33,7 @@ export default class PieChart extends Component<ChartProps, any> {
         // chart.background.fill = am4core.color("#514663");
         chart.paddingLeft = 0;
         chart.paddingRight = 0;
-        chart.scale = .9;
+        chart.scale = .7;
         chart.align = "center";
 
 // Add and configure Series
