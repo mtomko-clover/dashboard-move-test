@@ -5,10 +5,7 @@ import styled from "styled-components";
 
 import './TimeTracker.css';
 import {ROLES} from "../models/RoleCategories";
-// import Task from "../models/Task";
 import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
-
-// const ms = require('pretty-ms');
 
 interface CategoryProps {
     role: ROLES

@@ -6,13 +6,12 @@ import {Route, withRouter} from "react-router-dom";
 import {ThemeProvider} from 'styled-components'
 import Header from "../Header";
 import SignIn from "../SignIn";
-import TeamDashboard from "../TeamDashboard";
-import TimeTracker from "../TimeTracker";
-
 import {GlobalStyles, theme} from '../../styles'
 import {AppContainer} from './App.styles'
-import * as Constants from "../../utils/Constants";
 import {Environment, Environments} from "../../utils/Environments";
+import * as Constants from "../../utils/Constants";
+import TeamDashboard from "../TeamDashboard";
+import TimeTracker from "../TimeTracker";
 
 
 interface State {

@@ -17,6 +17,7 @@ const DisplayContainer = styled.div`
     border-radius: 5px;
     align-items: center;
     margin: 10px 30px;
+    background: white;
     box-shadow: ${({ theme }) => theme.boxShadow}
 `;
 
@@ -25,8 +26,7 @@ const Title = styled.div`
     font-size: 20px;
     font-style: bold;
     text-align: center;
-    background: #197278;
-    color: white;
+    color: rgba(0, 0, 0, 0.45);
     width: 100%;
     height: 70px;
     display: flex;
