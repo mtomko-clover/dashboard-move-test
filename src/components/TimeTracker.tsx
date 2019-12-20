@@ -16,7 +16,7 @@ interface State {
     tasks: Map<string, ReactElement>,
     role: ROLES,
     showEditPopup: boolean,
-    taskToEdit: Task
+    taskToEdit: Task,
 }
 
 const TimeTrackingContainer = styled.div`

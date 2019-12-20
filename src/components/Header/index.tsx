@@ -28,6 +28,6 @@ const Header = ({ logout, sessionId }: HeaderProps) => (
       </LogoutButton>
     )}
   </HeaderContainer>
-)
+);
 
 export default Header
