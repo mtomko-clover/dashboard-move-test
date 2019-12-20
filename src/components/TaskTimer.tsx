@@ -24,7 +24,8 @@ interface State {
     name: string,
     duration: number,
     editing: boolean,
-    category: any
+    category: any,
+    subcategory?: any
 }
 
 const TaskTimerContainer = styled.div`
@@ -183,6 +184,7 @@ export class TaskTimer extends Component<TimerProps, State> {
     }
 
     setCategory = (category: any) => {
+
         this.setState({
             category: category
         });
