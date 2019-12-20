@@ -1,7 +1,6 @@
 import React, {Component, ReactElement} from "react";
 import {TaskTimer} from "./TaskTimer";
 import styled from "styled-components";
-
 import "./TimeTracker.css";
 import CompletedTask from "./CompletedTask";
 import EditTask from "./EditTask";
