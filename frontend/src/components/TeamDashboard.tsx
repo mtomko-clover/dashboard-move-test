@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import styled from "styled-components";
 
 import PieChart from "./PieChart";
-import DisplayNumber from "./DisplayNumber";
+import {Card} from "./Card";
 import {AppOverview} from "./AppOverview";
 
 
@@ -17,6 +17,7 @@ const Row = styled.div`
     padding: 10px;
     display: flex;
     flex-direction: row;
+    justify-content: center;
 `;
 
 const Column = styled.div`
@@ -227,18 +228,24 @@ export default class TeamDashboard extends Component<DashboardProps, State> {
         // this.runJoelsScript("0YYDJSPRXWRSM");
         console.log("singleResponse", singleResponse);
         console.log("singleResponse.data", singleResponse.data);
-}
+    }
 
     render(): React.ReactNode {
+        const fakeStat = {
+            title: "from last week",
+            type: "percentageUp",
+            datum: 12
+        }
+
         return (
             <Column>
                 <Row>
-                    <DisplayNumber title="Apps Approved" subtitle="(this week)" number={7} />
-                    <DisplayNumber title="Apps in Queue" number={199}/>
-                    <DisplayNumber title="Developers Approved" subtitle="(this week)" number={8} />
-                    <DisplayNumber title="New Developers Submitted" subtitle="(this week)" number={17}/>
-                    <DisplayNumber title="Community Questions Raised" subtitle="(this week)" number={32} />
-                    <DisplayNumber title="Community Answers Accepted" subtitle="(this week)" number={9}/>
+                    <Card title="Apps Approved" datum={12} stat={fakeStat} />
+                    <Card title="Apps Submitted" datum={199}/>
+                    <Card title="Devs Approved" datum={8} />
+                    <Card title="Devs Submitted" datum={17}/>
+                    <Card title="Community Questions" datum={32} />
+                    <Card title="Community Answers Accepted" datum={9} />
                 </Row>
                 <ChartContainer>
                     <h2>Apps</h2>
