@@ -13,7 +13,7 @@ const green = "#00A686"
 
 export const theme = {  
   // * Misc. -----------------------------------
-  boxShadow: "0 2px 3px 0 rgba(0, 0, 0, 0.10)",
+  boxShadow: "0 2.5px 2px 0 rgba(0, 0, 0, 0.10)",
   line: lightGray,
   listHeaderBackground: alabaster,
 
