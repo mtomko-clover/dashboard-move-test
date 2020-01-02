@@ -2,10 +2,10 @@ import axios from "axios";
 import React, {Component} from "react";
 
 
+import {AppApprovalsChart, JiraDLVChart} from "../Charts";
 import {AppOverview} from "../AppOverview";
 import {BigCard} from "../BigCard";
 import {Card} from "../Card";
-import PieChart from "../PieChart";
 
 import {Column, Row} from "./Overview.styles";
 
@@ -222,9 +222,14 @@ export default class Overview extends Component<DashboardProps, State> {
                 </Row>
                 <Row>
                     <BigCard title="App Approvals">
-                        <PieChart data={this.getAppMetrics()} category={"title"} value={"amount"}/>
+                        <AppApprovalsChart data={this.getAppMetrics()} category={"title"} value={"amount"}/>
                     </BigCard>
                     <BigCard title="Testing" />
+                </Row>
+                <Row>
+                    <BigCard title="Created vs Resolved JIRA DLV Issues">
+                        <JiraDLVChart />
+                    </BigCard>
                 </Row>
                 <AppOverview appJson={singleResponse.data[0]}/>
             </Column>
