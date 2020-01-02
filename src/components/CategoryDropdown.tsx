@@ -4,12 +4,12 @@ import React, {Component} from "react";
 import styled from "styled-components";
 
 import './TimeTracker.css';
-import {ROLES} from "../models/RoleCategories";
-import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
 
 interface CategoryProps {
-    role: ROLES
     setCategory:(category: any) => any
+    categories: any
+    label: string
+    category?: any
 }
 
 interface State {
@@ -35,29 +35,17 @@ export default class CategoryDropdown extends Component<CategoryProps, any> {
 
     constructor(props: any) {
         super(props);
-        this.getCategories = this.getCategories.bind(this);
         this.categoriesDropdown = this.categoriesDropdown.bind(this);
         this.renderLabel = this.renderLabel.bind(this);
         this.setCategory = this.setCategory.bind(this);
         this.state = {
-            category: this.getCategories()['OTHER']
+            category: this.props.category !== undefined ?  this.props.category : "Select"
         };
     }
 
-    getCategories(): any{
-        let categories: any = null;
-        if(this.props.role === ROLES.SE){
-            categories = SE_Categories;
-        } else if (this.props.role === ROLES.TAM){
-            categories = TAM_Categories;
-        } else if (this.props.role === ROLES.TSE){
-            categories = TSE_Categories;
-        }
-        return categories;
-    }
 
     categoriesDropdown(): React.ReactElement {
-        const categories: any = this.getCategories();
+        const categories: any = this.props.categories;
         const elements = [];
         for (let category in categories) {
             const menuItem = <Menu.Item key={category} className="dropdown"
@@ -69,7 +57,7 @@ export default class CategoryDropdown extends Component<CategoryProps, any> {
 
 
     renderLabel(text: string): React.ReactElement {
-        return <FilterLabel>{text}</FilterLabel>
+        return <FilterLabel>{text}:</FilterLabel>
     }
 
     setCategory = (e: ClickParam) => {
@@ -85,7 +73,7 @@ export default class CategoryDropdown extends Component<CategoryProps, any> {
         const categories = this.categoriesDropdown();
         return (
             <FilterDiv>
-                {this.renderLabel("Category: ")}
+                {this.renderLabel(this.props.label)}
                 <Dropdown className="margin-start" overlay={categories}>
                     <Button size="large">
                         {this.state.category} <Icon type="down"/>
