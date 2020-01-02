@@ -1,10 +1,13 @@
 import axios from "axios";
 import React, {Component} from "react";
-import styled from "styled-components";
 
-import PieChart from "./PieChart";
-import {Card} from "./Card";
-import {AppOverview} from "./AppOverview";
+
+import {AppOverview} from "../AppOverview";
+import {BigCard} from "../BigCard";
+import {Card} from "../Card";
+import PieChart from "../PieChart";
+
+import {Column, Row} from "./Overview.styles";
 
 
 interface State {
@@ -12,27 +15,6 @@ interface State {
 
 interface DashboardProps {
 }
-
-const Row = styled.div`
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-`;
-
-const Column = styled.div`
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-`;
-
-const ChartContainer = styled.div`
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 650px;
-`;
 
 const singleResponse = {
     "status": "success",
@@ -174,18 +156,9 @@ const multipleResponses = {
     ]
 };
 
-export default class TeamDashboard extends Component<DashboardProps, State> {
-
-    constructor(props: any) {
-        super(props);
-        this.state = {
-        };
-
-        this.runJoelsScript = this.runJoelsScript.bind(this);
-    }
+export default class Overview extends Component<DashboardProps, State> {
 
     getAppMetrics(): any {
-
         let appData = [ {
             "title": "Approved",
             "amount": 7
@@ -196,7 +169,7 @@ export default class TeamDashboard extends Component<DashboardProps, State> {
             "title": "Awaiting Approval",
             "amount": 199
         }, {
-            "title": "In Progress this Week",
+            "title": "In Progress",
             "amount": 28
         }, {
             "title": "Submitted",
@@ -245,12 +218,14 @@ export default class TeamDashboard extends Component<DashboardProps, State> {
                     <Card title="Devs Approved" datum={8} />
                     <Card title="Devs Submitted" datum={17}/>
                     <Card title="Community Questions" datum={32} />
-                    <Card title="Community Answers Accepted" datum={9} />
+                    <Card title="Community Answers" datum={9} />
                 </Row>
-                <ChartContainer>
-                    <h2>Apps</h2>
-                    <PieChart data={this.getAppMetrics()} category={"title"} value={"amount"}/>
-                </ChartContainer>
+                <Row>
+                    <BigCard title="App Approvals">
+                        <PieChart data={this.getAppMetrics()} category={"title"} value={"amount"}/>
+                    </BigCard>
+                    <BigCard title="Testing" />
+                </Row>
                 <AppOverview appJson={singleResponse.data[0]}/>
             </Column>
         )
