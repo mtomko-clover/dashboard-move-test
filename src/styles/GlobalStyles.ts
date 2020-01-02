@@ -15,16 +15,17 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   html, body {
-    overflow: hidden;
     height: 100vh;
   }
 
   html {
+    overflow: hidden;
     background: #F0F2F5;
     box-sizing: border-box;
   }
 
   body {
+    overflow: auto;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
