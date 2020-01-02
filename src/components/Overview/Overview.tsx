@@ -14,6 +14,27 @@ interface State {
 interface DashboardProps {
 }
 
+const Row = styled.div`
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+`;
+
+const Column = styled.div`
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+`;
+
+const ChartContainer = styled.div`
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 650px;
+`;
+
 const singleResponse = {
     "status": "success",
     "page": 1,
