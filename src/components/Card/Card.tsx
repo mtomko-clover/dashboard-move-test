@@ -22,12 +22,12 @@ interface DisplayProps {
 }
 
 const Card = ({ datum, stat, title }: DisplayProps) => {
-const renderDatum = (stat: any) => <>
-    {stat && stat.type === "percentageUp" ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-    <StatDatum>
-        {stat && stat.datum}
-    </StatDatum>
-</>; 
+    const renderDatum = (stat: any) => <>
+        {stat && stat.type === "percentageUp" ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+        <StatDatum>
+            {stat && stat.datum}
+        </StatDatum>
+    </>; 
 
     return (
         <CardContainer>

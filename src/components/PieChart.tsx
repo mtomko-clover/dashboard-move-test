@@ -11,12 +11,11 @@ interface ChartProps {
 }
 
 const Chart = styled.div`
-  margin: 20px;
-  height: 300px;
-  width: 300px;
-  background: white;
-  display: flex;
-  align-items: center;
+    display: flex;
+    margin: 20px;
+    width: 100%;
+    height: 100%;
+    align-items: center;
 `;
 
 export default class PieChart extends Component<ChartProps, any> {
@@ -33,7 +32,7 @@ export default class PieChart extends Component<ChartProps, any> {
         // chart.background.fill = am4core.color("#514663");
         chart.paddingLeft = 0;
         chart.paddingRight = 0;
-        chart.scale = .7;
+        chart.scale = 1;
         chart.align = "center";
 
 // Add and configure Series
