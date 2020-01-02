@@ -6,12 +6,13 @@ import './TimeTracker.css';
 import CategoryDropdown from "./CategoryDropdown";
 import {ROLES} from "../models/RoleCategories";
 import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
+import {APP_APPROVAL_SUBCATEGORIES} from "../models/SubCategories";
 // import {ClickParam} from "antd/es/menu";
 
 const ms = require('pretty-ms');
 
 interface TimerProps {
-    setDuration:(name: string, duration: number, category: any, key: any) => any;
+    setTask:(name: string, duration: number, category: any, key: any, subcategory?: any) => any;
     role: ROLES,
     index: any,
     deleteTask:(key: any) => void
@@ -67,7 +68,6 @@ export class TaskTimer extends Component<TimerProps, State> {
     constructor(props: any){
         super(props);
         this.getCategories = this.getCategories.bind(this);
-        console.log("categories", this.getCategories());
         this.state = {
             time: 0,
             isOn: false,
@@ -87,6 +87,7 @@ export class TaskTimer extends Component<TimerProps, State> {
         this.setCategory = this.setCategory.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
         this.setCategory = this.setCategory.bind(this);
+        this.setSubCategory = this.setSubCategory.bind(this);
     }
 
     startTimer(): void {
@@ -123,7 +124,7 @@ export class TaskTimer extends Component<TimerProps, State> {
     }
 
     saveTime() {
-        this.props.setDuration(this.state.name, this.state.time, this.state.category, this.props.index);
+        this.props.setTask(this.state.name, this.state.time, this.state.category, this.props.index, this.state.subcategory);
         this.setState({time: 0, isOn: false});
     }
 
@@ -139,18 +140,6 @@ export class TaskTimer extends Component<TimerProps, State> {
         if(e.key === "Enter"){
             this.setState({editing: false});
         }
-    }
-
-    getCategories(): any{
-        let categories: any = null;
-        if(this.props.role === ROLES.SE){
-            categories = SE_Categories;
-        } else if (this.props.role === ROLES.TAM){
-            categories = TAM_Categories;
-        } else if (this.props.role === ROLES.TSE){
-            categories = TSE_Categories;
-        }
-        return categories;
     }
 
     categoriesDropdown(): React.ReactElement {
@@ -184,11 +173,38 @@ export class TaskTimer extends Component<TimerProps, State> {
     }
 
     setCategory = (category: any) => {
-
+        const subCategory = this.getSubCategory(category);
+        console.log("subCategory", subCategory);
         this.setState({
-            category: category
+            category: category,
+            subcategory: subCategory
         });
     };
+
+    setSubCategory(subCategory: any) {
+        this.setState({ subcategory : subCategory });
+    }
+
+    getCategories(): any{
+        let categories: any = null;
+        if(this.props.role === ROLES.SE){
+            categories = SE_Categories;
+        } else if (this.props.role === ROLES.TAM){
+            categories = TAM_Categories;
+        } else if (this.props.role === ROLES.TSE){
+            categories = TSE_Categories;
+        }
+        // console.log("getCategories", categories);
+        return categories;
+    }
+
+    getSubCategory(category: any): any {
+        let subCategories = null;
+        if(category === "APP_APPROVALS"){
+            subCategories = APP_APPROVAL_SUBCATEGORIES;
+        }
+        return subCategories;
+    }
 
     render(): React.ReactNode {
         let start = (this.state.time === 0) ?
@@ -208,7 +224,8 @@ export class TaskTimer extends Component<TimerProps, State> {
             <TaskTimerContainer>
                 {this.state.editing && <NameInput placeholder="Enter Task Name" type="text" value={this.state.name} onChange={this.handleNameChange} onKeyPress={this.handleNameEntry}/>}
                 {!this.state.editing && <div onClick={this.editName} className="timer-title">{this.state.name}</div>}
-                <CategoryDropdown role={this.props.role} setCategory={this.setCategory}/>
+                <CategoryDropdown categories={this.getCategories()} setCategory={this.setCategory} label="Category"/>
+                {this.state.subcategory != null && <CategoryDropdown setCategory={this.setSubCategory} categories={this.state.subcategory} label="App Approval Step"/>}
                 <div className="stopwatch-timer">{ms(this.state.time, {colonNotation: true})}</div>
                 {start}
                 {resume}

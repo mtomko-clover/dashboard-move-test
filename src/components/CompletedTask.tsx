@@ -36,14 +36,16 @@ export default class CompletedTask extends Component<TaskProps, any> {
 
     render(): React.ReactNode {
         let duration = this.props.task.duration;
+        let subcategory = this.props.task.subcategory !== null;
         return (
             <CompletedTaskContainer>
                 <div className="row center-align filler" onClick={this.editTask}>
-                <i className="far fa-check-circle green fa-2x margin-after"/>
-                <div className="timer-title">{this.props.task.name}</div>
-                <div className="category">Category: {this.props.task.category}</div>
-                <div className="render-time"><i className="far fa-clock margin-after"/>{ms(duration, {verbose: true})}</div>
-                <div className="filler"/>
+                    <i className="far fa-check-circle green fa-2x margin-after"/>
+                    <div className="timer-title">{this.props.task.name}</div>
+                    <div className="category">Category: {this.props.task.category}</div>
+                    { subcategory && <div className="category">Subcategory: {this.props.task.subcategory}</div> }
+                    <div className="render-time"><i className="far fa-clock margin-after"/>{ms(duration, {verbose: true})}</div>
+                    <div className="filler"/>
                 </div>
                 <div onClick={this.deleteTask}><i className="far fa-trash-alt fa-2x"/></div>
             </CompletedTaskContainer>

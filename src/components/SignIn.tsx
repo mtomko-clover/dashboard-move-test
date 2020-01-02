@@ -69,7 +69,6 @@ export default class SignIn extends Component<SignInProps, State> {
     }
 
     handleLogin(e: ChangeEvent<any>): void {
-        console.log("handleLogin Clicked");
         this.props.parentHandleSignIn(this.state.username, this.state.password, this.state.environment).then((data: any) => {
             // console.log("logged in");
                 // console.log(data);

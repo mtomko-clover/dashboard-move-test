@@ -33,7 +33,6 @@ export default class DataRow extends Component<ChartProps, any> {
 
     constructor(props: any) {
         super(props);
-        console.log(this.props);
     }
 
 

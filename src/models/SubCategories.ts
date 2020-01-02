@@ -1,4 +1,4 @@
-export enum TAM_APP_APPROVAL {
+export enum APP_APPROVAL_SUBCATEGORIES {
     DEVELOPER_SUBMISSION = "Developer Submits Application",
     PERMISSIONS_REVIEW = "Permissions and Justifications Review",
     BEGIN_FUNCTIONAL_REVIEW = "Begin Functional Review",
