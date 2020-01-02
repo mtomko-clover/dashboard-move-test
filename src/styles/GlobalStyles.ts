@@ -10,6 +10,8 @@ export const GlobalStyles = createGlobalStyle`
     font-size: 16px;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    word-spacing: -5px;
+    letter-spacing: 0;
   }
 
   html, body {
@@ -27,5 +29,10 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  // hides amcharts logo from charts
+  g[aria-labelledby$="-title"] {
+    visibility: hidden;
   }
 `
