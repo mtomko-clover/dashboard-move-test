@@ -37,7 +37,7 @@ export default class TimeTracker extends Component<any, State> {
 
     constructor(props: any) {
         super(props);
-        this.setDuration = this.setDuration.bind(this);
+        this.setTask = this.setTask.bind(this);
         this.renderCompletedTasks = this.renderCompletedTasks.bind(this);
         this.addNewTask = this.addNewTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
@@ -47,7 +47,7 @@ export default class TimeTracker extends Component<any, State> {
         this.updateTask = this.updateTask.bind(this);
         let first_uuid = uuid();
         let map = new Map<string, ReactElement>();
-        map.set(first_uuid, <TaskTimer key={first_uuid} index={first_uuid} setDuration={this.setDuration} deleteTask={this.deleteTask} role={ROLES.TAM}/>);
+        map.set(first_uuid, <TaskTimer key={first_uuid} index={first_uuid} setTask={this.setTask} deleteTask={this.deleteTask} role={ROLES.TAM}/>);
         this.state = {
             phoneCallDuration: 0,
             completedTasks: new Map<string, Task>(),
@@ -59,18 +59,24 @@ export default class TimeTracker extends Component<any, State> {
 
     }
 
-    setDuration(name: string, duration: number, category: any, key: string){
-        let task = new Task(name, duration, category, key);
+    setTask(name: string, duration: number, category: any, key: string, subCategory?: any){
+        let task = new Task(name, duration, category, key, subCategory);
         let tasks = this.state.completedTasks;
         tasks.set(key, task);
         this.setState({ phoneCallDuration: duration, completedTasks: tasks});
         this.deleteTask(key.toString());
+        if(this.state.tasks.size < 1){
+            this.addNewTask();
+        }
     }
 
     deleteTask(key: any){
         let tasks = this.state.tasks;
         tasks.delete(key);
         this.setState({tasks: tasks});
+        if(this.state.tasks.size < 1){
+            this.addNewTask();
+        }
     }
 
     deleteCompletedTask(key: any){
@@ -89,10 +95,9 @@ export default class TimeTracker extends Component<any, State> {
     }
 
     addNewTask(): void {
-        console.log("add New Task Called");
         let tasks = this.state.tasks;
         let new_uuid = uuid();
-        tasks.set(new_uuid, <TaskTimer key={new_uuid} index={new_uuid} setDuration={this.setDuration} deleteTask={this.deleteTask} role={this.state.role}/>);
+        tasks.set(new_uuid, <TaskTimer key={new_uuid} index={new_uuid} setTask={this.setTask} deleteTask={this.deleteTask} role={this.state.role}/>);
         this.setState({tasks: tasks});
     }
 

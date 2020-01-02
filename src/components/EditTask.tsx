@@ -6,6 +6,8 @@ import './TimeTracker.css';
 import CategoryDropdown from "./CategoryDropdown";
 import {ROLES} from "../models/RoleCategories";
 import Task from "../models/Task";
+import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
+import {APP_APPROVAL_SUBCATEGORIES} from "../models/SubCategories";
 
 // const ms = require('pretty-ms');
 
@@ -24,7 +26,8 @@ interface State {
     category: any,
     hours: number,
     minutes: number,
-    seconds: number
+    seconds: number,
+    subcategory?: any
 }
 
 const EditRow = styled.div`
@@ -78,6 +81,7 @@ export default class EditTask extends Component<TaskProps, State> {
         this.updateSeconds = this.updateSeconds.bind(this);
         this.calculateNewDuration = this.calculateNewDuration.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.getCategories = this.getCategories.bind(this);
         this.state = {
             visible: this.props.showModal,
             name: this.props.task.name,
@@ -85,9 +89,9 @@ export default class EditTask extends Component<TaskProps, State> {
             category: this.props.task.category,
             hours: this.getHours(this.props.task.duration),
             minutes: this.getMinutes(this.props.task.duration),
-            seconds: this.getSeconds(this.props.task.duration)
+            seconds: this.getSeconds(this.props.task.duration),
+            subcategory : this.getSubCategory(this.props.task.category),
         };
-        console.log("initial Task", this.props.task);
     }
 
     handleOk(): void {
@@ -106,11 +110,21 @@ export default class EditTask extends Component<TaskProps, State> {
         this.setState( {name: e.target.value});
     }
 
-    setCategory(category: any){
+    setCategory = (category: any) => {
+        const subCategory = this.getSubCategory(category);
+        console.log("subCategory", subCategory);
         this.setState({
-            category: category
+            category: category,
+            subcategory: subCategory
+        });
+    };
+
+    setSubcategory(subCategory: any){
+        this.setState({
+            subcategory: subCategory
         });
     }
+
 
     getHours(duration: number): number {
         return Math.trunc(((duration / (1000*60*60)) % 24));
@@ -145,13 +159,34 @@ export default class EditTask extends Component<TaskProps, State> {
 
     updateSeconds(e: ChangeEvent<any>): void {
         let seconds = e.target.value;
-        console.log(seconds);
-        this.setState({seconds:e.target.value});
+        this.setState ({seconds:e.target.value});
         this.calculateNewDuration(this.state.hours, this.state.minutes, seconds);
+    }
+
+    getCategories(): any{
+        let categories: any = null;
+        if(this.props.role === ROLES.SE){
+            categories = SE_Categories;
+        } else if (this.props.role === ROLES.TAM){
+            categories = TAM_Categories;
+        } else if (this.props.role === ROLES.TSE){
+            categories = TSE_Categories;
+        }
+        return categories;
+    }
+
+    getSubCategory(category: any): any {
+        let subCategories = null;
+        if(category === "APP_APPROVALS"){
+            subCategories = APP_APPROVAL_SUBCATEGORIES;
+        }
+        return subCategories;
     }
 
 
     render(): React.ReactNode {
+        let subCategory = this.props.task.subcategory !== null;
+        console.log("render", subCategory);
         return (
             <Modal
                 title="Edit Task"
@@ -174,8 +209,12 @@ export default class EditTask extends Component<TaskProps, State> {
                     <NumberInput className="margin-after" type="number" value={this.state.seconds} onChange={this.updateSeconds}/>
                 </EditRow>
                 <EditRow>
-                    <CategoryDropdown role={this.props.role} setCategory={this.setCategory}/>
+                    <CategoryDropdown categories={this.getCategories()} setCategory={this.setCategory} category={this.props.task.category} label="Category"/>
                 </EditRow>
+                {subCategory &&
+                <EditRow>
+                    <CategoryDropdown categories={this.state.subcategory} setCategory={this.setSubcategory} category={this.props.task.subcategory} label="Subcategory"/>
+                </EditRow>}
             </Modal>
         )
     }
