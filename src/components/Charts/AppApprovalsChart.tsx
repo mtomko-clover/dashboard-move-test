@@ -1,8 +1,9 @@
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
-import {Component} from "react";
-import * as React from "react";
-import styled from "styled-components";
+import React, {Component} from "react";
+
+import {Chart} from "./Charts.styles";
+
 
 interface ChartProps {
     data: any;
@@ -10,15 +11,7 @@ interface ChartProps {
     value: string,
 }
 
-const Chart = styled.div`
-    display: flex;
-    margin: 20px;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-`;
-
-export default class PieChart extends Component<ChartProps, any> {
+export default class AppApprovalsChart extends Component<ChartProps, any> {
 
     constructor(props: any) {
         super(props);
@@ -27,7 +20,7 @@ export default class PieChart extends Component<ChartProps, any> {
     }
 
     createChart(){
-        let chart = am4core.create("chartdiv", am4charts.PieChart);
+        let chart = am4core.create("chart-appapprovals", am4charts.PieChart);
         chart.data = this.props.data;
         // chart.background.fill = am4core.color("#514663");
         chart.paddingLeft = 0;
@@ -64,7 +57,7 @@ export default class PieChart extends Component<ChartProps, any> {
 
     render(): React.ReactNode {
         return (
-            <Chart id="chartdiv" />
+            <Chart id="chart-appapprovals" />
         )
     }
 }
