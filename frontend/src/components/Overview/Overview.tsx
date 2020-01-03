@@ -1,14 +1,12 @@
 // import axios from "axios";
 import React, {Component} from "react";
 
-
 import {AppApprovalsChart, JiraDLVChart} from "../Charts";
 import {AppOverview} from "../AppOverview";
 import {BigCard} from "../BigCard";
-import {Card} from "../Card";
+import WeeklyStats from "./WeeklyStats";
 
 import {Column, Row} from "./Overview.styles";
-
 
 interface State {
 }
@@ -204,22 +202,9 @@ export default class Overview extends Component<DashboardProps, State> {
     }
 
     render(): React.ReactNode {
-        const fakeStat = {
-            title: "from last week",
-            type: "percentageUp",
-            datum: 12
-        };
-
         return (
             <Column>
-                <Row>
-                    <Card title="Apps Approved" datum={12} stat={fakeStat} />
-                    <Card title="Apps Submitted" datum={199}/>
-                    <Card title="Devs Approved" datum={8} />
-                    <Card title="Devs Submitted" datum={17}/>
-                    <Card title="Community Questions" datum={32} />
-                    <Card title="Community Answers" datum={9} />
-                </Row>
+                <WeeklyStats />
                 <Row>
                     <BigCard title="News" />
                     <BigCard title="Recent Activity" />
