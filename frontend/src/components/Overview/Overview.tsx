@@ -208,7 +208,7 @@ export default class Overview extends Component<DashboardProps, State> {
             title: "from last week",
             type: "percentageUp",
             datum: 12
-        }
+        };
 
         return (
             <Column>
@@ -221,18 +221,22 @@ export default class Overview extends Component<DashboardProps, State> {
                     <Card title="Community Answers" datum={9} />
                 </Row>
                 <Row>
+                    <BigCard title="News" />
+                    <BigCard title="Recent Activity" />
+                </Row>
+                <Row>
+                    <BigCard title="Recently Updated Apps" />
                     <BigCard title="App Approvals">
                         <AppApprovalsChart data={this.getAppMetrics()} category={"title"} value={"amount"}/>
                     </BigCard>
-                    <BigCard title="Testing" />
                 </Row>
                 <Row>
-                    <BigCard title="Created vs Resolved JIRA DLV Issues">
+                    <BigCard title="JIRA DLV Issues: Created vs Resolved">
                         <JiraDLVChart />
                     </BigCard>
                 </Row>
                 <AppOverview appJson={singleResponse.data[0]}/>
             </Column>
-        )
+        );
     }
 }
