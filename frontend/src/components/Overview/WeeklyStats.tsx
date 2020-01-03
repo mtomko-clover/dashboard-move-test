@@ -1,6 +1,7 @@
 import {DatePicker} from "antd";
+import axios from "axios";
 import moment from "moment";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import {Card} from "../Card";
 import {Header, Row} from "./Overview.styles";
@@ -14,11 +15,54 @@ const fakeStat = {
 	datum: 12
 };
 
-const WeeklyStats = () => {
-	const dateFormat = "YYYY-MM-DD";
-	const [date, setDate] = useState(moment());
+const { REACT_APP_ANSWERHUB_URL, REACT_APP_ANSWERHUB_TOKEN } = process.env;
+const community = axios.create({
+  baseURL: REACT_APP_ANSWERHUB_URL,
+  headers: {
+    Authorization: `Basic ${REACT_APP_ANSWERHUB_TOKEN}`
+  }
+});
 
-	console.log(moment(date).format(dateFormat));
+type AnswerHubState = {
+	AcceptNodeAction?: number
+	AnswerAction?: number
+	AskAction?: number
+	CloseNodeAction?: number
+	CommentAction?: number
+	DeleteAction?: number
+}
+
+type AnswerHubResponse = {
+	type: string
+	verb?: string
+	count?: number
+}
+
+/**
+ * TO-DO: JIRA stats
+ * Apps: project=DAA AND summary !~ QA
+ * Devs: project=DAV
+ */
+const WeeklyStats = () => {
+	const dateFormat = "MM/DD/YY";
+	const [date, setDate] = useState(moment());
+	const initialCommunityState = { AskAction: null, AnswerAction: null, CommentAction: null, AcceptNodeAction: null, DeleteAction: null, CloseNodeAction: null };
+	const [communityData, setCommunityData] = useState(initialCommunityState);
+
+	useEffect(() => {
+		const startDate = moment(date).startOf("week").format(dateFormat);
+		const endDate = moment(date).endOf("week").format(dateFormat);
+
+		community
+			.get(`/analytics/content.json?fromDate=${startDate}&toDate=${endDate}`)
+			.then(({ data }) => {
+				const state = data.actionsAnalytics.actions.reduce((acc: AnswerHubState, { count, type }: AnswerHubResponse) => ({ ...acc, [type]: count }), {})
+				setCommunityData(state)
+			})
+			.catch(e => console.log(e))
+	}, [date])
+
+	console.log(communityData);
 	return (
 		<>
 			<Header>
@@ -30,12 +74,12 @@ const WeeklyStats = () => {
 				/>
 			</Header>
 			<Row>
-				<Card title="Apps Approved" datum={12} stat={fakeStat} />
-				<Card title="Apps Submitted" datum={199}/>
-				<Card title="Devs Approved" datum={8} />
-				<Card title="Devs Submitted" datum={17}/>
-				<Card title="Community Questions" datum={32} />
-				<Card title="Community Answers" datum={9} />
+				<Card title="Apps Approved" datum={0} stat={fakeStat} />
+				<Card title="Apps Submitted" datum={0}/>
+				<Card title="Devs Approved" datum={0} />
+				<Card title="Devs Submitted" datum={0}/>
+				<Card title="Community Questions" datum={communityData.AskAction} />
+				<Card title="Community Answers" datum={communityData.AcceptNodeAction} />
 			</Row>
 		</>
 	);

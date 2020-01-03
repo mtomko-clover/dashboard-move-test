@@ -13,7 +13,7 @@ import {
 
 interface DisplayProps {
     title: string;
-    datum: number;
+    datum: number | null;
     stat?: {
         title: string;
         type: string;
