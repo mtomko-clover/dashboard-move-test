@@ -10,7 +10,7 @@ export const CardContainer = styled.div`
     border: none;
     border-radius: 5px;
     background: white;
-    box-shadow: ${({ theme }) => theme.boxShadow};
+    box-shadow: ${({ theme }): string => theme.boxShadow};
 `;
 
 export const CardTitle = styled.h2`
@@ -41,7 +41,7 @@ export const Stat = styled.div`
     border-top: 1px solid #E8E8E8;
 
     svg {
-        color: ${({ theme }) => theme.highlightLight};
+        color: ${({ theme }): string => theme.highlightLight};
         height: 12px;
         padding: 0 0 2px 0;
     }

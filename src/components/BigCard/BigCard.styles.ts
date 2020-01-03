@@ -11,7 +11,7 @@ export const Container = styled.div`
     border: none;
     border-radius: 5px;
     background: white;
-    box-shadow: ${({ theme }) => theme.boxShadow};
+    box-shadow: ${({ theme }): string => theme.boxShadow};
 `;
 
 export const Header = styled.div`

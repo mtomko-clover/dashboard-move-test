@@ -7,20 +7,13 @@ import {Chart} from "./Charts.styles";
 
 interface ChartProps {
     data: any;
-    category: string,
-    value: string,
+    category: string;
+    value: string;
 }
 
 export default class AppApprovalsChart extends Component<ChartProps, any> {
-
-    constructor(props: any) {
-        super(props);
-        this.state = {
-        };
-    }
-
-    createChart(){
-        let chart = am4core.create("chart-appapprovals", am4charts.PieChart);
+    createChart(): void {
+        const chart = am4core.create("chart-appapprovals", am4charts.PieChart);
         chart.data = this.props.data;
         // chart.background.fill = am4core.color("#514663");
         chart.paddingLeft = 0;
@@ -29,7 +22,7 @@ export default class AppApprovalsChart extends Component<ChartProps, any> {
         chart.align = "center";
 
 // Add and configure Series
-        let pieSeries = chart.series.push(new am4charts.PieSeries());
+        const pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = this.props.value;
         pieSeries.dataFields.category = this.props.category;
         pieSeries.labels.template.disabled = true;
@@ -42,7 +35,7 @@ export default class AppApprovalsChart extends Component<ChartProps, any> {
         pieSeries.hiddenState.properties.endAngle = -90;
         pieSeries.hiddenState.properties.startAngle = -90;
 
-        let legend = new am4charts.Legend();
+        const legend = new am4charts.Legend();
         legend.align = "center";
         legend.position = "right";
         legend.contentAlign = "center";
