@@ -1,7 +1,7 @@
 import {notification} from "antd";
 import axios from "axios";
 import Cookie from "js-cookie";
-import React, {Component} from "react";
+import React, {Component, ReactElement} from "react";
 import {Route, withRouter} from "react-router-dom";
 import {ThemeProvider} from "styled-components";
 
@@ -12,13 +12,13 @@ import TimeTracker from "../TimeTracker";
 
 import * as Constants from "../../utils/Constants";
 import {Environment, Environments} from "../../utils/Environments";
-import {AppContainer} from './App.styles'
-import {GlobalStyles, theme} from '../../styles'
+import {AppContainer} from "./App.styles";
+import {GlobalStyles, theme} from "../../styles";
 
 
 interface State {
-    sessionId: any
-    environment: Environment
+    sessionId: any;
+    environment: Environment;
 }
 
 export class App extends Component<any, State> {
@@ -64,7 +64,7 @@ export class App extends Component<any, State> {
         return response.data.sessionId;
     };
 
-    showError(title: string, body: string) : void {
+    showError(title: string, body: string): void {
         notification.open({
             message: title,
             description: body,
@@ -79,7 +79,7 @@ export class App extends Component<any, State> {
                 <AppContainer>
                     <GlobalStyles />
                     <Header logout={this.logout} sessionId={this.state.sessionId} />
-                    <Route path="/" exact render={(props) => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
+                    <Route path="/" exact render={(props): ReactElement => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
                     <Route path="/Home" component={Overview}/>
                     <Route path="/TimeTracker" component={TimeTracker} />
                 </AppContainer>

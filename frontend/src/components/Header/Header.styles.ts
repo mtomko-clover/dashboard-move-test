@@ -6,7 +6,7 @@ export const HeaderContainer = styled.header`
 	align-items: center;
 	padding: 20px;
 	width: 100%;
-	background: ${({ theme }) => theme.headerBackground};
+	background: ${({ theme }): string => theme.headerBackground};
 
 	a.header_title {
 		font-size: 20px;

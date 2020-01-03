@@ -1,7 +1,7 @@
 import {DatePicker} from "antd";
 import axios from "axios";
 import moment from "moment";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, ReactElement} from "react";
 
 import {Card} from "../Card";
 import {Header, Row} from "./Overview.styles";
@@ -24,18 +24,18 @@ const community = axios.create({
 });
 
 type AnswerHubState = {
-	AcceptNodeAction?: number
-	AnswerAction?: number
-	AskAction?: number
-	CloseNodeAction?: number
-	CommentAction?: number
-	DeleteAction?: number
+	AcceptNodeAction?: number;
+	AnswerAction?: number;
+	AskAction?: number;
+	CloseNodeAction?: number;
+	CommentAction?: number;
+	DeleteAction?: number;
 }
 
 type AnswerHubResponse = {
-	type: string
-	verb?: string
-	count?: number
+	type: string;
+	verb?: string;
+	count?: number;
 }
 
 /**
@@ -43,7 +43,7 @@ type AnswerHubResponse = {
  * Apps: project=DAA AND summary !~ QA
  * Devs: project=DAV
  */
-const WeeklyStats = () => {
+const WeeklyStats = (): ReactElement => {
 	const dateFormat = "MM/DD/YY";
 	const [date, setDate] = useState(moment());
 	const initialCommunityState = { AskAction: null, AnswerAction: null, CommentAction: null, AcceptNodeAction: null, DeleteAction: null, CloseNodeAction: null };
@@ -69,7 +69,7 @@ const WeeklyStats = () => {
 				<h2>Weekly Digest</h2>
 				<WeekPicker
 					format={dateFormat + " — wo"}
-					onChange={d => setDate(d || moment())}
+					onChange={(d): void => setDate(d || moment())}
 					value={moment(date, dateFormat)}
 				/>
 			</Header>

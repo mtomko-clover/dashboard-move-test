@@ -157,7 +157,7 @@ const singleResponse = {
 export default class Overview extends Component<DashboardProps, State> {
 
     getAppMetrics(): any {
-        let appData = [ {
+        const appData = [ {
             "title": "Approved",
             "amount": 7
         }, {
@@ -178,7 +178,7 @@ export default class Overview extends Component<DashboardProps, State> {
     }
 
     //TODO rename
-    runJoelsScript = async (appId: string) => {
+    runJoelsScript = async (appId: string): Promise<void> => {
         console.log("running Joels Script");
         // const response = await axios({
         //     method: "post",
@@ -191,7 +191,7 @@ export default class Overview extends Component<DashboardProps, State> {
     };
 
     //TODO rename
-    returnMultiple() : any {
+    returnMultiple(): string {
         return "response";
     }
 

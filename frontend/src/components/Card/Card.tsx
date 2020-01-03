@@ -1,5 +1,5 @@
 import {Icon} from "antd";
-import React from "react";
+import React, {ReactElement} from "react";
 
 import {
     CardContainer,
@@ -11,18 +11,20 @@ import {
 } from "./Card.styles";
 
 
+type Stat = {
+    title: string;
+    type: string;
+    datum: number;
+}
+
 interface DisplayProps {
     title: string;
     datum: number | null;
-    stat?: {
-        title: string;
-        type: string;
-        datum: number;
-    }
+    stat?: Stat;
 }
 
-const Card = ({ datum, stat, title }: DisplayProps) => {
-    const renderDatum = (stat: any) => <>
+const Card = ({ datum, stat, title }: DisplayProps): ReactElement => {
+    const renderDatum = (stat?: Stat): ReactElement => <>
         {stat && stat.type === "percentageUp" ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
         <StatDatum>
             {stat && stat.datum}
