@@ -1,7 +1,7 @@
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 
 import {Chart} from "./Charts.styles";
 
@@ -18,7 +18,6 @@ const JiraDLVChart: React.FC = () => {
     let open = 100;
     let close = 250;
 
-    // const endDate = new Date()
     for (let i = 1; i < 366; i++) {
       open += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 4);
       close = Math.round(open + Math.random() * 5 + i / 5 - (Math.random() < 0.5 ? 1 : -1) * Math.random() * 2);
