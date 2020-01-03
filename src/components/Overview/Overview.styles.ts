@@ -11,5 +11,6 @@ export const Column = styled.div`
     display: flex;
     flex-direction: column;
     padding: 10px;
+    width: 100%;
     max-width: 1400px;
 `;
