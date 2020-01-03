@@ -36,7 +36,7 @@ export class AppOverview extends Component<AppOverviewProps, State> {
     render(): React.ReactNode {
         return (
             <AppOverviewContainer>
-                <h2>[<a href={this.state.appUrl} target="_blank">{this.props.appJson.uuid}</a>] {this.props.appJson.name}</h2>
+                <h2>[<a href={this.state.appUrl} rel="noopener noreferrer" target="_blank">{this.props.appJson.uuid}</a>] {this.props.appJson.name}</h2>
                 <DataRow label="Developer Name" value={this.props.appJson.dev_name} link={false}/>
                 <DataRow label="Developer Id" value={this.state.developerUrl} link={true} linkText={this.props.appJson.dev_uuid}/>
                 <DataRow label="Developer Approval Status" value={this.props.appJson.dev_approval_status} link={false}/>

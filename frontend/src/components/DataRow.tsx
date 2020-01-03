@@ -31,9 +31,9 @@ const Value = styled.div`
 
 export default class DataRow extends Component<ChartProps, any> {
 
-    constructor(props: any) {
-        super(props);
-    }
+    // constructor(props: any) {
+    //     super(props);
+    // }
 
 
     render(): React.ReactNode {
@@ -42,7 +42,7 @@ export default class DataRow extends Component<ChartProps, any> {
                 <Label>{this.props.label}:</Label>
                 <Value>
                     {this.props.link ?
-                        <a href={this.props.value} target="_blank">{this.props.linkText}</a>
+                        <a href={this.props.value} rel="noopener noreferrer" target="_blank">{this.props.linkText}</a>
                         :
                         <div>{this.props.value}</div>
                     }
