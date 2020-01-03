@@ -14,24 +14,30 @@ interface NewsUpdateProps {
 const NewsRow = styled.div`
     display: grid;
     grid-template-columns: 10% 70% 20%;
+    padding: 10px;
+    border-bottom: 1px solid #E8E8E8;
 `;
 
 const NewsDate = styled.div`
-    
+    padding-left: 20px;
+    font-size: 20px;
 `;
 
 const Title = styled.div`
     grid-column-start: 2;
-     white-space: nowrap;
+    white-space: nowrap;
     width: 100%;                   /* IE6 needs any width */
     overflow: hidden;              /* "overflow" value must be different from  visible"*/ 
     -o-text-overflow: ellipsis;    /* Opera < 11*/
     text-overflow:    ellipsis; 
+    font-size: 20px;
+    padding-left: 20px;
 `;
 
 
 const Category = styled.div`
     grid-column-start: 3;
+    font-size: 20px;
 `;
 
 

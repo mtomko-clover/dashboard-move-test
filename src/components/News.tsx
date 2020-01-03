@@ -4,6 +4,7 @@ import styled from "styled-components";
 import NewsUpdate from "../models/NewsUpdate";
 import {NEWS_CATEGORIES} from "../models/NewsCategories";
 import NewsUpdateRow from "./NewsUpdateRow";
+import { BigCard } from "./BigCard";
 
 const ms = require('pretty-ms');
 
@@ -14,43 +15,32 @@ interface State {
     updates: NewsUpdate[];
 }
 
-const NewsContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: white;
-    width: 500px;
-`;
-
-const NewsGrid = styled.div`
-    display: grid;
-    grid-template-columns: 10% 70% 20%;
-`;
-
-const NewsHeader = styled.div`
-   border-bottom: 1px solid #E8E8E8;
-   display: flex;
-   flex-direction: row;
-   font-style: bold;
-   font-size: 18px;
-   width: 100%;
-   padding: 20px;
-`;
-
 const ColumnNames = styled.div`
     display: grid;
     grid-template-columns: 10% 70% 20%;
     width: 100%;
+    padding: 20px 10px;
+  
 `;
 
+const NewsDate = styled.div`
+    padding-left: 20px;
+    font-size: 22px;
+    font-weight: 900;
+`;
 
 const Title = styled.div`
     grid-column-start: 2;
+    font-size: 22px;
+    padding-left: 20px;
+    font-weight: 900;
 `;
 
 
 const Category = styled.div`
     grid-column-start: 3;
+    font-size: 22px;
+    font-weight: 900;
 `;
 
 
@@ -62,8 +52,8 @@ const dummyData =[
     new NewsUpdate (new Date().getMilliseconds(), "ECommerce documentation moving forward", NEWS_CATEGORIES.CONTENT),
     new NewsUpdate (new Date().getMilliseconds(), "DevsRock: First wave email updates to devs", NEWS_CATEGORIES.DEVREL),
     new NewsUpdate (new Date().getMilliseconds(), "Developer Advocate responsibilities conflict", NEWS_CATEGORIES.DEVREL),
-    new NewsUpdate (new Date().getMilliseconds(), "Ireland Team Training", NEWS_CATEGORIES.ENGINEERING),
-    new NewsUpdate (new Date().getMilliseconds(), "Sandbox to GCP testing in progress", NEWS_CATEGORIES.DEVREL)
+    // new NewsUpdate (new Date().getMilliseconds(), "Ireland Team Training", NEWS_CATEGORIES.ENGINEERING),
+    // new NewsUpdate (new Date().getMilliseconds(), "Sandbox to GCP testing in progress", NEWS_CATEGORIES.DEVREL)
 ];
 
 export default class News extends Component<NewsProps, State> {
@@ -89,19 +79,14 @@ export default class News extends Component<NewsProps, State> {
 
     render(): React.ReactNode {
         return (
-            <NewsContainer>
-               <NewsHeader>
-                   News
-                   <div className="filler"/>
-                   <i className="fas fa-ellipsis-h"/>
-               </NewsHeader>
+            <BigCard title="News">
                 <ColumnNames>
-                    <div>Date</div>
+                    <NewsDate>Date</NewsDate>
                     <Title>Title</Title>
                     <Category>Type</Category>
                 </ColumnNames>
                 {this.renderUpdates()}
-            </NewsContainer>
+            </BigCard>
         )
     }
 }
