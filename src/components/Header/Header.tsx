@@ -6,28 +6,32 @@ import {HeaderContainer, LogoutButton} from "./Header.styles";
 
 
 type HeaderProps = {
-	logout: () => void;
-	sessionId: string;
+    logout: () => void
+    sessionId: string
+    username: React.ReactElement
 }
 
-const Header = ({ logout, sessionId }: HeaderProps): ReactElement => (
-	<HeaderContainer>
-		<img alt="Clover Logo" src={logo} />
-		<Link className="header_title" to="/Home">
-		Developer Relations
-		</Link>
-		{sessionId && (
-		<Link className="time_tracking" to="/TimeTracker">
-			Time Tracking
-		</Link>
-		)}
-		{sessionId && (
-		<LogoutButton onClick={logout}>
-			<i className="fas fa-sign-in-alt margin-after" />
-			Logout
-		</LogoutButton>
-		)}
-	</HeaderContainer>
+
+
+const Header = ({ logout, sessionId, username }: HeaderProps) => (
+    <HeaderContainer>
+        <img alt="Clover Logo" src={logo} />
+        <Link className="header_title" to="/Home">
+            Developer Relations
+        </Link>
+        {sessionId && (
+            <Link className="header_link" to="/TimeTracker">
+                Time Tracking
+            </Link>
+        )}
+        {sessionId && (
+            <LogoutButton onClick={logout}>
+                <i className="fas fa-sign-in-alt margin-after" />
+                Logout
+            </LogoutButton>
+        )}
+        {username}
+    </HeaderContainer>
 );
 
-export default Header;
+export default Header

@@ -7,12 +7,14 @@ import {BigCard} from "../BigCard";
 import WeeklyDigest from "./WeeklyDigest";
 
 import {Column, Row} from "./Overview.styles";
+import News from "../News";
 
 interface State {
 }
 
 interface DashboardProps {
 }
+
 
 const singleResponse = {
     "status": "success",
@@ -206,7 +208,7 @@ export default class Overview extends Component<DashboardProps, State> {
             <Column>
                 <WeeklyDigest />
                 <Row>
-                    <BigCard title="News" />
+                    <News/>
                     <BigCard title="Recent Activity" />
                 </Row>
                 <Row>
@@ -220,7 +222,7 @@ export default class Overview extends Component<DashboardProps, State> {
                         <JiraDLVChart />
                     </BigCard>
                 </Row>
-                <AppOverview appJson={singleResponse.data[0]}/>
+                {/*<AppOverview appJson={singleResponse.data[0]}/>*/}
             </Column>
         );
     }
