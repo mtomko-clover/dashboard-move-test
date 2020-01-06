@@ -1,15 +1,20 @@
+import {ApolloProvider} from '@apollo/react-hooks';
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import {BrowserRouter as Router} from "react-router-dom";
+
 import App from "./components/App";
-import "@fortawesome/fontawesome-free/css/all.css"
+import GraphQLClient from "./utils/graphql";
+import "./index.css";
+import "@fortawesome/fontawesome-free/css/all.css";
 import * as serviceWorker from "./serviceWorker";
-import {BrowserRouter as Router} from "react-router-dom"
 
 ReactDOM.render(
-  <Router>
-    <App />
-  </Router>,
+  <ApolloProvider client={GraphQLClient}>
+    <Router>
+      <App />
+    </Router>
+  </ApolloProvider>,
   document.getElementById("root")
 );
 
