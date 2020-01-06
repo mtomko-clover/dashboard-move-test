@@ -4,7 +4,7 @@ import React, {Component} from "react";
 import {AppApprovalsChart, JiraDLVChart} from "../Charts";
 import {AppOverview} from "../AppOverview";
 import {BigCard} from "../BigCard";
-import WeeklyStats from "./WeeklyStats";
+import WeeklyDigest from "./WeeklyDigest";
 
 import {Column, Row} from "./Overview.styles";
 
@@ -204,7 +204,7 @@ export default class Overview extends Component<DashboardProps, State> {
     render(): React.ReactNode {
         return (
             <Column>
-                <WeeklyStats />
+                <WeeklyDigest />
                 <Row>
                     <BigCard title="News" />
                     <BigCard title="Recent Activity" />

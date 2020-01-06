@@ -1,5 +1,10 @@
-import {Icon} from "antd";
+import {DocumentNode} from "graphql";
+import Children from 'rc-tween-one/lib/plugin/ChildrenPlugin';
+
+import {useQuery} from "@apollo/react-hooks";
+import moment, {Moment} from "moment";
 import React, {ReactElement} from "react";
+import TweenOne from "rc-tween-one";
 
 import {
     CardContainer,
@@ -11,35 +16,36 @@ import {
 } from "./Card.styles";
 
 
-type Stat = {
+TweenOne.plugins.push(Children);
+
+interface CardProps {
+    date: Moment;
+    key: number | string;
+    query: DocumentNode;
     title: string;
-    type: string;
-    datum: number;
 }
 
-interface DisplayProps {
-    title: string;
-    datum: number | null;
-    stat?: Stat;
-}
+const Card = ({ date, query, title }: CardProps): ReactElement | null => {
+    const dateF = "YYYY-MM-DD";
+    const start = moment(date).startOf("week").format(dateF);
+    const end = moment(date).endOf("week").format(dateF);
+    const { loading, error, data } = useQuery(query, { variables: { start, end }});
 
-const Card = ({ datum, stat, title }: DisplayProps): ReactElement => {
-    const renderDatum = (stat?: Stat): ReactElement => <>
-        {stat && stat.type === "percentageUp" ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-        <StatDatum>
-            {stat && stat.datum}
-        </StatDatum>
-    </>; 
+    if (error) return null; 
+
+    const value = (data && Object.keys(data).length) ? data[Object.keys(data)[0]].value : 0;
+    const previous = (data && Object.keys(data).length) ? data[Object.keys(data)[0]].previous : null;
+    if (data) console.log(loading, error, data, previous, Object.keys(data));
 
     return (
         <CardContainer>
             <CardTitle>{title}</CardTitle>
-            <Datum>{datum}</Datum>
+            <Datum>
+                <TweenOne animation={{ Children: { value, floatLength: 0 }}}>{0}</TweenOne>
+            </Datum>
             <Stat>
-                <StatTitle>
-                    from last week
-                </StatTitle>
-                {renderDatum(stat)}
+                {typeof previous === "number" && <StatTitle>last week</StatTitle>}
+                <StatDatum>{previous}</StatDatum>  
             </Stat>
         </CardContainer>
     )

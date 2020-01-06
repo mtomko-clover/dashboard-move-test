@@ -25,11 +25,13 @@ export const CardTitle = styled.h2`
 `
 
 export const Datum = styled.div`
-    width: 100%;
-    padding: 0;
-    color: #262626;
-    font-family: Maison Mono;
-    font-size: 30px;
+    div {
+        width: 100%;
+        padding: 0;
+        color: #262626;
+        font-family: Maison Mono;
+        font-size: 30px;
+    }
 `;
 
 export const Stat = styled.div`
