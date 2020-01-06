@@ -15,13 +15,13 @@ export const HeaderContainer = styled.header`
 		color: white;
 	}
 
-	a.time_tracking {
-		text-decoration: none;
-		padding: 10px;
-		font-size: 18px;
-		font-weight: bold;
-		color: white
-	}
+  a.header_link {
+    text-decoration: none;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white
+  }
 
 	img {
 		height: 30px;
