@@ -3,8 +3,15 @@ import styled from "styled-components";
 export const Row = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: left;
     padding: 10px;
+
+    .weekly-digest {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        height: 133px;
+    }
 `;
 
 export const Column = styled.div`
@@ -20,13 +27,26 @@ export const Header = styled.div`
     flex-direction: row;
     justify-content: space-between;
     padding: 20px 29px 0 55px;
-    width: 100%;
+    width: 50%;
     max-width: 1400px;
+    min-width: 690px;
 
     h2 {
         font-size: 18px;
         font-weight: 900;
         color: #283338;
+    }
+
+
+    .ant-btn-group {
+        span {
+            text-align: left;
+            width: 180px;
+            margin-top: -1px;
+            font-family: Maison Mono !important;
+            font-weight: 400;
+            font-size: 12px;
+        }
     }
 
     .ant-input {
