@@ -4,7 +4,7 @@ import React, {Component} from "react";
 // import {AppOverview} from "../AppOverview";
 import {AppApprovalsChart, JiraDLVChart} from "../Charts";
 import {BigCard} from "../BigCard";
-import News from "../News";
+import { News } from "../News";
 import WeeklyDigest from "./WeeklyDigest";
 import StoreProvider from "./store";
 import { List} from "antd";
