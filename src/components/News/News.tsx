@@ -35,7 +35,7 @@ export default class News extends Component<{}, State> {
         };
     }
 
-    renderUpdates = (): Array<JSX.Element> => this.state.updates.map(update => <NewsUpdateRow update={update} />);
+    renderUpdates = (): Array<JSX.Element> => this.state.updates.map((update, i) => <NewsUpdateRow key={i} update={update} />);
 
     render(): React.ReactNode {
         return (
