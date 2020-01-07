@@ -19,9 +19,9 @@ const JiraDLVChart: React.FC = () => {
 		let close = 250;
 
 		for (let i = 1; i < 366; i++) {
-		open += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 4);
-		close = Math.round(open + Math.random() * 5 + i / 5 - (Math.random() < 0.5 ? 1 : -1) * Math.random() * 2);
-		data.push({ date: new Date(2019, 0, i), open, close });
+			open += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 4);
+			close = Math.round(open + Math.random() * 5 + i / 5 - (Math.random() < 0.5 ? 1 : -1) * Math.random() * 2);
+			data.push({ date: new Date(2019, 0, i), open, close });
 		}
 
 		chart.data = data;
@@ -30,7 +30,9 @@ const JiraDLVChart: React.FC = () => {
 		dateAxis.renderer.labels.template.truncate = true;
 
 		const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-		valueAxis.tooltip!.disabled = true;
+		if (valueAxis && valueAxis.tooltip) {
+			valueAxis.tooltip.disabled = true;
+		}
 
 		const series = chart.series.push(new am4charts.LineSeries());
 		series.dataFields.dateX = "date";
@@ -55,9 +57,9 @@ const JiraDLVChart: React.FC = () => {
 		// chart.scrollbarX = new am4core.Scrollbar()
 
 		return (): void => {
-		if (chart && chart.dispose) {
-			chart.dispose();
-		}
+			if (chart && chart.dispose) {
+				chart.dispose();
+			}
 		}
 	}, [])
 

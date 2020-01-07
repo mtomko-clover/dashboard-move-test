@@ -1,4 +1,4 @@
-import {gql} from "apollo-boost"
+import {gql} from "apollo-boost";
 
 export const appsApproved = gql`
 	query AppsApproved($start: String, $end: String) {

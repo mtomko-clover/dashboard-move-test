@@ -15,7 +15,7 @@ type HeaderProps = {
 
 const Header = ({ logout, sessionId, username }: HeaderProps) => (
     <HeaderContainer>
-        <img alt="Clover Logo" src={logo} />
+        <img id="logo" alt="Clover Logo" src={logo} />
         <Link className="header_title" to="/Home">
             Developer Relations
         </Link>
