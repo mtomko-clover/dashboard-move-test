@@ -12,35 +12,35 @@ const azure = "#108EE9"
 const green = "#00A686"
 
 export const theme = {  
-  // * Misc. -----------------------------------
-  boxShadow: "0 2.5px 2px 0 rgba(0, 0, 0, 0.10)",
-  line: lightGray,
-  listHeaderBackground: alabaster,
+	// * Misc. -----------------------------------
+	boxShadow: "0 2.5px 2px 0 rgba(0, 0, 0, 0.10)",
+	line: lightGray,
+	listHeaderBackground: alabaster,
 
-  // * Colors ----------------------------------
-  black,
-  white,
-  lightGray,
-  mediumGray,
-  darkGray,
+	// * Colors ----------------------------------
+	black,
+	white,
+	lightGray,
+	mediumGray,
+	darkGray,
 
-  highlightLight: lima,
-  highlightDark: red,
+	highlightLight: lima,
+	highlightDark: red,
 
-  // * Typeface --------------------------------
-  textDark: black,
-  textLight: darkGray,
-  headingDark: outerSpace,
-  headingLight: mediumGray,
-  linkDark: dodgerBlue,
-  linkLight: azure,
+	// * Typeface --------------------------------
+	textDark: black,
+	textLight: darkGray,
+	headingDark: outerSpace,
+	headingLight: mediumGray,
+	linkDark: dodgerBlue,
+	linkLight: azure,
 
-  // * Menu ------------------------------------
-  menuBackground: white,
-  menuItemDark: black,
-  menuItemLight: mediumGray,
+	// * Menu ------------------------------------
+	menuBackground: white,
+	menuItemDark: black,
+	menuItemLight: mediumGray,
 
-  // * Header ----------------------------------
-  headerBackground: green,
-  headerText: white
+	// * Header ----------------------------------
+	headerBackground: green,
+	headerText: white
 }

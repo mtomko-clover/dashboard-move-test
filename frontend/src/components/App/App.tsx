@@ -1,8 +1,10 @@
+import {useQuery} from "@apollo/react-hooks";
 import {notification} from "antd";
+import {gql} from "apollo-boost";
 import axios from "axios";
 import Cookie from "js-cookie";
-import React, {Component} from "react";
-import {Link, Route, withRouter} from "react-router-dom";
+import React, {Component, ReactElement} from "react";
+import {Link, Route, RouteComponentProps, withRouter} from "react-router-dom";
 import {ThemeProvider} from "styled-components";
 
 import Header from "../Header";
@@ -18,14 +20,14 @@ import {EmployeeUtil} from "../../utils/EmployeeUtil";
 
 
 interface State {
-    sessionId: any
-    environment: Environment
-    username: string
+    sessionId: string | undefined;
+    environment: Environment;
+    username: string;
 }
 
-export class App extends Component<any, State> {
+export class App extends Component<RouteComponentProps, State> {
 
-    constructor(props: any) {
+    constructor(props: RouteComponentProps) {
         super(props);
         this.state = {
             sessionId: Cookie.get(Constants.sessionIdCookieName),
@@ -38,15 +40,25 @@ export class App extends Component<any, State> {
         this.generateUsername = this.generateUsername.bind(this);
     }
 
-    logout = () => {
+    logout = (): void => {
         Cookie.remove(Constants.sessionIdCookieName);
         this.setState({ sessionId: undefined });
         this.props.history.push("/");
     };
 
-    parentHandleSignIn = async (username: string, password: string, env: string) => {
+    parentHandleSignIn = async (username: string, password: string, env: string): Promise<string | undefined> => {
         const environment = Environments.getFromShortTerm(env);
-        this.setState({ environment: environment });
+        this.setState({ environment });
+
+        const query = gql`
+            query($username: String, $password: String, $environment: String) {
+                login(username: $username, password: $password, environment: $environment) {
+                    sessionId
+                }
+            }
+        `;
+        const { data, error, loading } = useQuery(query);
+        if (!loading) console.log(data, error)
 
         const response = await axios({
             method: "post",
@@ -77,15 +89,15 @@ export class App extends Component<any, State> {
 
     };
 
-    generateUsername() : React.ReactElement {
-        if(this.state.username === "none"){
+    generateUsername(): React.ReactElement {
+        if (this.state.username === "none") {
             return  (<Link className="header_link" to="/">
                 Login
             </Link>);
         } else {
-            let imageLocation = EmployeeUtil.getEmployeeImage(this.state.username);
+            const imageLocation = EmployeeUtil.getEmployeeImage(this.state.username);
             return (<div>
-                <img src={imageLocation} />
+                <img alt="profile" src={imageLocation} />
             </div>)
         }
     }
@@ -96,7 +108,7 @@ export class App extends Component<any, State> {
                 <AppContainer>
                     <GlobalStyles />
                     <Header logout={this.logout} sessionId={this.state.sessionId} username={this.generateUsername()}/>
-                    <Route path="/" exact render={(props) => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
+                    <Route path="/" exact render={(props): ReactElement => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
                     <Route path="/Home" component={Overview}/>
                     <Route path="/TimeTracker" component={TimeTracker} />
                 </AppContainer>
