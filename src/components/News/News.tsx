@@ -5,9 +5,10 @@ import NewsUpdate from "../../models/NewsUpdate";
 import NewsUpdateRow from "./Row";
 import {NEWS_CATEGORIES} from "../../models/NewsCategories";
 
-import {Date, Heading, NewsItems, Title, Type} from "./News.styles";
+import {Date, Heading, Title, Type} from "./News.styles";
 
 import '../TimeTracker.css';
+import { List} from "antd";
 
 
 interface State {
@@ -23,8 +24,8 @@ const dummyData =[
     new NewsUpdate (8, "ECommerce documentation moving forward", NEWS_CATEGORIES.CONTENT),
     new NewsUpdate (8, "DevsRock: First wave email updates to devs", NEWS_CATEGORIES.DEVREL),
     new NewsUpdate (8, "Developer Advocate responsibilities conflict", NEWS_CATEGORIES.DEVREL),
-    // new NewsUpdate (new Date().getMilliseconds(), "Ireland Team Training", NEWS_CATEGORIES.ENGINEERING),
-    // new NewsUpdate (new Date().getMilliseconds(), "Sandbox to GCP testing in progress", NEWS_CATEGORIES.DEVREL)
+    new NewsUpdate (10, "Ireland Team Training", NEWS_CATEGORIES.ENGINEERING),
+    new NewsUpdate (9, "Sandbox to GCP testing in progress", NEWS_CATEGORIES.DEVREL)
 ];
 
 export default class News extends Component<{}, State> {
@@ -45,9 +46,22 @@ export default class News extends Component<{}, State> {
                     <Title>Title</Title>
                     <Type>Type</Type>
                 </Heading>
-                <NewsItems>
-                    {this.renderUpdates()}
-                </NewsItems>
+                <List
+                    className="width_95"
+                    itemLayout="horizontal"
+                    dataSource={dummyData}
+                    pagination={{
+                        onChange: page => {
+                            console.log(page);
+                        },
+                        pageSize: 7,
+                    }}
+                    renderItem={item => (
+                        <List.Item>
+                            <NewsUpdateRow update={item}/>
+                        </List.Item>
+                    )}
+                />
             </BigCard>
         )
     }

@@ -36,8 +36,7 @@ export const Type = styled.div`
 export const Row = styled.div`
     display: grid;
     grid-template-columns: 10% 70% 20%;
-    padding: 10px;
-    border-bottom: 1px solid #E8E8E8;
+    width: 100%
 `;
 
 export const RowDate = styled.div`
