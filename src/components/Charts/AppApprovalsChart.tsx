@@ -46,25 +46,13 @@ const AppApprovalsChart = ({ category, value }: AppApprovalsChartProps): ReactEl
             }
         }
     `;
-
-    function switchKey(key: string): string {
-        switch (key) {
-            case "appsPending":
-                return "Total Apps Pending";
-            case "appsSubmitted":
-                return "New Apps Submitted";
-            case "appsRejected":
-                return "Apps Rejected";
-            default:
-                return "Apps Approved";
-        }
-    }
     const { data } = useQuery(query, variables);
+    console.log("data", data);
     let dataArray: Array<ChartData | void> = [];
     if (data) {
-        dataArray = Object.entries(data).map(([key, value]) => ({ title: switchKey(key), amount: (value as QueryResult).value }));
+        dataArray = Object.entries(data).map(([key, value]) => ({ title: key, amount: (value as QueryResult).value }));
     }
-    
+
     useEffect(() => {
         const chart = am4core.create("chart-appapprovals", am4charts.PieChart);
 
@@ -74,7 +62,7 @@ const AppApprovalsChart = ({ category, value }: AppApprovalsChartProps): ReactEl
             chart.paddingRight = 0;
             chart.scale = 1;
             chart.align = "center";
-    
+
             // Add and configure Series
             const pieSeries = chart.series.push(new am4charts.PieSeries());
             pieSeries.dataFields.value = value;
@@ -83,20 +71,18 @@ const AppApprovalsChart = ({ category, value }: AppApprovalsChartProps): ReactEl
             pieSeries.slices.template.stroke = am4core.color("#fff");
             pieSeries.slices.template.strokeWidth = 1;
             pieSeries.slices.template.strokeOpacity = 1;
-    
+
             // This creates initial animation
             pieSeries.hiddenState.properties.opacity = 1;
             pieSeries.hiddenState.properties.endAngle = -90;
             pieSeries.hiddenState.properties.startAngle = -90;
-    
+
             const legend = new am4charts.Legend();
             legend.align = "center";
             legend.position = "right";
             legend.contentAlign = "center";
             legend.horizontalCenter = "middle";
             pieSeries.legendSettings.valueText = "{value}";
-            legend.labels.template.fill = am4core.color("#595959");
-            legend.valueLabels.template.fill = am4core.color("#8C8C8C"); 
             chart.legend = legend;
         }
 
