@@ -1,10 +1,10 @@
 
+import {Moment} from "moment";
 import React, {ReactElement} from "react";
 import {TweenOneGroup} from "rc-tween-one";
 
 import {Card} from "../Card"
 import {AppApprovalsState, DevApprovalsState, CommunityState} from "./types";
-import {Moment} from "moment";
 
 
 interface StatsProps {
