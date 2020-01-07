@@ -74,3 +74,10 @@ code {
 .filler{
   flex-grow: 1;
 }
+
+.font_icon{
+  padding: 0;
+  margin-bottom: 0;
+  margin-right: 10px;
+  line-height: inherit !important;
+}

@@ -15,12 +15,13 @@ import {Environment, Environments} from "../../utils/Environments";
 import {AppContainer} from './App.styles'
 import {GlobalStyles, theme} from '../../styles'
 import {EmployeeUtil} from "../../utils/EmployeeUtil";
+import Employee from "../../models/Employee";
 
 
 interface State {
     sessionId: any
     environment: Environment
-    username: string
+    user: Employee
 }
 
 export class App extends Component<any, State> {
@@ -30,12 +31,11 @@ export class App extends Component<any, State> {
         this.state = {
             sessionId: Cookie.get(Constants.sessionIdCookieName),
             environment: Environments.getDefaultEnvironment(),
-            username: "none"
+            user: new Employee("")
         };
         this.logout = this.logout.bind(this);
         this.parentHandleSignIn = this.parentHandleSignIn.bind(this);
         this.showError = this.showError.bind(this);
-        this.generateUsername = this.generateUsername.bind(this);
     }
 
     logout = () => {
@@ -61,7 +61,8 @@ export class App extends Component<any, State> {
         if (response.data.error) {
             this.showError("Login Error", response.data.error);
         } else {
-            this.setState({sessionId: response.data.sessionId, username: username});
+            let user = EmployeeUtil.getEmployeeFromUsername(username);
+            this.setState({sessionId: response.data.sessionId, user: user});
             this.props.history.push("/Home");
         }
 
@@ -77,25 +78,12 @@ export class App extends Component<any, State> {
 
     };
 
-    generateUsername() : React.ReactElement {
-        if(this.state.username === "none"){
-            return  (<Link className="header_link" to="/">
-                Login
-            </Link>);
-        } else {
-            let imageLocation = EmployeeUtil.getEmployeeImage(this.state.username);
-            return (<div>
-                <img src={imageLocation} />
-            </div>)
-        }
-    }
-
     render(): React.ReactNode {
         return (
             <ThemeProvider theme={theme}>
                 <AppContainer>
                     <GlobalStyles />
-                    <Header logout={this.logout} sessionId={this.state.sessionId} username={this.generateUsername()}/>
+                    <Header logout={this.logout} sessionId={this.state.sessionId} username={this.state.user.fullName} profilePic={this.state.user.image}/>
                     <Route path="/" exact render={(props) => <SignIn {...props} parentHandleSignIn={this.parentHandleSignIn}/>}/>
                     <Route path="/Home" component={Overview}/>
                     <Route path="/TimeTracker" component={TimeTracker} />
