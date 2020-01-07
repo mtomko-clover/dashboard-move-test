@@ -47,6 +47,7 @@ const AppApprovalsChart = ({ category, value }: AppApprovalsChartProps): ReactEl
         }
     `;
     const { data } = useQuery(query, variables);
+    console.log("data", data);
     let dataArray: Array<ChartData | void> = [];
     if (data) {
         dataArray = Object.entries(data).map(([key, value]) => ({ title: key, amount: (value as QueryResult).value }));
