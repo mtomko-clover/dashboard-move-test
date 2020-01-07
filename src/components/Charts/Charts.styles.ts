@@ -6,4 +6,9 @@ export const Chart = styled.div`
     width: 100%;
     height: 100%;
     align-items: center;
+
+    text, tspan {
+        font-family: Maison Mono;
+        font-size: 14px;
+    }
 `;

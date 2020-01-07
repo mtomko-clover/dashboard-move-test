@@ -6,14 +6,14 @@ import {HeaderContainer, LogoutButton} from "./Header.styles";
 
 
 type HeaderProps = {
-    logout: () => void
-    sessionId: string
-    username: React.ReactElement
+    logout: () => void;
+    sessionId: string | undefined;
+    username: React.ReactElement;
 }
 
 
 
-const Header = ({ logout, sessionId, username }: HeaderProps) => (
+const Header = ({ logout, sessionId, username }: HeaderProps): ReactElement => (
     <HeaderContainer>
         <img id="logo" alt="Clover Logo" src={logo} />
         <Link className="header_title" to="/Home">

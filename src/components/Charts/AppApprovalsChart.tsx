@@ -46,10 +46,23 @@ const AppApprovalsChart = ({ category, value }: AppApprovalsChartProps): ReactEl
             }
         }
     `;
+
+    function switchKey(key: string): string {
+        switch (key) {
+            case "appsPending":
+                return "Total Apps Pending";
+            case "appsSubmitted":
+                return "New Apps Submitted";
+            case "appsRejected":
+                return "Apps Rejected";
+            default:
+                return "Apps Approved";
+        }
+    }
     const { data } = useQuery(query, variables);
     let dataArray: Array<ChartData | void> = [];
     if (data) {
-        dataArray = Object.entries(data).map(([key, value]) => ({ title: key, amount: (value as QueryResult).value }));
+        dataArray = Object.entries(data).map(([key, value]) => ({ title: switchKey(key), amount: (value as QueryResult).value }));
     }
     
     useEffect(() => {
@@ -82,6 +95,8 @@ const AppApprovalsChart = ({ category, value }: AppApprovalsChartProps): ReactEl
             legend.contentAlign = "center";
             legend.horizontalCenter = "middle";
             pieSeries.legendSettings.valueText = "{value}";
+            legend.labels.template.fill = am4core.color("#595959");
+            legend.valueLabels.template.fill = am4core.color("#8C8C8C"); 
             chart.legend = legend;
         }
 
