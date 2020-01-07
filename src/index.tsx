@@ -10,12 +10,12 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
-  <ApolloProvider client={GraphQLClient}>
-    <Router>
-      <App />
-    </Router>
-  </ApolloProvider>,
-  document.getElementById("root")
+	<ApolloProvider client={GraphQLClient}>
+		<Router>
+			<App />
+		</Router>
+	</ApolloProvider>,
+	document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

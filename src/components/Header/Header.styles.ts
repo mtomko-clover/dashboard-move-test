@@ -23,7 +23,7 @@ export const HeaderContainer = styled.header`
     color: white
   }
 
-	img {
+	#logo {
 		height: 30px;
 		margin-right: 15px;
 		filter: grayscale(1) brightness(1) contrast(10);
