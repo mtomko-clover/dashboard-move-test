@@ -1,54 +1,20 @@
 import {DatePicker, Menu, Dropdown, message} from "antd";
 import {ClickParam} from "antd/lib/menu";
 import moment from "moment";
-import React, {useState, ReactElement} from "react";
+import React, {ReactElement, useContext} from "react";
 
 import {Stats} from "./Stats";
 import {Header, Row} from "./Overview.styles";
+import {StoreContext} from "./store";
 
-import {
-	appsApproved,
-	appsPending,
-	appsRejected,
-	appsSubmitted,
-	communityQuestions,
-	communityAnswers,
-	devsApproved,
-	devsPending,
-	devsSubmitted,
-	devsRejected
-} from "./queries";
 
 /**
  * Weekly Digest
  */
 const WeeklyDigest = (): ReactElement => {
-	const {WeekPicker} = DatePicker;
 	const dateFormat = "MM/DD/YY";
-	const [date, setDate] = useState(moment());
-
-	const rowOne = {
-		appsApproved: { title: "Apps Approved", query: appsApproved },
-		appsRejected: { title: "Apps Rejected", query: appsRejected },
-		appsSubmitted: { title: "New Apps Submitted", query: appsSubmitted },
-		appsPending: { title: "Total Apps Pending", query: appsPending },
-	};
-	const rowTwo = {
-		devsApproved: { title: "Developer Accounts Approved", query: devsApproved },
-		devsRejected: { title: "Developer Accounts Rejected", query: devsRejected },
-		devsSubmitted: { title: "New Developer Accounts Submitted", query: devsSubmitted },
-		devsPending: { title: "Total Developer Accounts Pending", query: devsPending },
-	};
-	const rowThree = {
-		questions: { title: "Community Questions Asked", query: communityQuestions },
-		answers: { title: "Community Questions Answered", query: communityAnswers },
-	};
-
-	const [cards, setCards] = useState([
-		{ key: "0", title: "App Approvals", selected: true, content: rowOne },
-		{ key: "1", title: "Developer Account Approvals", selected: false, content: rowTwo },
-		{ key: "2", title: "Community", selected: false, content: rowThree },
-	]);
+	const { WeekPicker } = DatePicker;
+	const { cardsStore: { cards, setCards }, dateStore: { date, setDate } } = useContext(StoreContext);
 
 	function handleMenuClick(e: ClickParam): void {
 		message.info(cards[Number(e.key)].title);
