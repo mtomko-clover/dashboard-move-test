@@ -17,7 +17,6 @@ import {GlobalStyles, theme} from '../../styles'
 import {EmployeeUtil} from "../../utils/EmployeeUtil";
 import Employee from "../../models/Employee";
 
-
 interface State {
     sessionId: any
     environment: Environment
