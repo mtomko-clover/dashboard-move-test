@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as dotenv from 'dotenv'
 import { ApolloServer, gql, ServerInfo } from 'apollo-server'
-import * as moment from 'moment'
+import moment from 'moment'
 
 dotenv.config({ path: './.env' })
 

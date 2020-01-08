@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Request, Response } from 'express'
-import * as moment from 'moment'
+import moment from 'moment'
 
 
 const instance = axios.create({
