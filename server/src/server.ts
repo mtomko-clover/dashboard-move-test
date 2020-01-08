@@ -1,33 +1,26 @@
 import axios from 'axios'
 import * as dotenv from 'dotenv'
-// import * as cors from 'cors'
-// import * as express from 'express'
-import { ApolloServer, gql } from 'apollo-server'
+import { ApolloServer, gql, ServerInfo } from 'apollo-server'
 import * as moment from 'moment'
 
 dotenv.config({ path: './.env' })
 
-// import { handleError } from './lib/utils'
-
-// type AnswerHubState = {
-// 	AcceptNodeAction?: number;
-// 	AnswerAction?: number;
-// 	AskAction?: number;
-// 	CloseNodeAction?: number;
-// 	CommentAction?: number;
-// 	DeleteAction?: number;
-// }
+console.log(process.env.JIRA_URL, process.env.JIRA_TOKEN, process.env.ANSWERHUB_URL, process.env.ANSWERHUB_TOKEN)
 
 type AnswerHubResponse = {
-	type: string;
-	verb?: string;
-	count?: number;
+	type: string
+	verb?: string
+	count?: number
 }
 
 const typeDefs = gql`
   type Metrics {
     value: Int
     previous: Int
+  }
+
+  type LoginResponse {
+    sessionId: String
   }
 
   type Query {
@@ -41,6 +34,7 @@ const typeDefs = gql`
     devsSubmitted(start: String, end: String): Metrics
     communityQuestions(start: String, end: String): Metrics
     communityAnswers(start: String, end: String): Metrics
+    login(username: String, password: String, environment: String): LoginResponse
   }
 `
 
@@ -63,6 +57,31 @@ function getPriorWeekDates(start: string, end: string, dateFormat: string) {
     startPriorWeek: moment(start).subtract(1, 'week').format(dateFormat),
     endPriorWeek: moment(end).subtract(1, 'week').format(dateFormat)
   }
+}
+
+const internal = async (postData: any, env: any) => {
+    try {
+        const response = await axios({
+            method: 'post',
+            url: `https://${env}/cos/v1/dashboard/internal/login`,
+            headers: { 'Preferred-Auth': 'internal' },
+            data: postData,
+            withCredentials: true,
+        })
+        if (response.headers['set-cookie']) {
+            const cookies = response.headers['set-cookie'][0]
+            const [internalSessionId] = cookies.split(';')
+            return internalSessionId.substring(16, internalSessionId.length)
+        }
+        return false
+    } catch (err) {
+        return err.response.data
+    }
+}
+
+const setCookie = (res: any, key: any, id: any) => {
+  res.cookie(key, id, { maxAge: 3600000 });
+  // res.set('cookie', cookieValue);
 }
 
 const resolvers = {
@@ -229,18 +248,27 @@ const resolvers = {
         return { value: null, previous: null }
       }
     },
+    login: async (_: any, args: any, ctx: any) => {
+      const { username, password, environment } = args;
+      const data = {
+          username, password
+      };
+      if (username && password) {
+          const sessionId = await internal(data, environment.environment);
+          if(sessionId instanceof Object){
+              console.log(sessionId)
+              return { sessionId: sessionId.message }
+          }
+          else if (sessionId) {
+              setCookie(ctx.res, "sessionId", sessionId);
+              return { sessionId }
+          }
+      }
+      return { sessionId: 'Missing params' }
+    }
   }
 }
 
 const server = new ApolloServer({ typeDefs, resolvers })
 
-server.listen().then(({ url }) => console.log(`🤖 Server ready at ${url}`))
-
-// const { PORT } = process.env
-// const app: express.Application = express()
-
-// app
-//   .use(cors())
-//   .use('/api', require('./api'))
-//   // .use(handleError)
-//   .listen(PORT, () => console.log(`🤖 Server is listening on port ${PORT} in ${app.get('env')} mode`))
+server.listen().then(({ url }: ServerInfo) => console.log(`🤖 Server ready at ${url}`))

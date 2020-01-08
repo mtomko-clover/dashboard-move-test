@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc -p .",
-    "start:dev": "NODE_ENV=development ts-node-dev --respawn src/server.ts",
+    "start:dev": "NODE_ENV=development ts-node-dev --respawn --http-parser=legacy -- src/server.ts",
     "start": "NODE_ENV=production node dist/server.js"
   },
   "repository": {
