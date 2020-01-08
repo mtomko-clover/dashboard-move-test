@@ -271,4 +271,4 @@ const resolvers = {
 
 const server = new ApolloServer({ typeDefs, resolvers })
 
-server.listen().then(({ url }: ServerInfo) => console.log(`🤖 Server ready at ${url}`))
+server.listen({ port: process.env.PORT || 4000 }).then(({ url }: ServerInfo) => console.log(`🤖 Server ready at ${url}`))
