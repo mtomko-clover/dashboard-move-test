@@ -34,9 +34,14 @@ code {
   margin-right: 10px;
 }
 
+.margin-bottom{
+  margin-bottom: 20px;
+}
+
 .row{
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .center-align{
@@ -68,4 +73,22 @@ code {
 
 .width_95{
   width: 95%;
+}
+
+.ant-list{
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-spin-nested-loading {
+  flex-grow: 1;
+}
+
+.news_update{
+  width: 200px;
+}
+
+.small_text{
+  font-size: 12px;
 }

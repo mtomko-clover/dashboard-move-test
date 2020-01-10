@@ -19,11 +19,10 @@ const ProfilePic = styled.img`
     border-radius: 50%;
     object-fit: cover;
     object-position: 100% 0;
-    margin-right: 10px;
-    height: 50px;
-    width: 50px;
-    margin-left: 20px;
+    height: 32px;
+    width: 32px;
     align-self: center;
+    margin-left: 15px;
 `;
 
 const Title = styled.div`
@@ -33,7 +32,7 @@ const Title = styled.div`
     overflow: hidden;              /* "overflow" value must be different from  visible"*/ 
     -o-text-overflow: ellipsis;    /* Opera < 11*/
     text-overflow:    ellipsis; 
-    font-size: 20px;
+    font-size: 16px;
     padding-left: 20px;
     align-self: center;
 `;
@@ -41,7 +40,8 @@ const Title = styled.div`
 
 const Category = styled.div`
     grid-column-start: 3;
-    font-size: 20px;
+    font-family: Maison Mono;
+    font-size: 12px;
     text-align: left;
     justify-content: flex-end;
     display: flex;

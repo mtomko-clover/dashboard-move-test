@@ -19,6 +19,8 @@ export const Header = styled.div`
     height: 70px;
     padding: 22px 25px; 
     border-bottom: 1px solid #E9E9E9;
+    display: flex;
+    flex-direction: row;
 `;
 
 export const Title = styled.h2`
