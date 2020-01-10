@@ -3,7 +3,7 @@ import {ClickParam} from "antd/es/menu";
 import React, {Component} from "react";
 import styled from "styled-components";
 
-import './TimeTracker.css';
+import './TimeTracking/TimeTracker.css';
 
 interface CategoryProps {
     setCategory:(category: any) => any
