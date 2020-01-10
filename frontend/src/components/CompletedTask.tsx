@@ -1,6 +1,6 @@
 import {Component} from "react";
 import * as React from "react";
-import './TimeTracker.css';
+import './TimeTracking/TimeTracker.css';
 import styled from "styled-components";
 import Task from "../models/Task";
 const ms = require('pretty-ms');
