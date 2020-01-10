@@ -81,10 +81,6 @@ export default class News extends Component<{}, State> {
         }
     }
 
-    addNewsUpdate(){
-
-    }
-
     renderUpdates = (): Array<JSX.Element> => this.state.updates.map((update, i) => <NewsUpdateRow key={i} update={update} />);
 
     renderViewUpdate(): React.ReactElement {
@@ -123,7 +119,6 @@ export default class News extends Component<{}, State> {
                         </List.Item>
                     )}
                 />
-                <button onClick={this.addNewsUpdate}>add new</button>
             </BigCard>
         )
     }
