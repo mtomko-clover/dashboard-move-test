@@ -7,7 +7,7 @@ import {NEWS_CATEGORIES} from "../../models/NewsCategories";
 
 import {Heading, NewsDate, Title, Type} from "./News.styles";
 
-import '../TimeTracker.css';
+import '../TimeTracking/TimeTracker.css';
 import {List} from "antd";
 import CreateNewsUpdate from "./CreateNewsUpdate";
 import {CookiesUtil} from "../../utils/CookiesUtil";

@@ -2,10 +2,10 @@ import React, {Component, ReactElement} from "react";
 import {TaskTimer} from "./TaskTimer";
 import styled from "styled-components";
 import "./TimeTracker.css";
-import CompletedTask from "./CompletedTask";
+import CompletedTask from "../CompletedTask";
 import EditTask from "./EditTask";
-import Task from "../models/Task";
-import {ROLES} from "../models/RoleCategories";
+import Task from "../../models/Task";
+import {ROLES} from "../../models/RoleCategories";
 
 const uuid  = require("react-uuid");
 // const ms = require("pretty-ms");
