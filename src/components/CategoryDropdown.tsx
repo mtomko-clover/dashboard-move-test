@@ -28,7 +28,7 @@ const FilterDiv = styled.div`
 const FilterLabel = styled.label`
   white-space: nowrap;
   margin-right: 10px;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
 export default class CategoryDropdown extends Component<CategoryProps, any> {
@@ -75,7 +75,7 @@ export default class CategoryDropdown extends Component<CategoryProps, any> {
             <FilterDiv>
                 {this.renderLabel(this.props.label)}
                 <Dropdown className="margin-start" overlay={categories}>
-                    <Button size="large">
+                    <Button size="default">
                         {this.state.category} <Icon type="down"/>
                     </Button>
                 </Dropdown>
