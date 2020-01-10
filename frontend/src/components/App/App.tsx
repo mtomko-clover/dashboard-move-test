@@ -8,7 +8,7 @@ import {ThemeProvider} from "styled-components";
 import Header from "../Header";
 import Overview from "../Overview";
 import {SignIn} from "../SignIn";
-import TimeTracker from "../TimeTracker";
+import TimeTracker from "../TimeTracking/TimeTracker";
 
 import * as Constants from "../../utils/Constants";
 import {Environment, Environments} from "../../utils/Environments";

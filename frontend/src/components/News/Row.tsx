@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import NewsUpdate from "../../models/NewsUpdate";
 // import {NEWS_CATEGORIES} from "../../models/NewsCategories";
 
-import '../TimeTracker.css';
+import '../TimeTracking/TimeTracker.css';
 
 import {Row, RowDate, RowTitle, RowType} from "./News.styles";
 

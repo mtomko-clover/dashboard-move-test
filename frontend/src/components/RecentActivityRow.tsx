@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import './TimeTracker.css';
+import './TimeTracking/TimeTracker.css';
 import styled from "styled-components";
 import RecentActivity from "../models/RecentActivity";
 import {EmployeeUtil} from "../utils/EmployeeUtil";
