@@ -4,7 +4,7 @@ export const Row = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: left;
-    padding: 10px;
+    padding: 19px;
 
     .weekly-digest {
         display: flex;

@@ -27,73 +27,74 @@ import Employee from "../models/Employee";
 export class EmployeeUtil {
 
     public static getEmployeeFromUsername(username: string): Employee {
-        let employee: Employee = new Employee("none");
+        let employee: Employee = new Employee("","");
         console.log("username", username);
         switch (username) {
             case "aditya.singh" :
-                employee = new Employee("Aditya Singh", AdityaSingh);
+                employee = new Employee("aditya.singh","Aditya Singh", AdityaSingh);
                 break;
             case "rachel.antion" :
-                employee = new Employee("Rachel Antion", RachelAntion);
+                employee = new Employee("rachel.antion","Rachel Antion", RachelAntion);
                 break;
             case "dex.cook" :
-                employee = new Employee("Dex Cook", Dex);
+                employee = new Employee("dex.cook","Dex Cook", Dex);
                 break;
             case "ricardo.ventura":
-                employee = new Employee("Ricardo Ventura", Ricardo);
+                employee = new Employee("ricardo.ventura","Ricardo Ventura", Ricardo);
                 break;
             case "nathan.binding":
-                employee = new Employee("Nathan Binding", Nathan);
+                employee = new Employee("nathan.binding","Nathan Binding", Nathan);
                 break;
             case "paul.petyo":
-                employee = new Employee("Paul Petyo", Paul);
+                employee = new Employee("paul.petyo","Paul Petyo", Paul);
                 break;
             case "nicholas.ho":
-                employee = new Employee("Nicholas Ho", NicholasHo);
+                employee = new Employee("nicholas.ho","Nicholas Ho", NicholasHo);
                 break;
             case "ram.kavasseri":
-                employee = new Employee("Ram Kavasseri", Ram);
+                employee = new Employee("ram.kavasseri","Ram Kavasseri", Ram);
                 break;
             case "emily.lucek":
-                employee = new Employee("Emily Luckek", EmilyLucek);
+                employee = new Employee("emily.lucek","Emily Luckek", EmilyLucek);
                 break;
             case "lauri.cerneck":
-                employee = new Employee("Lauri Cerneck", Lauri);
+                employee = new Employee("lauri.cerneck","Lauri Cerneck", Lauri);
                 break;
             case "mike.tomko":
-                employee = new Employee("Mike Tomko", Tomko);
+                employee = new Employee("mike.tomko","Mike Tomko", Tomko);
                 break;
             case "brie.ruse":
-                employee = new Employee("Brie Ruse", BrieRuse);
+                employee = new Employee("brie.ruse","Brie Ruse", BrieRuse);
                 break;
             case "nahmadkhani":
-                employee = new Employee("Nazanin Ahmadkhani", Nazanin);
+                employee = new Employee("nahmadkhani","Nazanin Ahmadkhani", Nazanin);
                 break;
             case "joel.mcintyre":
-                employee = new Employee("Joel McIntyre", Joel);
+                employee = new Employee("joel.mcintyre","Joel McIntyre", Joel);
                 break;
             case "chetan.bhatian":
-                employee = new Employee("Chetan Bhatian", Chetan);
+                employee = new Employee("chetan.bhatian","Chetan Bhatian", Chetan);
                 break;
             case "rachel":
-                employee = new Employee("Rachel Ramsay", RachelRamsay);
+                employee = new Employee("rachel","Rachel Ramsay", RachelRamsay);
                 break;
             case "frank.faustino":
-                employee = new Employee("Frankizzle Faustino", Frank);
+                employee = new Employee("frank.faustino","Frankizzle Faustino", Frank);
                 break;
             case "richelle.herrli":
-                employee = new Employee("Richelle Herrli", Richelle);
+                employee = new Employee("richelle.herrli","Richelle Herrli", Richelle);
                 break;
             case "sreya.dutta":
-                employee = new Employee("Sreya Dutta", Sreya);
+                employee = new Employee("sreya.dutta","Sreya Dutta", Sreya);
                 break;
             case "tcottingham":
-                employee = new Employee("Trey Cottingham", Trey);
+                employee = new Employee("tcottingham","Trey Cottingham", Trey);
                 break;
             case "maricris.bonzo":
-                employee = new Employee("Maricris Bonzo", Maricris);
+                employee = new Employee("maricris.bonzo","Maricris Bonzo", Maricris);
+                break;
             default:
-                employee = new Employee(username);
+                employee = new Employee(username, "");
 
         }
         return employee;

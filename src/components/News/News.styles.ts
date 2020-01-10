@@ -13,7 +13,7 @@ export const Heading = styled.div`
     background-color: #FAFAFA;
 `;
 
-export const Date = styled.div`
+export const NewsDate = styled.div`
     padding-left: 20px;
     font-size: 14px;
     font-weight: 900;
@@ -30,6 +30,8 @@ export const Type = styled.div`
     grid-column-start: 3;
     font-size: 14px;
     font-weight: 900;
+    text-align: right;
+    padding-right: 20px;
 `;
 
 // NewsUpdateRow
@@ -63,4 +65,66 @@ export const RowType = styled.div`
     margin-top: 4px;
     font-family: Maison Mono;
     font-size: 12px;
+    text-align: right;
+    padding-right: 20px;
+`;
+
+export const EditRow = styled.div`
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`;
+
+export const EditColumn = styled.div`
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flext-start;
+`;
+
+export const EditLabel = styled.div`
+        font-size: 16px;
+        font-style: bold;
+        margin-right: 10px;
+`;
+
+export const EditInput = styled.input`
+        font-size: 12px;
+        font-style: bold;
+        padding: 5px;
+        flex-grow: 1;
+        border: 1px solid #d9d9d9;
+`;
+
+export const TextAreaInput = styled.textarea`
+        border: 1px solid #d9d9d9;
+`;
+
+export const ViewRow = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+
+export const ViewKey = styled.div`
+    font-size: 12px;
+    font-style: bold;
+    margin-right: 10px;
+`;
+
+export const ViewCategory = styled.div`
+    font-size: 12px;
+    font-style: bold;
+    font-family: Maison Mono;
+`;
+
+export const ViewDescription = styled.div`
+    font-size: 14px;
+    padding: 15px 0px;
+`;
+
+export const ViewTitle = styled.div`
+     font-size: 18px;
+     font-style: bold;
+     text-align: left;
 `;

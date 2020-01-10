@@ -37,6 +37,10 @@ const Login = styled.div`
     }
 
     .ant-btn-group {
+        button {
+            height: 50px;
+        }
+       
         span {
             text-align: left;
             width: 234px;

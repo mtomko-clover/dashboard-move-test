@@ -59,14 +59,14 @@ export default class Overview extends Component<{}, {}> {
                     <Row>
                         <BigCard title="Recent Activity">
                             <List
-                                className="width_95"
+                                className="width_95 margin-bottom"
                                 itemLayout="horizontal"
                                 dataSource={dummyData}
                                 pagination={{
                                     onChange: page => {
                                         console.log(page);
                                     },
-                                    pageSize: 5,
+                                    pageSize: 7,
                                 }}
                                 renderItem={item => (
                                     <List.Item>
