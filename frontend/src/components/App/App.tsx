@@ -1,7 +1,7 @@
 import {notification} from "antd";
 import axios from "axios";
 import Cookie from "js-cookie";
-import React, {useState, ReactElement} from "react";
+import React, {ReactElement, useState} from "react";
 import {Route, RouteComponentProps, withRouter} from "react-router-dom";
 import {ThemeProvider} from "styled-components";
 
@@ -16,6 +16,8 @@ import {AppContainer} from './App.styles'
 import {GlobalStyles, theme} from '../../styles'
 import {EmployeeUtil} from "../../utils/EmployeeUtil";
 import Employee from "../../models/Employee";
+import {CookiesUtil} from "../../utils/CookiesUtil";
+import {Cookies} from "../../utils/Cookies";
 
 interface State {
     sessionId?: string | undefined;
@@ -27,8 +29,8 @@ const App = ({ history }: RouteComponentProps): ReactElement => {
     const [state, setState] = useState({
         sessionId: Cookie.get(Constants.sessionIdCookieName),
         environment: Environments.getDefaultEnvironment(),
-        user: new Employee("")
-    } as State)
+        user: new Employee("","")
+    } as State);
 
     const logout = (): void => {
         Cookie.remove(Constants.sessionIdCookieName);
@@ -54,6 +56,7 @@ const App = ({ history }: RouteComponentProps): ReactElement => {
             showError("Login Error", response.data.error);
         } else {
             const user = EmployeeUtil.getEmployeeFromUsername(username);
+            CookiesUtil.setCookie(Cookies.USERNAME, username);
             setState({sessionId: response.data.sessionId, user: user});
             history.push("/Home");
         }
