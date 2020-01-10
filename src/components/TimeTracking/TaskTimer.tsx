@@ -3,10 +3,10 @@ import React, {ChangeEvent, Component, KeyboardEvent} from "react";
 import styled from "styled-components";
 
 import './TimeTracker.css';
-import CategoryDropdown from "./CategoryDropdown";
-import {ROLES} from "../models/RoleCategories";
-import {SE_Categories, TAM_Categories, TSE_Categories} from "../models/TaskCategories";
-import {APP_APPROVAL_SUBCATEGORIES} from "../models/SubCategories";
+import CategoryDropdown from "../CategoryDropdown";
+import {ROLES} from "../../models/RoleCategories";
+import {SE_Categories, TAM_Categories, TSE_Categories} from "../../models/TaskCategories";
+import {APP_APPROVAL_SUBCATEGORIES} from "../../models/SubCategories";
 // import {ClickParam} from "antd/es/menu";
 
 const ms = require('pretty-ms');
