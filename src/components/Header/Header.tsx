@@ -1,9 +1,8 @@
 import React, {ReactElement} from "react";
 import {Link} from "react-router-dom";
 import {Menu, Dropdown} from "antd";
-
 import logo from "../../static/clover-logo.png";
-import {HeaderContainer, UsernameContainer, ProfilePictureContainer, FullNameContainer} from "./Header.styles";
+import {HeaderContainer, UsernameContainer, ProfilePictureContainer, FullNameContainer, LogoutButton} from "./Header.styles";
 
 type HeaderProps = {
     logout: () => void;
@@ -35,14 +34,14 @@ const Header = ({ logout, sessionId, username, profilePic }: HeaderProps): React
                     Time Tracking
                 </Link>
             )}
-            {sessionId && (
+            {sessionId && username && (
                 <Dropdown overlay={menu} className="align-end">
                     <UsernameContainer className="ant-dropdown-link" href="#">
                         {profilePic && <ProfilePictureContainer src={profilePic} />}
                         <FullNameContainer>{username}</FullNameContainer>
                     </UsernameContainer>
-                </Dropdown>
-            )}
+                </Dropdown>)}
+            {sessionId && !username && <LogoutButton onClick={logout}>Logout</LogoutButton>}
             {!sessionId && <div className="filler"/>}
             {/* ^^ to push login to the end*/}
             {!sessionId && (

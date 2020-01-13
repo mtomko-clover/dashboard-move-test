@@ -53,10 +53,8 @@ export const ProfilePictureContainer = styled.img`
 `;
 
 export const LogoutButton = styled.div`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	padding: 10px;
-	align-items: center;
+	color: white;
+	text-align: right;
+	font-weight: bold;
 `;
 
