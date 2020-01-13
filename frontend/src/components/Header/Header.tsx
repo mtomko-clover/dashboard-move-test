@@ -36,15 +36,17 @@ const Header = ({ logout, sessionId, username, profilePic }: HeaderProps): React
                 </Link>
             )}
             {sessionId && (
-                <Dropdown overlay={menu}>
+                <Dropdown overlay={menu} className="align-end">
                     <UsernameContainer className="ant-dropdown-link" href="#">
                         {profilePic && <ProfilePictureContainer src={profilePic} />}
                         <FullNameContainer>{username}</FullNameContainer>
                     </UsernameContainer>
                 </Dropdown>
             )}
+            {!sessionId && <div className="filler"/>}
+            {/* ^^ to push login to the end*/}
             {!sessionId && (
-                <Link className="header_link" to="/">
+                <Link className="header_link align-text-end" to="/">
                     Login
                 </Link>
             )}
