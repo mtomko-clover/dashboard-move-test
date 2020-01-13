@@ -28,7 +28,6 @@ export class EmployeeUtil {
 
     public static getEmployeeFromUsername(username: string): Employee {
         let employee: Employee = new Employee("","");
-        console.log("username", username);
         switch (username) {
             case "aditya.singh" :
                 employee = new Employee("aditya.singh","Aditya Singh", AdityaSingh);

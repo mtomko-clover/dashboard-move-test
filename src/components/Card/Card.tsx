@@ -35,7 +35,7 @@ const Card = ({ date, query, title }: CardProps): ReactElement | null => {
 
     const value = (data && Object.keys(data).length) ? data[Object.keys(data)[0]].value : 0;
     const previous = (data && Object.keys(data).length) ? data[Object.keys(data)[0]].previous : null;
-    if (data) console.log("loading: ", loading, "error: ", error, "data: ", data, "previous: ", previous, "key: ", Object.keys(data));
+    // if (data) console.log("loading: ", loading, "error: ", error, "data: ", data, "previous: ", previous, "key: ", Object.keys(data));
 
     return (
         <CardContainer>
