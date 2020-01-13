@@ -48,6 +48,14 @@ code {
   align-items: center;
 }
 
+.align-end{
+  justify-content: flex-end;
+}
+
+.align-text-end{
+  text-align: right;
+}
+
 .ant-btn {
     border-radius: 0;
 }

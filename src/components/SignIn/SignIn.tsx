@@ -88,17 +88,17 @@ const SignIn = (props: SignInProps): ReactElement => {
     const [user, setUser] = useState<UserState>({
         username: "",
         password: ""
-    })
+    });
     const [environment, setEnvironment] = useState<string>("dev1");
 
-    const signedIn = CookiesUtil.getCookie(Cookies.SESSION_ID);
-    if (signedIn) {
-        props.history.push("/TimeTracker");
-    }
+    // const signedIn = CookiesUtil.getCookie(Cookies.SESSION_ID);
+    // if (signedIn) {
+    //     props.history.push("/TimeTracker");
+    // }
 
     const handleInputChange = (e: { target: HTMLInputElement }): void => {
         setUser({ ...user, [e.target.placeholder]: e.target.value });
-    }
+    };
 
     const useLogin = (e: ChangeEvent<any>): void => {
         if (user) {
@@ -108,7 +108,7 @@ const SignIn = (props: SignInProps): ReactElement => {
                 }
             );
         }
-    }
+    };
 
     const setEnvTarget = (e: ClickParam): void => {
         Environments.getEnvironments().forEach((env: Environment) => {
@@ -142,7 +142,7 @@ const SignIn = (props: SignInProps): ReactElement => {
             </button>
         </Login>
     )
-}
+};
 
 
 export default SignIn;

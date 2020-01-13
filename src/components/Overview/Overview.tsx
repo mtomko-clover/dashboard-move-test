@@ -1,32 +1,39 @@
 // import axios from "axios";
 import React, {Component} from "react";
 
-// import {AppOverview} from "../AppOverview";
 import {AppApprovalsChart, JiraDLVChart} from "../Charts";
 import {BigCard} from "../BigCard";
 import { News } from "../News";
 import WeeklyDigest from "./WeeklyDigest";
 import StoreProvider from "./store";
-import { List} from "antd";
 
 import {Column, Row} from "./Overview.styles";
-import RecentActivity from "../../models/RecentActivity";
-import {ACTIVITY_CATEGORIES} from "../../models/RecentActivityCategories";
-import RecentActivityRow from "../RecentActivityRow";
+import Announcement from "../../models/Announcement";
+import Announcements from "../Announcements/Announcements";
+import RecentActivities from "../RecentActivity/RecentActivities";
+import NewsUpdate from "../../models/NewsUpdate";
 
-const dummyData =[
-    new RecentActivity("aditya.singh", "Adi just presented an app to the Legal team", ACTIVITY_CATEGORIES.GCAL),
-    new RecentActivity("ricardo.ventura", "Ricardo met with a partner", ACTIVITY_CATEGORIES.GCAL),
-    new RecentActivity("nahmadkhani", "Nazanin approved an app", ACTIVITY_CATEGORIES.JIRA),
-    new RecentActivity("emily.lucek", "Emily updated a Confluence page", ACTIVITY_CATEGORIES.CONFLUENCE),
-    new RecentActivity("nicholas.ho", "Nicholas closed an Intercom conversation", ACTIVITY_CATEGORIES.INTERCOM),
-    new RecentActivity("rachel", "Rachel created a JIRA Dashboard", ACTIVITY_CATEGORIES.JIRA),
-    new RecentActivity("maricris.bonzo", "Maricris uploaded a video", ACTIVITY_CATEGORIES.YOUTUBE),
-    new RecentActivity("mike.tomko", "Tomko met with Albertsons", ACTIVITY_CATEGORIES.GCAL),
-    new RecentActivity("paul.petyo", "Paul deescalated an escalation", ACTIVITY_CATEGORIES.CONFLUENCE)
+
+interface State {
+    announcements: Announcement[];
+}
+
+let dummyAnnouncements = [
+    new Announcement(0,"Need new Technical Solutions Engineer to support Canada ISV. We’ve lost Raymond, Lauren, Andy in the past 3 months. Zero TSE replacements since then is impacting Canada ISV support", false),
+    new Announcement(1,"GMC Rollout testing on track in US + EMEA", true),
+    new Announcement(2,"App approval team planning to reject all backlog beyond first 25, and ask for resubmission via enhanced portal with additional info for CCPA/GDPR\n", true)
 ];
 
-export default class Overview extends Component<{}, {}> {
+export default class Overview extends Component<{}, State> {
+
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+          announcements: dummyAnnouncements
+        };
+        this.deleteAnnouncements = this.deleteAnnouncements.bind(this);
+    }
+
     //TODO rename
     runJoelsScript = async (appId: string): Promise<void> => {
         console.log("running Joels Script");
@@ -45,10 +52,33 @@ export default class Overview extends Component<{}, {}> {
         return "response";
     }
 
+    renderAnnouncements(): React.ReactElement {
+        const elements: any = [];
+        let i = 0;
+        this.state.announcements.forEach( announcement => {
+            elements.push( <Announcements key={i} announcement={announcement} deleteAnnouncement={this.deleteAnnouncements}/>);
+            i++;
+        });
+        return (<div>{elements}</div>);
+    }
+
+    deleteAnnouncements(id: number): void {
+        let index = 0;
+        if(this.state.announcements.length > 0) {
+            for (let i = 0; i < this.state.announcements.length; i++) {
+                if (this.state.announcements[i].id === id) {
+                    index = i;
+                }
+            }
+            this.setState({ announcements: this.state.announcements.slice(0, index).concat(this.state.announcements.slice(index + 1, this.state.announcements.length))});
+        }
+    }
+
     render(): React.ReactNode {
         return (
             <StoreProvider>
                 <Column>
+                    {this.renderAnnouncements()}
                     <WeeklyDigest />
                     <Row>
                         <News/>
@@ -57,24 +87,7 @@ export default class Overview extends Component<{}, {}> {
                         </BigCard>
                     </Row>
                     <Row>
-                        <BigCard title="Recent Activity">
-                            <List
-                                className="width_95 margin-bottom"
-                                itemLayout="horizontal"
-                                dataSource={dummyData}
-                                pagination={{
-                                    onChange: page => {
-                                        console.log(page);
-                                    },
-                                    pageSize: 7,
-                                }}
-                                renderItem={item => (
-                                    <List.Item>
-                                        <RecentActivityRow activity={item}/>
-                                    </List.Item>
-                                )}
-                            />
-                        </BigCard>
+                        <RecentActivities/>
                         <BigCard title="Recently Updated Apps" />
                     </Row>
                     <Row>
