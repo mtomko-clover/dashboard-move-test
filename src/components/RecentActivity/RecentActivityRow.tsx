@@ -6,12 +6,12 @@ import {EmployeeUtil} from "../../utils/EmployeeUtil";
 
 
 interface ActivityProps {
-    activity: RecentActivity
+    activity: RecentActivity;
 }
 
 const RecentRowContainer = styled.div`
     display: grid;
-    grid-template-columns: 10% 65% 25%;
+    grid-template-columns: 10% 70% 20%;
     width: 100%;
 `;
 
@@ -35,8 +35,8 @@ const Title = styled.div`
     font-size: 16px;
     padding-left: 20px;
     align-self: center;
+    color: ${({ theme }): string => theme.linkDark}
 `;
-
 
 const Category = styled.div`
     grid-column-start: 3;
@@ -45,18 +45,18 @@ const Category = styled.div`
     text-align: left;
     justify-content: flex-end;
     display: flex;
-    padding-right: 20px;
+    justify-content: flex-start;
     align-self: center;
+    padding-right: 20px;
+    grid-column-start: 3;
+    text-align: left;
+    font-family: Maison Mono;
+    font-size: 12px;
 `;
 
-export default class RecentActivityRow extends Component<ActivityProps, any> {
-
-    constructor(props: any) {
-        super(props);
-    }
-
+export default class RecentActivityRow extends Component<ActivityProps, {}> {
     render(): React.ReactNode {
-        let user = EmployeeUtil.getEmployeeFromUsername(this.props.activity.username);
+        const user = EmployeeUtil.getEmployeeFromUsername(this.props.activity.username);
         return (
             <RecentRowContainer>
                 <ProfilePic src={user.image}/>
