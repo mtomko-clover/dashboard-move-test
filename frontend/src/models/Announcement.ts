@@ -1,11 +1,11 @@
 export default class Announcement {
-    id: number
+    id: string;
     text: string;
-    announcement: boolean;
+    isUrgent: boolean;
 
-    constructor(id: number, text: string, announcement: boolean){
+    constructor(id: string, text: string, announcement: boolean){
         this.id = id;
         this.text = text;
-        this.announcement = announcement;
+        this.isUrgent = announcement;
     }
 }

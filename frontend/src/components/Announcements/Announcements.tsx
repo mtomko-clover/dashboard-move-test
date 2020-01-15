@@ -4,7 +4,7 @@ import {AnnouncementContainer, AnnouncementText, AnnouncementBullhornIcon, Annou
 
 interface AnnouncementProps {
     announcement: Announcement
-    deleteAnnouncement:(index: number) => void
+    deleteAnnouncement:(id: string) => void
 }
 
 export default class Announcements extends Component<AnnouncementProps, any> {
@@ -21,7 +21,7 @@ export default class Announcements extends Component<AnnouncementProps, any> {
     render(): React.ReactNode {
         return (
            <AnnouncementContainer>
-               {this.props.announcement.announcement ? (<AnnouncementBullhornIcon className="fas fa-bullhorn fa-lg"/>):(<AnnouncementExclamationIcon className="fas fa-exclamation fa-lg"/>)}
+               {this.props.announcement.isUrgent ? (<AnnouncementBullhornIcon className="fas fa-bullhorn fa-lg"/>):(<AnnouncementExclamationIcon className="fas fa-exclamation fa-lg"/>)}
                <AnnouncementText>{this.props.announcement.text}</AnnouncementText>
                <div className="filler"/>
                <AnnouncementDelete onClick={this.deleteAnnouncement} className="fas fa-times-circle"/>

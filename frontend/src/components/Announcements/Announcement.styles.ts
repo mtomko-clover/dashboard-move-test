@@ -31,3 +31,35 @@ export const AnnouncementDelete = styled.i`
    margin-left: 20px;
    color: rgba(0, 0, 0, 0.45);
 `;
+
+export const EditRow = styled.div`
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`;
+
+export const EditColumn = styled.div`
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flext-start;
+`;
+
+export const EditLabel = styled.div`
+        font-size: 16px;
+        font-style: bold;
+        margin-right: 10px;
+`;
+
+export const EditInput = styled.input`
+        font-size: 12px;
+        font-style: bold;
+        padding: 5px;
+        flex-grow: 1;
+        border: 1px solid #d9d9d9;
+`;
+
+export const CategoryRow = styled.input`
+
+    `;
