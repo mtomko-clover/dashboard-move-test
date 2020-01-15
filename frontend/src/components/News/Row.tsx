@@ -1,30 +1,24 @@
-import React, {Component} from "react";
+import React, {ReactElement} from "react";
 
-import NewsUpdate from "../../models/NewsUpdate";
-// import {NEWS_CATEGORIES} from "../../models/NewsCategories";
-
-import '../TimeTracking/TimeTracker.css';
-
+import NewsItem from "../../models/NewsItem";
 import {Row, RowDate, RowTitle, RowType} from "./News.styles";
 
 
 interface NewsRowProps {
-    update: NewsUpdate;
+    update: NewsItem;
 }
 
-const dateOptions = {day: "numeric", month: "2-digit"};
-
-export default class NewsRow extends Component<NewsRowProps, {}> {
-    render(): React.ReactNode {
-        const date = new Date(this.props.update.date).toLocaleDateString("en-US", dateOptions);
-
-        return (
-            <Row>
-                <RowDate>{date}</RowDate>
-                <RowTitle>{this.props.update.title}</RowTitle>
-                <RowType>{this.props.update.category}</RowType>
-            </Row>
-        )
-    }
+const NewsRow = ({ update }: NewsRowProps): ReactElement => {
+    const dateOptions = {day: "numeric", month: "2-digit"};
+    const date = new Date(Number(update.created_at)).toLocaleDateString("en-US", dateOptions);
+    console.log("NewsRow: ", update);
+    return (
+        <Row>
+            <RowDate>{date}</RowDate>
+            <RowTitle>{update.title}</RowTitle>
+            <RowType>{update.type}</RowType>
+        </Row>
+    )
 }
 
+export default NewsRow;

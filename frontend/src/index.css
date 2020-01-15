@@ -79,11 +79,20 @@ code {
   line-height: inherit !important;
 }
 
-.width_95{
-  width: 95%;
+.horizontal-padding {
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
-.ant-list{
+.news-list {
+  width: 100%;
+}
+
+ul.ant-pagination {
+  padding: 0 30px 0 30px;
+}
+
+.ant-list {
   flex-grow: 1;
   display: flex;
   flex-direction: column;

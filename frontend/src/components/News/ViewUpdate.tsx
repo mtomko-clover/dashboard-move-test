@@ -1,6 +1,7 @@
 import {Modal} from "antd";
 import React, {Component} from "react";
-import NewsUpdate from "../../models/NewsUpdate";
+
+import NewsItem from "../../models/NewsItem";
 import {ViewRow, ViewKey, ViewCategory, ViewDescription, ViewTitle, ProfilePictureContainer, UsernameContainer, FullNameContainer} from "./News.styles";
 import {EmployeeUtil} from "../../utils/EmployeeUtil";
 import Employee from "../../models/Employee";
@@ -8,7 +9,7 @@ import Employee from "../../models/Employee";
 interface ViewUpdateProps {
     showModal: boolean
     modalClosed:() => void
-    update: NewsUpdate
+    update:NewsItem 
 }
 
 interface State {
@@ -33,7 +34,7 @@ export default class ViewUpdate extends Component<ViewUpdateProps, State> {
     }
 
     render(): React.ReactNode {
-        let formatDate = months[this.props.update.date.getMonth()] + "  " + this.props.update.date.getDate() + ", " + this.props.update.date.getFullYear();
+        let formatDate = months[this.props.update.created_at.getMonth()] + "  " + this.props.update.created_at.getDate() + ", " + this.props.update.created_at.getFullYear();
         let user: Employee = EmployeeUtil.getEmployeeFromUsername(this.props.update.username);
         return (
             <Modal
@@ -56,7 +57,7 @@ export default class ViewUpdate extends Component<ViewUpdateProps, State> {
                     </UsernameContainer>
                     <div className="filler"/>
                     <ViewKey>{formatDate}</ViewKey>
-                    <ViewCategory>{this.props.update.category}</ViewCategory>
+                    <ViewCategory>{this.props.update.type}</ViewCategory>
                 </ViewRow>
             </Modal>
         )
