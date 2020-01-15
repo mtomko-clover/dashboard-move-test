@@ -1,9 +1,8 @@
-// import axios from "axios";
 import React, {Component} from "react";
 
 import {AppApprovalsChart, JiraDLVChart} from "../Charts";
 import {BigCard} from "../BigCard";
-import { News } from "../News";
+import {News} from "../News";
 import WeeklyDigest from "./WeeklyDigest";
 import StoreProvider from "./store";
 
@@ -11,7 +10,6 @@ import {Column, Row} from "./Overview.styles";
 import Announcement from "../../models/Announcement";
 import Announcements from "../Announcements/Announcements";
 import RecentActivities from "../RecentActivity/RecentActivities";
-import NewsUpdate from "../../models/NewsUpdate";
 
 
 interface State {
