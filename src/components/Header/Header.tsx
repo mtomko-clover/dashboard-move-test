@@ -30,9 +30,7 @@ const Header = ({ logout, sessionId, username, profilePic }: HeaderProps): React
                 Developer Relations
             </Link>
             {sessionId && (
-                <Link className="header_link" to="/TimeTracker">
-                    Time Tracking
-                </Link>
+                <div className="filler"/>
             )}
             {sessionId && username && (
                 <Dropdown overlay={menu} className="align-end">
