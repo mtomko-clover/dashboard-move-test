@@ -104,6 +104,7 @@ export const TextAreaInput = styled.textarea`
 export const ViewRow = styled.div`
     display: flex;
     flex-direction: row;
+    padding-top: 20px;
 `;
 
 export const ViewKey = styled.div`
@@ -127,4 +128,26 @@ export const ViewTitle = styled.div`
      font-size: 18px;
      font-style: bold;
      text-align: left;
+`;
+
+export const UsernameContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`;
+
+export const FullNameContainer = styled.div`
+    font-weight: 500;
+    font-size: 12px;
+    justify-content: flex-end;
+`;
+
+
+export const ProfilePictureContainer = styled.img`
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: 100% 0;
+    margin-right: 10px;
+    height: 25px;
+    width: 25px;
 `;
