@@ -100,3 +100,7 @@ code {
 .small_text{
   font-size: 12px;
 }
+
+.ant-btn{
+  border-radius: 5px;
+}
