@@ -5,9 +5,10 @@ export const AnnouncementContainer = styled.div`
      display: flex;
      flex-direction: row;
      background: white;
-     margin: 20px;
+     margin: 15px 40px;
      padding: 20px;
      align-items: center;
+     border-radius: 5px;
 `;
 
 export const AnnouncementText = styled.div`
@@ -28,4 +29,5 @@ export const AnnouncementExclamationIcon = styled.i`
 
 export const AnnouncementDelete = styled.i`
    margin-left: 20px;
+   color: rgba(0, 0, 0, 0.45);
 `;
