@@ -28,6 +28,9 @@ const Header = ({ logout, sessionId }: HeaderProps): ReactElement => {
                     Logout
                 </div>
             </Menu.Item>
+            <Menu.Item>
+                <Link to="/Admin">Admin Settings</Link>
+            </Menu.Item>
         </Menu>
     );
     const username = CookiesUtil.getCookie(Cookies.USERNAME);
