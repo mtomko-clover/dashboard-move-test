@@ -77,7 +77,7 @@ const App = ({ history }: RouteComponentProps): ReactElement => {
         <ThemeProvider theme={theme}>
             <AppContainer>
                 <GlobalStyles />
-                <Header logout={logout} sessionId={state.sessionId} username={state.user && state.user.fullName} profilePic={state.user && state.user.image}/>
+                <Header logout={logout} sessionId={state.sessionId}/>
                 <Route path="/" exact render={(props): ReactElement => <SignIn {...props} parentHandleSignIn={useSignIn}/>}/>
                 <Route path="/Home" component={Overview}/>
                 <Route path="/TimeTracker" component={TimeTracker} />

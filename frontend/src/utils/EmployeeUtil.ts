@@ -19,6 +19,8 @@ import Richelle from "../static/images/employees/Richelle_Herrli.jpg";
 import Sreya from "../static/images/employees/Sreya_Dutta.jpg";
 import Trey from "../static/images/employees/Trey_Cottingham.jpg";
 import Maricris from "../static/images/employees/Maricris_Bonzo.png";
+import BaoChau from "../static/images/employees/baochau.jpg";
+import UserIcon from "../static/images/employees/user.png";
 import Employee from "../models/Employee";
 
 
@@ -92,8 +94,11 @@ export class EmployeeUtil {
             case "maricris.bonzo":
                 employee = new Employee("maricris.bonzo","Maricris Bonzo", Maricris);
                 break;
+            case "baochau.nguyen":
+                employee = new Employee("baochau.nguyen", "Bao Chau Nguyen", BaoChau);
+                break;
             default:
-                employee = new Employee(username, "");
+                employee = new Employee(username, "", UserIcon);
 
         }
         return employee;
