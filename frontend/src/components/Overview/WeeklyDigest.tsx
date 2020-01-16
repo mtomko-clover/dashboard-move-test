@@ -5,7 +5,7 @@ import React, {ReactElement, useContext} from "react";
 
 import {Stats} from "./Stats";
 import {Header, Row} from "./Overview.styles";
-import {StoreContext} from "./store";
+import {OverviewContext} from "./store";
 
 
 /**
@@ -14,7 +14,7 @@ import {StoreContext} from "./store";
 const WeeklyDigest = (): ReactElement => {
 	const dateFormat = "MM/DD/YY";
 	const { WeekPicker } = DatePicker;
-	const { cardsStore: { cards, setCards }, dateStore: { date, setDate } } = useContext(StoreContext);
+	const { cardsStore: { cards, setCards }, dateStore: { date, setDate } } = useContext(OverviewContext);
 
 	function handleMenuClick(e: ClickParam): void {
 		message.info(cards[Number(e.key)].title);

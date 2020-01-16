@@ -51,7 +51,8 @@ const initialContext: Context = {
 		}
 	}
 }
-export const StoreContext = createContext<Context>(initialContext);
+
+export const OverviewContext = createContext<Context>(initialContext);
 
 export default ({ children }: { children: ReactNode }): ReactElement => {
 	const [cards, setCards] = useState(initialCardsState);
@@ -61,5 +62,5 @@ export default ({ children }: { children: ReactNode }): ReactElement => {
 		dateStore: {date, setDate}
 	};
 
-	return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+	return <OverviewContext.Provider value={store}>{children}</OverviewContext.Provider>
 };

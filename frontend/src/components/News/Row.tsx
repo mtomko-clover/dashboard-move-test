@@ -11,7 +11,8 @@ interface NewsRowProps {
 const NewsRow = ({ update }: NewsRowProps): ReactElement => {
     const dateOptions = {day: "numeric", month: "2-digit"};
     const date = new Date(Number(update.created_at)).toLocaleDateString("en-US", dateOptions);
-    console.log("NewsRow: ", update);
+    // console.log("NewsRow: ", update);
+
     return (
         <Row>
             <RowDate>{date}</RowDate>

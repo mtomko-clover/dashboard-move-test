@@ -5,7 +5,7 @@ import {gql} from "apollo-boost";
 import moment from "moment";
 import React, {useContext, useEffect, ReactElement} from "react";
 
-import {StoreContext} from "../Overview/store";
+import {OverviewContext} from "../Overview/store";
 import {Chart} from "./Charts.styles";
 
 
@@ -25,7 +25,7 @@ interface AppApprovalsChartProps {
 }
 
 const AppApprovalsChart = ({ category, value }: AppApprovalsChartProps): ReactElement | null => {
-    const { dateStore: { date } } = useContext(StoreContext);
+    const { dateStore: { date } } = useContext(OverviewContext);
     const dateF = "YYYY-MM-DD";
     const start = moment(date).startOf("week").format(dateF);
     const end = moment(date).endOf("week").format(dateF);

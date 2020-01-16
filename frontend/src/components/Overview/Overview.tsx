@@ -4,7 +4,8 @@ import {AppApprovalsChart, JiraDLVChart} from "../Charts";
 import {BigCard} from "../BigCard";
 import {News} from "../News";
 import WeeklyDigest from "./WeeklyDigest";
-import StoreProvider from "./store";
+import OverviewProvider from "./store";
+import NewsProvider from "../News/store";
 
 import {Column, Row} from "./Overview.styles";
 import Announcement from "../../models/Announcement";
@@ -74,12 +75,15 @@ export default class Overview extends Component<{}, State> {
 
     render(): React.ReactNode {
         return (
-            <StoreProvider>
-                <Column>
+            <Column>
                     {this.renderAnnouncements()}
-                    <WeeklyDigest />
+                    <OverviewProvider>
+                        <WeeklyDigest />
+                    </OverviewProvider>
                     <Row>
-                        <News/>
+                        <NewsProvider>
+                            <News />
+                        </NewsProvider>
                         <BigCard title="App Approvals">
                             <AppApprovalsChart category="title" value="amount" />
                         </BigCard>
@@ -95,7 +99,6 @@ export default class Overview extends Component<{}, State> {
                     </Row>
                     {/*<AppOverview appJson={singleResponse.data[0]}/>*/}
                 </Column>
-            </StoreProvider>
         );
     }
 }

@@ -1,21 +1,19 @@
 import {Button, Dropdown, Icon, Menu} from "antd";
 import {ClickParam} from "antd/es/menu";
-import React, {ReactElement, useState} from "react";
+import React, {Component} from "react";
 import styled from "styled-components";
 
-// import {NEWS_CATEGORIES} from "../models/NewsCategories"
-
-// import './TimeTracking/TimeTracker.css';
+import './TimeTracking/TimeTracker.css';
 
 interface CategoryProps {
-    setCategory?: (category: any) => any;
-    categories: any;
-    label: string;
-    category?: any;
+    setCategory:(category: any) => any
+    categories: any
+    label: string
+    category?: any
 }
 
 interface State {
-    category: any;
+    category: any
 }
 
 
@@ -33,36 +31,55 @@ const FilterLabel = styled.label`
   font-size: 16px;
 `;
 
-const CategoryDropdown = ({ category, categories, label }: CategoryProps): ReactElement => {
-    const initialState: State = {
-        category: category ? category : "Select"
-    };
-    const [state, setState] = useState(initialState);
+export default class CategoryDropdown extends Component<CategoryProps, any> {
 
-    const categoriesList: Array<string> = Object.values(categories);
-    const menu = (): ReactElement => (
-        <Menu>
-            {categoriesList.map((cat: string) => 
-                <Menu.Item key={cat} className="dropdown" onClick={setCategory}>{cat}</Menu.Item>
-            )}
-        </Menu>
-    )
+    constructor(props: any) {
+        super(props);
+        this.categoriesDropdown = this.categoriesDropdown.bind(this);
+        this.renderLabel = this.renderLabel.bind(this);
+        this.setCategory = this.setCategory.bind(this);
+        this.state = {
+            category: this.props.category !== undefined ?  this.props.category : "Select"
+        };
+    }
 
-    const setCategory = (e: ClickParam): void => {
+
+    categoriesDropdown(): React.ReactElement {
+        const categories: any = this.props.categories;
+        const elements = [];
+        for (let category in categories) {
+            const menuItem = <Menu.Item key={category} className="dropdown"
+                                        onClick={this.setCategory}>{category}</Menu.Item>;
+            elements.push(menuItem);
+        }
+        return <Menu>{elements}</Menu>;
+    }
+
+
+    renderLabel(text: string): React.ReactElement {
+        return <FilterLabel>{text}:</FilterLabel>
+    }
+
+    setCategory = (e: ClickParam) => {
         const category = e.key;
-        setState({ category });
+        this.setState({
+            category: category
+        });
+        this.props.setCategory(category);
     };
 
-    return (
-        <FilterDiv>
-            <FilterLabel>{label}:</FilterLabel>
-            <Dropdown className="margin-start" overlay={menu}>
-                <Button size="default">
-                    {state.category} <Icon type="down"/>
-                </Button>
-            </Dropdown>
-        </FilterDiv>
-    )
-}
 
-export default CategoryDropdown;
+    render(): React.ReactNode {
+        const categories = this.categoriesDropdown();
+        return (
+            <FilterDiv>
+                {this.renderLabel(this.props.label)}
+                <Dropdown className="margin-start" overlay={categories}>
+                    <Button size="default">
+                        {this.state.category} <Icon type="down"/>
+                    </Button>
+                </Dropdown>
+            </FilterDiv>
+        )
+    }
+}
