@@ -7,7 +7,7 @@
     "build-ts": "tsc",
     "postinstall": "npm run build-ts",
     "start:dev": "NODE_ENV=development ts-node-dev --respawn --http-parser=legacy -- src/server.ts",
-    "start": "NODE_ENV=production node dist/server.js"
+    "start": "NODE_ENV=production node --http-parser=legacy dist/server.js "
   },
   "repository": {
     "type": "git",

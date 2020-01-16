@@ -87,5 +87,22 @@ export async function setUpTables() {
     // await query(['ALTER TABLE conversation CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'])
     // TO-DO: type table
   }
+    if (!tables.includes('announcements')) {
+        const fields = [
+            'id INT NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            'author_id INT',
+            'author NVARCHAR(255)',
+            'created_at DATETIME DEFAULT CURRENT_TIMESTAMP',
+            'text NVARCHAR(255)',
+            'is_urgent BOOLEAN'
+        ];
+        await createTable('announcements', fields);
+    }
+    if (!tables.includes('user_announcement')) {
+        await createTable('user_announcement', [
+            'user_id INT NOT NULL',
+            'announcement_id INT PRIMARY KEY'
+        ]);
+    }
   return 'Finished setting up tables'
 }
