@@ -91,10 +91,10 @@ const SignIn = (props: SignInProps): ReactElement => {
     });
     const [environment, setEnvironment] = useState<string>("us");
 
-    // const signedIn = CookiesUtil.getCookie(Cookies.SESSION_ID);
-    // if (signedIn) {
-    //     props.history.push("/TimeTracker");
-    // }
+    const signedIn = CookiesUtil.getCookie(Cookies.SESSION_ID);
+    if (signedIn) {
+        props.history.push("/Home");
+    }
 
     const handleInputChange = (e: { target: HTMLInputElement }): void => {
         setUser({ ...user, [e.target.placeholder]: e.target.value });
