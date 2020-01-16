@@ -89,7 +89,7 @@ const SignIn = (props: SignInProps): ReactElement => {
         username: "",
         password: ""
     });
-    const [environment, setEnvironment] = useState<string>("dev1");
+    const [environment, setEnvironment] = useState<string>("us");
 
     // const signedIn = CookiesUtil.getCookie(Cookies.SESSION_ID);
     // if (signedIn) {
