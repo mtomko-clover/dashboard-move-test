@@ -27,7 +27,7 @@ export default class RecentActivities extends Component<any, any> {
         return (
             <BigCard title="Recent Activity">
                 <List
-                    className="width_95 margin-bottom"
+                    className="full-width margin-bottom"
                     itemLayout="horizontal"
                     dataSource={dummyData}
                     pagination={{
@@ -37,7 +37,7 @@ export default class RecentActivities extends Component<any, any> {
                         pageSize: 7,
                     }}
                     renderItem={item => (
-                        <List.Item>
+                        <List.Item className="horizontal-padding">
                             <RecentActivityRow activity={item}/>
                         </List.Item>
                     )}

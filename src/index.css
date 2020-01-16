@@ -84,7 +84,7 @@ code {
   padding-right: 10px;
 }
 
-.news-list {
+.full-width {
   width: 100%;
 }
 
@@ -102,8 +102,23 @@ ul.ant-pagination {
   flex-grow: 1;
 }
 
-.news_update{
-  width: 200px;
+.ant-modal-header, .ant-modal-footer {
+  display: flex;
+  align-items: center;
+  height: 70px;
+}
+
+.ant-modal-footer {
+  justify-content: flex-end;
+}
+
+.ant-modal-title {
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.ant-modal-body {
+  padding: 20px;
 }
 
 .small_text{
