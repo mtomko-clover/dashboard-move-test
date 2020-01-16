@@ -7,7 +7,7 @@ export const NewsItems = styled.div`
 
 export const Heading = styled.div`
     display: grid;
-    grid-template-columns: 10% 70% 20%;
+    grid-template-columns: 56px 1fr 85px;
     width: 100%;
     padding: 20px 10px;
     background-color: #FAFAFA;
@@ -22,7 +22,7 @@ export const NewsDate = styled.div`
 export const Title = styled.div`
     grid-column-start: 2;
     font-size: 14px;
-    padding-left: 20px;
+    padding: 0 20px 0 20px;
     font-weight: 900;
 `;
 
@@ -34,10 +34,9 @@ export const Type = styled.div`
     padding-right: 20px;
 `;
 
-// NewsUpdateRow
 export const Row = styled.div`
     display: grid;
-    grid-template-columns: 10% 70% 20%;
+    grid-template-columns: 56px 1fr 85px;
     width: 100%
 `;
 
@@ -49,14 +48,15 @@ export const RowDate = styled.div`
 `;
 
 export const RowTitle = styled.div`
+    box-sizing: content-box;
     grid-column-start: 2;
     white-space: nowrap;
-    width: 100%;                   /* IE6 needs any width */
+    // width: 100%;                   /* IE6 needs any width */
     overflow: hidden;              /* "overflow" value must be different from  visible"*/ 
     -o-text-overflow: ellipsis;    /* Opera < 11*/
     text-overflow:    ellipsis; 
     font-size: 16px;
-    padding-left: 20px;
+    padding: 0 20px 0 20px;
     color: ${({ theme }): string => theme.linkDark};
 `;
 
@@ -70,10 +70,11 @@ export const RowType = styled.div`
 `;
 
 export const EditRow = styled.div`
-    padding: 10px;
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding: 10px;
+    width: 250px;
 `;
 
 export const EditColumn = styled.div`
@@ -84,21 +85,29 @@ export const EditColumn = styled.div`
 `;
 
 export const EditLabel = styled.div`
-        font-size: 16px;
-        font-style: bold;
-        margin-right: 10px;
+    font-size: 16px;
+    font-style: bold;
+    margin-right: 10px;
 `;
 
 export const EditInput = styled.input`
-        font-size: 12px;
-        font-style: bold;
-        padding: 5px;
-        flex-grow: 1;
-        border: 1px solid #d9d9d9;
+    padding: 10px;
+    flex-grow: 1;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    font-family: "Maison Mono";
+    font-size: 14px;
+    font-style: bold;
 `;
-
+    
 export const TextAreaInput = styled.textarea`
-        border: 1px solid #d9d9d9;
+    height: 100px;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: "Maison Mono";
+    font-size: 14px;
+    font-style: bold;
 `;
 
 export const ViewRow = styled.div`

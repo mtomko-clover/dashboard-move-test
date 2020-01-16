@@ -13,15 +13,19 @@ export const GlobalStyles = createGlobalStyle`
 		word-spacing: -5px;
 		letter-spacing: 0;
 	}
-
+	
 	html, body {
 		height: 100vh;
 	}
-
+	
 	html {
 		overflow: hidden;
 		background: #F0F2F5;
 		box-sizing: border-box;
+	}
+	
+	body::-webkit-scrollbar {
+		width: 0 !important
 	}
 
 	body {
