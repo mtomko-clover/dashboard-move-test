@@ -5,6 +5,10 @@ import moment from 'moment'
 
 dotenv.config({ path: './.env' })
 
+import { setUpTables, query } from './db/fns'
+
+setUpTables()
+
 console.log(process.env.JIRA_URL, process.env.JIRA_TOKEN, process.env.ANSWERHUB_URL, process.env.ANSWERHUB_TOKEN)
 
 type AnswerHubResponse = {
@@ -23,6 +27,20 @@ const typeDefs = gql`
     sessionId: String
   }
 
+  type NewsItem {
+    created_at: String
+    id: ID
+    author: String
+    title: String
+    description: String
+    link: String
+    type: String
+  }
+
+  type UpdateNewsItemResponse {
+    message: String
+  }
+
   type Query {
     appsApproved(start: String, end: String): Metrics
     appsPending: Metrics
@@ -35,6 +53,11 @@ const typeDefs = gql`
     communityQuestions(start: String, end: String): Metrics
     communityAnswers(start: String, end: String): Metrics
     login(username: String, password: String, environment: String): LoginResponse
+    fetchNewsItems: [NewsItem]
+  }
+
+  type Mutation {
+    updateNewsItem(date: String, title: String, description: String, type: String, username: String): UpdateNewsItemResponse
   }
 `
 
@@ -60,23 +83,23 @@ function getPriorWeekDates(start: string, end: string, dateFormat: string) {
 }
 
 const internal = async (postData: any, env: any) => {
-    try {
-        const response = await axios({
-            method: 'post',
-            url: `https://${env}/cos/v1/dashboard/internal/login`,
-            headers: { 'Preferred-Auth': 'internal' },
-            data: postData,
-            withCredentials: true,
-        })
-        if (response.headers['set-cookie']) {
-            const cookies = response.headers['set-cookie'][0]
-            const [internalSessionId] = cookies.split(';')
-            return internalSessionId.substring(16, internalSessionId.length)
-        }
-        return false
-    } catch (err) {
-        return err.response.data
+  try {
+    const response = await axios({
+      method: 'post',
+      url: `https://${env}/cos/v1/dashboard/internal/login`,
+      headers: { 'Preferred-Auth': 'internal' },
+      data: postData,
+      withCredentials: true,
+    })
+    if (response.headers['set-cookie']) {
+      const cookies = response.headers['set-cookie'][0]
+      const [internalSessionId] = cookies.split(';')
+      return internalSessionId.substring(16, internalSessionId.length)
     }
+    return false
+  } catch (err) {
+    return err.response.data
+  }
 }
 
 const setCookie = (res: any, key: any, id: any) => {
@@ -84,6 +107,7 @@ const setCookie = (res: any, key: any, id: any) => {
   // res.set('cookie', cookieValue);
 }
 
+// TO-DO: break these out into separate files
 const resolvers = {
   Query: {
     appsApproved: async (_: any, req: any) => {
@@ -254,18 +278,43 @@ const resolvers = {
           username, password
       };
       if (username && password) {
-          const sessionId = await internal(data, environment.environment);
-          if(sessionId instanceof Object){
+          const sessionId = await internal(data, environment.environment)
+          if (sessionId instanceof Object) {
               console.log(sessionId)
               return { sessionId: sessionId.message }
-          }
-          else if (sessionId) {
-              setCookie(ctx.res, "sessionId", sessionId);
+          } else if (sessionId) {
+              setCookie(ctx.res, "sessionId", sessionId)
               return { sessionId }
           }
       }
       return { sessionId: 'Missing params' }
-    }
+    },
+    fetchNewsItems: async () => {
+      const response = await query(['SELECT * FROM news;'])
+      console.log('fetchNewsItems: ', response[0])
+      return response[0]
+    },
+  },
+  Mutation: {
+    // TO-DO: possibly rename this to createNewsItem?
+    updateNewsItem: async (_: any, args: any) => {
+      try {
+        const { date, title, description, type, username } = args
+        console.log('updateNewsItem: ', date, title, description, type, username)
+  
+        const fields = [`"${date}"`, `"${title}"`, `"${description}"`, `"${type}"`, `"${username}"`]  
+        const response = await query([
+          `INSERT INTO news (created_at, title, description, type, author) VALUES (${fields.join(',')});`,
+          'COMMIT;',
+        ])
+        console.log('updateNewsItem response: ', response)
+        // TO-DO: add to user_news table too
+        return { message: 'success!' }
+      } catch ({ message }) {
+        console.error(message)
+        return { message }
+      }
+    },
   }
 }
 

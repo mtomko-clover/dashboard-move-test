@@ -1,6 +1,7 @@
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, LOCAL_PATH, LOCAL_USER } = process.env
 
-console.log(DB_NAME)
+console.log('database name: ', DB_NAME)
+
 const config: { [key: string]: any } = {
   development: {
     user: LOCAL_USER,

@@ -8,6 +8,7 @@ export async function query(queries: Array<string>): Promise<any> {
   try {
     conn = await db.getConnection()
     if (conn && 'query' in conn) {
+      await conn.query('use dashboard;')
       return Promise.all(queries.map(async queryStr => await conn!.query(queryStr)))
     }
   } catch (e) {
@@ -32,7 +33,8 @@ export async function queryPersona(id: any) {
 
 export async function showTables(): Promise<Array<string>> {
   const result = await query(['SHOW TABLES;'])
-  return result[0] && Array.isArray(result[0]) ? result[0].map((obj: { Tables_in_intercom: string }) => obj['Tables_in_intercom']) : []
+  console.log('showTables: ', result)
+  return result[0] && Array.isArray(result[0]) ? result[0].map((obj: { Tables_in_dashboard: string }) => obj['Tables_in_dashboard']) : []
 }
 
 export async function createTable(tableName: string, columns: Array<string>) {
@@ -49,38 +51,41 @@ export async function createTable(tableName: string, columns: Array<string>) {
 
 export async function setUpTables() {
   const tables = await showTables()
-  console.log(tables)
+  console.log('setUpTables: ', tables)
 
   if (!tables.includes('user')) {
     const fields = [
-      'id VARCHAR(255) PRIMARY KEY',
+      'id INT NOT NULL AUTO_INCREMENT PRIMARY KEY',
       'name NVARCHAR(255)',
       'username NVARCHAR(255)',
       'email NVARCHAR(255)',
       'token NVARCHAR(255)',
       'session_count INT',
+      'photo BLOB'
     ]
     await createTable('user', fields)
   }
   if (!tables.includes('user_news')) {
     await createTable('user_news', [
-      'user_id VARCHAR(255) NOT NULL',
-      'news_id VARCHAR(255) PRIMARY KEY'
+      'user_id INT NOT NULL',
+      'news_id INT PRIMARY KEY'
     ])
   }
   if (!tables.includes('news')) {
     const fields = [
-      'id VARCHAR(255) PRIMARY KEY',
-      'author_id VARCHAR(255)',
+      'id INT NOT NULL AUTO_INCREMENT PRIMARY KEY',
+      'author_id INT',
       'author NVARCHAR(255)',
       'created_at DATETIME',
       'updated_at DATETIME',
       'title NVARCHAR(255)',
+      'description NVARCHAR(4000)',
       'link VARCHAR(255)',
       'type VARCHAR(255)'
     ]
     await createTable('news', fields)
     // await query(['ALTER TABLE conversation CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'])
+    // TO-DO: type table
   }
   return 'Finished setting up tables'
 }
