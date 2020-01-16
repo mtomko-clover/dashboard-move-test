@@ -1,5 +1,9 @@
 import {gql} from "apollo-boost";
 
+
+/**
+ * Overview/Weekly Digest Queries
+ */
 export const appsApproved = gql`
 	query AppsApproved($start: String, $end: String) {
 		appsApproved(start: $start, end: $end) {
@@ -83,3 +87,20 @@ export const communityAnswers = gql`
 		}
 	}
 `
+
+/**
+ * News Queries
+ */
+export const fetchNewsItems = gql`
+	query {
+		fetchNewsItems {
+			created_at
+			id
+			author
+			title
+			description
+			link
+			type
+		}
+	}
+	`;
