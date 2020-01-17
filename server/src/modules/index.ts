@@ -4,7 +4,7 @@ import path from 'path'
 
 
 const typesArray = fileLoader(path.join(__dirname, './**/*.graphql'))
-const resolversArray = fileLoader(path.join(__dirname, './**/resolvers.ts'))
+const resolversArray = fileLoader(path.join(__dirname, './**/resolvers.*'))
 
 const typeDefs = mergeTypes(typesArray, { all: true })
 const resolvers = mergeResolvers(resolversArray)
