@@ -1,17 +1,25 @@
 import React, {ReactElement} from "react";
 import {Link} from "react-router-dom";
-import {Menu, Dropdown} from "antd";
+import {Dropdown, Menu} from "antd";
 import logo from "../../static/clover-logo.png";
-import {HeaderContainer, UsernameContainer, ProfilePictureContainer, FullNameContainer, LogoutButton} from "./Header.styles";
+import {
+    FullNameContainer,
+    HeaderContainer,
+    LogoutButton,
+    ProfilePictureContainer,
+    UsernameContainer
+} from "./Header.styles";
+import {CookiesUtil} from "../../utils/CookiesUtil";
+import {Cookies} from "../../utils/Cookies";
+import {EmployeeUtil} from "../../utils/EmployeeUtil";
 
 type HeaderProps = {
     logout: () => void;
     sessionId: string | undefined;
-    username: string | undefined;
-    profilePic?: any;
 }
 
-const Header = ({ logout, sessionId, username, profilePic }: HeaderProps): ReactElement => {
+
+const Header = ({ logout, sessionId }: HeaderProps): ReactElement => {
     const menu = (
         <Menu>
             <Menu.Item>
@@ -20,8 +28,14 @@ const Header = ({ logout, sessionId, username, profilePic }: HeaderProps): React
                     Logout
                 </div>
             </Menu.Item>
+            <Menu.Item>
+                <Link to="/Admin">Admin Settings</Link>
+            </Menu.Item>
         </Menu>
     );
+    const username = CookiesUtil.getCookie(Cookies.USERNAME);
+    const user = EmployeeUtil.getEmployeeFromUsername(username);
+    const name = user.fullName.length > 0 ? user.fullName : user.username;
 
     return (
         <HeaderContainer>
@@ -30,15 +44,13 @@ const Header = ({ logout, sessionId, username, profilePic }: HeaderProps): React
                 Developer Relations
             </Link>
             {sessionId && (
-                <Link className="header_link" to="/TimeTracker">
-                    Time Tracking
-                </Link>
+                <div className="filler"/>
             )}
             {sessionId && username && (
                 <Dropdown overlay={menu} className="align-end">
                     <UsernameContainer className="ant-dropdown-link" href="#">
-                        {profilePic && <ProfilePictureContainer src={profilePic} />}
-                        <FullNameContainer>{username}</FullNameContainer>
+                        {user.image && <ProfilePictureContainer src={user.image} />}
+                        <FullNameContainer>{name}</FullNameContainer>
                     </UsernameContainer>
                 </Dropdown>)}
             {sessionId && !username && <LogoutButton onClick={logout}>Logout</LogoutButton>}
