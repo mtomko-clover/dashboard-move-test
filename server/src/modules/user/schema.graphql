@@ -1,0 +1,30 @@
+type User {
+  id: ID!
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  token: String
+  sessionCount: Int
+  roles: [Role]
+  news: [NewsItem]
+}
+
+type LoginResponse {
+  sessionId: String
+}
+
+type Query {
+  me: User
+  users: [User]
+  user(id: ID!): User
+}
+
+type Mutation {
+  login(username: String!, password: String!, environment: String!): LoginResponse
+}
+
+enum Role {
+  ADMIN
+  USER
+}

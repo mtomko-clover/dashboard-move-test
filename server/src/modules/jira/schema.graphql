@@ -1,0 +1,10 @@
+type Query {
+  appsApproved(start: String, end: String): Metrics
+  appsPending(end: String): Metrics
+  appsRejected(start: String, end: String): Metrics
+  appsSubmitted(start: String, end: String): Metrics
+  devsApproved(start: String, end: String): Metrics
+  devsPending: Metrics
+  devsRejected(start: String, end: String): Metrics
+  devsSubmitted(start: String, end: String): Metrics
+}
