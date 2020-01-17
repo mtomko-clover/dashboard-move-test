@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build-ts": "tsc",
     "postinstall": "npm run build-ts",
+    "build-ts": "tsc && npm run copy-to-dist",
+    "copy-to-dist": "copyfiles --up 1 './src/modules/**/schema.graphql' dist",
     "start:dev": "NODE_ENV=development ts-node-dev --respawn --http-parser=legacy -- src/server.ts",
     "start": "NODE_ENV=production node --http-parser=legacy dist/server.js "
   },
@@ -35,6 +36,7 @@
     "@types/axios": "^0.14.0",
     "@types/cors": "^2.8.6",
     "@types/dotenv": "^8.2.0",
+    "copyfiles": "^2.1.1",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.7.4"
   }
