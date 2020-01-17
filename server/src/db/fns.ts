@@ -82,7 +82,7 @@ export async function setUpTables() {
       'text NVARCHAR(255)',
       'is_urgent BOOLEAN'
     ]
-    await createTable('announcements', fields);
+    await createTable('announcements', fields)
   }
   if (!tables.includes('user_announcement')) {
     await createTable('user_announcement', [

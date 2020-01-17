@@ -22,7 +22,7 @@ const internal = async (postData: any, env: any) => {
 }
 
 const setCookie = (res: any, key: any, id: any) => {
-  res.cookie(key, id, { maxAge: 3600000 });
+  res.cookie(key, id, { maxAge: 3600000 })
   // res.set('cookie', cookieValue);
 }
 
