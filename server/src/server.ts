@@ -1,15 +1,9 @@
 import * as dotenv from 'dotenv'
 dotenv.config({ path: './.env' })
-
 import { ApolloServer, ServerInfo } from 'apollo-server'
 
 import schema from './modules'
 
-// import { setUpTables } from './db/fns'
-
-// setUpTables()
-
-// console.log(process.env)
 
 const server = new ApolloServer({ schema })
 

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { NextFunction, Request, Response } from 'express'
 import moment from 'moment'
 
 
@@ -32,21 +31,4 @@ export function formatDate(epoch: number) {
   }
 
   return `"${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())} ${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}"`
-}
-
-export function catchError(fn?: any) {
-  return (req?: Request, res?: Response, next?: NextFunction) => fn(req, res, next).catch(next)
-}
-
-interface IError extends Error {
-  status: number
-}
-
-export function handleError(err: IError, _: Request, res: Response) {
-  const errorDetails = {
-    message: err.message,
-    stack: err.stack || '',
-    status: err.status
-  }
-  return res.status(err.status || 500).json(errorDetails)
 }
