@@ -1,3 +1,4 @@
+// import axios from "axios";
 import React, {Component} from "react";
 
 import {AppApprovalsChart, JiraDLVChart} from "../Charts";
@@ -11,19 +12,24 @@ import {Column, Row} from "./Overview.styles";
 import Announcement from "../../models/Announcement";
 import Announcements from "../Announcements/Announcements";
 import RecentActivities from "../RecentActivity/RecentActivities";
+import {CookiesUtil} from "../../utils/CookiesUtil";
+import {Cookies} from "../../utils/Cookies";
+const uuid  = require("react-uuid");
 
 
 interface State {
     announcements: Announcement[];
 }
 
+
+
 let dummyAnnouncements = [
-    new Announcement(0,"Need new Technical Solutions Engineer to support Canada ISV. We’ve lost Raymond, Lauren, Andy in the past 3 months. Zero TSE replacements since then is impacting Canada ISV support", false),
-    new Announcement(1,"GMC Rollout testing on track in US + EMEA", true),
-    new Announcement(2,"App approval team planning to reject all backlog beyond first 25, and ask for resubmission via enhanced portal with additional info for CCPA/GDPR\n", true)
+    new Announcement(uuid(),"Need new Technical Solutions Engineer to support Canada ISV. We’ve lost Raymond, Lauren, Andy in the past 3 months. Zero TSE replacements since then is impacting Canada ISV support", false),
+    new Announcement(uuid(),"GMC Rollout testing on track in US + EMEA", true),
+    new Announcement(uuid(),"App approval team planning to reject all backlog beyond first 25, and ask for resubmission via enhanced portal with additional info for CCPA/GDPR\n", true)
 ];
 
-export default class Overview extends Component<{}, State> {
+export default class Overview extends Component<any, State> {
 
     constructor(props: {}) {
         super(props);
@@ -51,6 +57,10 @@ export default class Overview extends Component<{}, State> {
         return "response";
     }
 
+    addAnnouncement(announcement: Announcement): void {
+        dummyAnnouncements.push(announcement);
+    }
+
     renderAnnouncements(): React.ReactElement {
         const elements: any = [];
         let i = 0;
@@ -61,7 +71,7 @@ export default class Overview extends Component<{}, State> {
         return (<div>{elements}</div>);
     }
 
-    deleteAnnouncements(id: number): void {
+    deleteAnnouncements(id: string): void {
         let index = 0;
         if(this.state.announcements.length > 0) {
             for (let i = 0; i < this.state.announcements.length; i++) {
