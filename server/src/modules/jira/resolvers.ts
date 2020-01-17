@@ -1,4 +1,5 @@
 import { getPriorWeekDates, jiraAPI } from '../../lib/utils'
+import { query } from '../../db/fns'
 
 
 export default {
@@ -8,13 +9,11 @@ export default {
         const { start, end } = req
         const { startPriorWeek, endPriorWeek } = getPriorWeekDates(start, end, 'YYYY-MM-DD')
 
-        const jql_1 = `project%20%3D%20DAA%20AND%20summary%20!~%20QA%20AND%20status%20in%20(Resolved%2CClose)%20AND%20resolution%20in%20(Approved%2CFixed%2CDone)%20AND%20resolutiondate%20>%3D%20${start}%20AND%20resolutiondate%20<%20${end}`
-        const jql_2 = `project%20%3D%20DAA%20AND%20summary%20!~%20QA%20AND%20status%20in%20(Resolved%2CClose)%20AND%20resolution%20in%20(Approved%2CFixed%2CDone)%20AND%20resolutiondate%20>%3D%20${startPriorWeek}%20AND%20resolutiondate%20<%20${endPriorWeek}`
-        const thisWeek = await jiraAPI.get(`/search?jql=${jql_1}`)
-        const priorWeek = await jiraAPI.get(`/search?jql=${jql_2}`)
+        const [current] = await query([`SELECT SUM(approved) FROM app_approvals WHERE date >= "${start}" AND date <= "${end}";`])
+        const [prior] = await query([`SELECT SUM(approved) FROM app_approvals WHERE date >= "${startPriorWeek}" AND date <= "${endPriorWeek}";`])
+        console.log(start, end, current[0]['SUM(approved)'], prior[0]['SUM(approved)'])
 
-        console.log(start, end, startPriorWeek, endPriorWeek, thisWeek.data.total, priorWeek.data.total)
-        return { value: thisWeek.data.total, previous: priorWeek.data.total }
+        return { value: current[0]['SUM(approved)'], previous: prior[0]['SUM(approved)'] }
       } catch (e) {
         console.log(e)
         return { value: null, previous: null }
@@ -56,7 +55,7 @@ export default {
     },
     appsPending: async (_: any, { end }: any) => {
       try {
-          console.log('appsPending: ', end)
+        console.log('appsPending: ', end)
         const jql = `project%20%3D%20DAA%20AND%20summary%20!~%20QA%20AND%20status%20in%20(Open%2C"In%20Progress"%2CWaiting-For-Info%2CIn-Progress%2C"Needs%20Approval"%2C"In%20Review"%2C"In%20QA")%20AND%20createdDate%20<%3D%20${end}`
         const response = await jiraAPI.get(`/search?jql=${jql}`)
         const { total } = response.data
