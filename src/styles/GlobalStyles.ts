@@ -10,10 +10,16 @@ export const GlobalStyles = createGlobalStyle`
 		font-size: 16px;
 		text-rendering: optimizeLegibility;
 		-webkit-font-smoothing: antialiased;
-		word-spacing: -5px;
-		letter-spacing: 0;
 	}
-	
+
+	/* word/letter-spacing only applies to Chrome 29+ */
+	@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+		html * {
+			word-spacing: -5px;
+			letter-spacing: 0;
+		}
+	}
+
 	html, body {
 		height: 100vh;
 	}
@@ -23,7 +29,7 @@ export const GlobalStyles = createGlobalStyle`
 		background: #F0F2F5;
 		box-sizing: border-box;
 	}
-	
+
 	body::-webkit-scrollbar {
 		width: 0 !important
 	}
@@ -36,7 +42,7 @@ export const GlobalStyles = createGlobalStyle`
 		-moz-osx-font-smoothing: grayscale;
 	}
 
-	// hides amcharts logo from charts
+	/* hides amcharts logo from charts */
 	g[aria-labelledby$="-title"] {
 		visibility: hidden;
 	}
