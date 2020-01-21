@@ -1,4 +1,4 @@
-import React, {ReactElement, ReactNode} from "react";
+import React, {ReactElement} from "react";
 import {useQuery} from "@apollo/react-hooks";
 import {fetchAnnouncementItems} from "../../utils/queries";
 import Announcement from "./Announcement";
