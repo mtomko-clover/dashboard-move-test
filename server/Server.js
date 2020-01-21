@@ -69,5 +69,5 @@ app.post('/app_by_id', async (req, res) => {
 
 });
 
-// app.use(express.static('build/'));
+app.use(express.static('build/'));
 app.listen(3001);
