@@ -4,9 +4,8 @@ import { query } from '../../db/fns'
 
 export default {
   Query: {
-    appsApproved: async (_: any, req: any) => {
+    appsApproved: async (_: any, { start, end }: any) => {
       try {
-        const { start, end } = req
         const { startPriorWeek, endPriorWeek } = getPriorWeekDates(start, end, 'YYYY-MM-DD')
 
         const [current] = await query([`SELECT SUM(approved) FROM app_approvals WHERE date >= "${start}" AND date <= "${end}";`])
@@ -15,60 +14,52 @@ export default {
 
         return { value: current[0]['SUM(approved)'], previous: prior[0]['SUM(approved)'] }
       } catch (e) {
-        console.log(e)
+        console.log('appsApproved: ', e)
         return { value: null, previous: null }
       }
     },
-    appsSubmitted: async (_: any, req: any) => {
+    appsSubmitted: async (_: any, { start, end }: any) => {
       try {
-        const { start, end } = req
         const { startPriorWeek, endPriorWeek } = getPriorWeekDates(start, end, 'YYYY-MM-DD')
 
-        const jql_1 = `project%3DDAA%20AND%20summary%20!~%20QA%20AND%20status%20in%20(Open%2C"In%20Progress"%2CWaiting-For-Info%2CIn-Progress%2C"Needs%20Approval"%2C"In%20Review"%2C"In%20QA")%20AND%20created%20>%3D%20${start}%20AND%20created%20<%3D%20${end}`
-        const jql_2 = `project%3DDAA%20AND%20summary%20!~%20QA%20AND%20status%20in%20(Open%2C"In%20Progress"%2CWaiting-For-Info%2CIn-Progress%2C"Needs%20Approval"%2C"In%20Review"%2C"In%20QA")%20AND%20created%20>%3D%20${startPriorWeek}%20AND%20created%20<%3D%20${endPriorWeek}`
-        const thisWeek = await jiraAPI.get(`/search?jql=${jql_1}`)
-        const priorWeek = await jiraAPI.get(`/search?jql=${jql_2}`)
+        const [current] = await query([`SELECT SUM(submitted) FROM app_approvals WHERE date >= "${start}" AND date <= "${end}";`])
+        const [prior] = await query([`SELECT SUM(submitted) FROM app_approvals WHERE date >= "${startPriorWeek}" AND date <= "${endPriorWeek}";`])
+        console.log(start, end, current[0]['SUM(submitted)'], prior[0]['SUM(submitted)'])
 
-        console.log(start, end, startPriorWeek, endPriorWeek, thisWeek.data.total, priorWeek.data.total)
-        return { value: thisWeek.data.total, previous: priorWeek.data.total }
+        return { value: current[0]['SUM(submitted)'], previous: prior[0]['SUM(submitted)'] }
       } catch (e) {
-        console.log(e)
+        console.log('appsSubmitted: ', e)
         return { value: null, previous: null }
       }
     },
-    appsRejected: async (_: any, req: any) => {
+    appsRejected: async (_: any, { start, end }: any) => {
       try {
-        const { start, end } = req
         const { startPriorWeek, endPriorWeek } = getPriorWeekDates(start, end, 'YYYY-MM-DD')
 
-        const jql_1 = `project%20%3D%20DAA%20AND%20summary%20!~%20QA%20AND%20status%20in%20(Resolved%2CClose)%20AND%20resolution%20%3D%20Denied%20AND%20resolutiondate%20>%3D%20${start}%20AND%20resolutiondate%20<%20${end}`
-        const jql_2 = `project%20%3D%20DAA%20AND%20summary%20!~%20QA%20AND%20status%20in%20(Resolved%2CClose)%20AND%20resolution%20%3D%20Denied%20AND%20resolutiondate%20>%3D%20${startPriorWeek}%20AND%20resolutiondate%20<%20${endPriorWeek}`
-        const thisWeek = await jiraAPI.get(`/search?jql=${jql_1}`)
-        const priorWeek = await jiraAPI.get(`/search?jql=${jql_2}`)
+        const [current] = await query([`SELECT SUM(rejected) FROM app_approvals WHERE date >= "${start}" AND date <= "${end}";`])
+        const [prior] = await query([`SELECT SUM(rejected) FROM app_approvals WHERE date >= "${startPriorWeek}" AND date <= "${endPriorWeek}";`])
+        console.log(start, end, current[0]['SUM(rejected)'], prior[0]['SUM(rejected)'])
 
-        console.log(start, end, startPriorWeek, endPriorWeek, thisWeek.data.total, priorWeek.data.total)
-        return { value: thisWeek.data.total, previous: priorWeek.data.total }
+        return { value: current[0]['SUM(rejected)'], previous: prior[0]['SUM(rejected)'] }
       } catch (e) {
-        console.error(e)
+        console.error('appsRejected', e)
         return { value: null, previous: null }
       }
     },
-    appsPending: async (_: any, { end }: any) => {
+    appsPending: async (_: any, { start }: any) => {
       try {
-        console.log('appsPending: ', end)
-        const jql = `project%20%3D%20DAA%20AND%20summary%20!~%20QA%20AND%20status%20in%20(Open%2C"In%20Progress"%2CWaiting-For-Info%2CIn-Progress%2C"Needs%20Approval"%2C"In%20Review"%2C"In%20QA")%20AND%20createdDate%20<%3D%20${end}`
-        const response = await jiraAPI.get(`/search?jql=${jql}`)
-        const { total } = response.data
 
-        return { value: total }
+        const [current] = await query([`SELECT pending FROM app_approvals WHERE date = "${start}";`])
+        console.log(start, current[0]['pending'])
+
+        return { value: current[0]['pending'] }
       } catch (e) {
         console.error(e)
         return { value: null }
       }
     },
-    devsApproved: async (_: any, req: any) => {
+    devsApproved: async (_: any, { start, end }: any) => {
       try {
-        const { start, end } = req
         const { startPriorWeek, endPriorWeek } = getPriorWeekDates(start, end, 'YYYY-MM-DD')
 
         // Uses 'updatedDate' instead of 'resolutiondate'
@@ -80,13 +71,12 @@ export default {
         console.log('devsApproved', start, end, startPriorWeek, endPriorWeek, thisWeek.data.total, priorWeek.data.total)
         return { value: thisWeek.data.total, previous: priorWeek.data.total }
       } catch (e) {
-        console.log(e)
+        console.error('devsApproved: ', e)
         return { value: null, previous: null }
       }
     },
-    devsSubmitted: async (_: any, req: any) => {
+    devsSubmitted: async (_: any, { start, end }: any) => {
       try {
-        const { start, end } = req
         const { startPriorWeek, endPriorWeek } = getPriorWeekDates(start, end, 'YYYY-MM-DD')
 
         const jql_1 = `project%3DDAV%20AND%20createdDate%20>%3D%20${start}%20AND%20createdDate%20<%3D%20${end}`
@@ -97,13 +87,12 @@ export default {
         console.log('devsSubmitted', start, end, startPriorWeek, endPriorWeek, thisWeek.data.total, priorWeek.data.total)
         return { value: thisWeek.data.total, previous: priorWeek.data.total }
       } catch (e) {
-        console.log(e)
+        console.error('devsSubmitted:', e)
         return { value: null, previous: null }
       }
     },
-    devsRejected: async (_: any, req: any) => {
+    devsRejected: async (_: any, { start, end }: any) => {
       try {
-        const { start, end } = req
         const { startPriorWeek, endPriorWeek } = getPriorWeekDates(start, end, 'YYYY-MM-DD')
 
         const jql_1 = `project%20%3D%20DAV%20AND%20status%20in%20(Denied)%20AND%20updatedDate%20>%3D%20${start}%20AND%20updatedDate%20<%3D%20${end}`
@@ -114,7 +103,7 @@ export default {
         console.log('devsRejected', start, end, startPriorWeek, endPriorWeek, thisWeek.data.total, priorWeek.data.total)
         return { value: thisWeek.data.total, previous: priorWeek.data.total }
       } catch (e) {
-        console.log(e)
+        console.error('devsRejected:', e)
         return { value: null, previous: null }
       }
     },
@@ -126,9 +115,20 @@ export default {
 
         return { value: total }
       } catch (e) {
-        console.log('devsPending', e)
+        console.error('devsPending: ', e)
         return { value: null, previous: null }
       }
     },
+    jiraStats: async (_: any, { start, end }: any) => {
+        try {
+            const [current] = await query([`SELECT * FROM app_approvals WHERE date >= "${start}" AND date <= "${end}";`])
+            console.log('jiraStats: ', start, end, current)
+
+            return current
+        } catch (e) {
+            console.error('jiraStats: ', e)
+            return { value: null, previous: null }
+        }
+    }
   }
 }
