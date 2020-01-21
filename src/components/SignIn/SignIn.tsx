@@ -1,12 +1,12 @@
 import {Dropdown, Menu} from "antd";
 import {ClickParam} from "antd/es/menu";
-import React, {ChangeEvent, useState, ReactElement} from "react";
+import React, {ChangeEvent, KeyboardEvent, useEffect, useState, ReactElement} from "react";
 import { RouteComponentProps } from "react-router-dom";
 import styled from "styled-components";
 
 import {Environment, Environments} from "../../utils/Environments";
-import {Cookies} from "../../utils/Cookies";
-import {CookiesUtil} from "../../utils/CookiesUtil";
+// import {Cookies} from "../../utils/Cookies";
+// import {CookiesUtil} from "../../utils/CookiesUtil";
 
 interface UserState {
     username: string;
@@ -84,25 +84,37 @@ const LoginInput = styled.input`
 `;
 
 
-const SignIn = (props: SignInProps): ReactElement => {
+const SignIn = ({ parentHandleSignIn }: SignInProps): ReactElement => {
+    let usernameInput: HTMLInputElement | null = null;
     const [user, setUser] = useState<UserState>({
         username: "",
         password: ""
     });
     const [environment, setEnvironment] = useState<string>("us");
+    const { password, username } = user;
 
     // const signedIn = CookiesUtil.getCookie(Cookies.SESSION_ID);
     // if (signedIn) {
     //     props.history.push("/TimeTracker");
     // }
 
+    useEffect(() => {
+        if (usernameInput) usernameInput.focus()
+    }, [])
+
+    const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
+        if (username && e.key === "Enter") {
+            parentHandleSignIn(username, password, environment)
+        }
+    };
+
     const handleInputChange = (e: { target: HTMLInputElement }): void => {
         setUser({ ...user, [e.target.placeholder]: e.target.value });
     };
 
     const useLogin = (e: ChangeEvent<any>): void => {
-        if (user) {
-            props.parentHandleSignIn(user.username, user.password, environment).then((data: any) => {
+        if (username) {
+            parentHandleSignIn(username, password, environment).then((data: any) => {
                 // console.log("logged in");
                     // console.log(data);
                 }
@@ -134,8 +146,15 @@ const SignIn = (props: SignInProps): ReactElement => {
                 <h1>Login</h1>
                 <h3>(use LDAP credentials)</h3>
             </Heading>
-            <LoginInput placeholder="username" type="text" value={user.username} onChange={handleInputChange}/>
-            <LoginInput placeholder="password" type="password" value={user.password} onChange={handleInputChange}/>
+            <LoginInput
+                placeholder="username"
+                type="text"
+                value={username}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyPress}
+                ref={input => { usernameInput = input }}
+            />
+            <LoginInput placeholder="password" type="password" value={password} onChange={handleInputChange} onKeyDown={handleKeyPress} />
             <Dropdown.Button overlay={environmentsDropdown}>{environment}</Dropdown.Button>
             <button className="login-button blue-background" key="login" onClick={useLogin}>
                 <b>Login</b>
@@ -143,6 +162,5 @@ const SignIn = (props: SignInProps): ReactElement => {
         </Login>
     )
 };
-
 
 export default SignIn;
