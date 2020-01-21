@@ -20,6 +20,7 @@ import Employee from "../../models/Employee";
 import {CookiesUtil} from "../../utils/CookiesUtil";
 import {Cookies} from "../../utils/Cookies";
 import {EMPLOYEE_ROLES} from "../../models/EmployeeRoles";
+import AnnouncementProvider from "../Announcements/store";
 
 interface State {
     sessionId?: string | undefined;
@@ -82,11 +83,10 @@ const App = ({ history }: RouteComponentProps): ReactElement => {
                 <Header logout={logout} sessionId={state.sessionId}/>
                 <Route path="/" exact render={(props): ReactElement => <SignIn {...props} parentHandleSignIn={useSignIn}/>}/>
                 <Route path="/Home" component={Overview}/>
-                <Route path="/Admin" component={Admin}/>
-                <Route path="/TimeTracker" component={TimeTracker} />
+                <AnnouncementProvider><Route path="/Admin" component={Admin}/></AnnouncementProvider>
             </AppContainer>
         </ThemeProvider>
     );
-}
+};
 
 export default withRouter(App);
