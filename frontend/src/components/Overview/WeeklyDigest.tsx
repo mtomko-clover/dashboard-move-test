@@ -1,11 +1,11 @@
-import {DatePicker, Menu, Dropdown, message} from "antd";
-import {ClickParam} from "antd/lib/menu";
+import { DatePicker, Menu, Dropdown, message } from "antd";
+import { ClickParam } from "antd/lib/menu";
 import moment from "moment";
-import React, {ReactElement, useContext} from "react";
+import React, { ReactElement, useContext } from "react";
 
-import {Stats} from "./Stats";
-import {Header, Row} from "./Overview.styles";
-import {OverviewContext} from "./store";
+import { Stats } from "./Stats";
+import { Header, Row } from "./Overview.styles";
+import { OverviewContext } from "./store";
 
 
 /**
@@ -14,11 +14,14 @@ import {OverviewContext} from "./store";
 const WeeklyDigest = (): ReactElement => {
 	const dateFormat = "MM/DD/YY";
 	const { WeekPicker } = DatePicker;
-	const { cardsStore: { cards, setCards }, dateStore: { date, setDate } } = useContext(OverviewContext);
+	const {
+		cardsStore: { cards, setCards },
+		dateStore: { date, setDate }
+	} = useContext(OverviewContext);
 
 	function handleMenuClick(e: ClickParam): void {
 		message.info(cards[Number(e.key)].title);
-		const newState = cards.map(item => (item.key === e.key) ? ({ ...item, selected: true }) : ({ ...item, selected: false }));
+		const newState = cards.map(item => ({ ...item, selected: item.key === e.key }));
 		setCards(newState);
 	}
 
