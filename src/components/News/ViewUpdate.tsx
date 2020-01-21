@@ -46,7 +46,6 @@ export default class ViewUpdate extends Component<ViewUpdateProps, State> {
     this.state = {
       visible: this.props.showModal,
     };
-    console.log("View Update", this.props.update);
     this.close = this.close.bind(this);
   }
 
@@ -64,7 +63,6 @@ export default class ViewUpdate extends Component<ViewUpdateProps, State> {
       ', ' +
       date.getFullYear();
     let user: Employee = EmployeeUtil.getEmployeeFromUsername(this.props.update.author);
-    console.log("View Update", user);
     return (
       <Modal
         className="news_update"

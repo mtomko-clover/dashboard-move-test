@@ -5,8 +5,6 @@ import Announcement from "./Announcement";
 
 const Announcements = (): ReactElement | null => {
     const { data, error, loading } = useQuery(fetchAnnouncementItems, {});
-    console.log("Announcements" , data);
-
     if (error) {
         console.error(error);
         return null
