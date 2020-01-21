@@ -27,11 +27,16 @@ const AdminPage = (): ReactElement => {
       {visible && <CreateAnnouncement />}
       {user.role === EMPLOYEE_ROLES.ADMIN ? (
         <div>
+            <h1>Admin Settings</h1>
           THIS WILL BE AN ADMIN PAGE
           <button onClick={(): void => toggleModal({ visible: !visible })}>ADD ANNOUNCEMENT</button>
         </div>
       ) : (
-        <div>YOU ARE NOT AN ADMIN ¯\_(ツ)_/¯</div>
+        <div>
+            <h1>Settings</h1>
+            YOU ARE NOT AN ADMIN ¯\_(ツ)_/¯
+            <p>check back soon for more features</p>
+        </div>
       )}
     </div>
   );
