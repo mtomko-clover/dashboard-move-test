@@ -1,32 +1,24 @@
-import React, {ChangeEvent, Component} from "react";
-import Announcement from "../../models/Announcement";
-import {AnnouncementContainer, AnnouncementText, AnnouncementBullhornIcon, AnnouncementExclamationIcon, AnnouncementDelete} from "./Announcement.styles";
+import React, {ReactElement} from "react";
+import {useQuery} from "@apollo/react-hooks";
+import {fetchAnnouncementItems} from "../../utils/queries";
+import Announcement from "./Announcement";
 
-interface AnnouncementProps {
-    announcement: Announcement
-    deleteAnnouncement:(id: string) => void
-}
+const Announcements = (): ReactElement | null => {
+    const { data, error, loading } = useQuery(fetchAnnouncementItems, {});
+    console.log("Announcements" , data);
 
-export default class Announcements extends Component<AnnouncementProps, any> {
-
-    constructor(props: any) {
-        super(props);
-        this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
+    if (error) {
+        console.error(error);
+        return null
     }
 
-    deleteAnnouncement(){
-        this.props.deleteAnnouncement(this.props.announcement.id);
-    }
+    return loading ? null : (
+        <div>
+            {data.announcements.map((announcement: any, index: any) => (
+                <Announcement key={index} announcement={announcement} />
+            ))}
+        </div>
+    )
+};
 
-    render(): React.ReactNode {
-        return (
-           <AnnouncementContainer>
-               {this.props.announcement.isUrgent ? (<AnnouncementBullhornIcon className="fas fa-bullhorn fa-lg"/>):(<AnnouncementExclamationIcon className="fas fa-exclamation fa-lg"/>)}
-               <AnnouncementText>{this.props.announcement.text}</AnnouncementText>
-               <div className="filler"/>
-               <AnnouncementDelete onClick={this.deleteAnnouncement} className="fas fa-times-circle"/>
-           </AnnouncementContainer>
-        )
-    }
-}
-
+export default Announcements;

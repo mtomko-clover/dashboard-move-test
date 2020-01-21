@@ -1,96 +1,109 @@
-import {Modal, notification} from "antd";
-import React, {ChangeEvent, Component} from "react";
-import { EditColumn, EditInput, EditLabel} from "./Announcement.styles";
-import Announcement from "../../models/Announcement";
-const uuid  = require("react-uuid");
+import { Modal, notification, Checkbox } from "antd";
+import React, { ChangeEvent, ReactElement, useContext } from "react";
+import {
+	CreateAnnouncementExclamationIcon,
+	EditRow,
+	EditInput,
+} from "./Announcement.styles";
+import { fetchAnnouncementItems } from "../../utils/queries";
+import { gql } from "apollo-boost";
+import { AnnouncementContext } from "./store";
+import { useMutation } from "@apollo/react-hooks";
+import { CookiesUtil } from "../../utils/CookiesUtil";
+import { Cookies } from "../../utils/Cookies";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
 
-interface AnnouncementProps {
-    showModal: boolean
-    modalClosed:() => void
-    saveAnnouncement:(announcement: Announcement) => void
-    announcement: Announcement | null
-}
+const CreateAnnouncement = (): ReactElement => {
+	const {
+		form: { text, isUrgent, setFormState },
+		modal: { visible, toggleModal },
+	} = useContext(AnnouncementContext);
 
-interface State {
-    visible: boolean
-    text: string
-    id: string
-    isUrgent: boolean
-}
+	const mutation = gql`
+		mutation CreateAnnouncement(
+			$text: String
+			$is_urgent: Boolean
+			$username: String
+		) {
+			createAnnouncement(
+				text: $text
+				is_urgent: $is_urgent
+				username: $username
+			) {
+				message
+			}
+		}
+	`;
 
-export default class CreateAnnouncement extends Component<AnnouncementProps, State> {
+	const options = {
+		refetchQueries: [{ query: fetchAnnouncementItems }],
+	};
+	const [createAnnouncement] = useMutation(mutation, options);
 
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            visible: this.props.showModal,
-            text: this.props.announcement !== null ? this.props.announcement.text : "",
-            id: this.props.announcement !== null ? this.props.announcement.id : "",
-            isUrgent: this.props.announcement !== null ? this.props.announcement.isUrgent : true,
-        };
-        this.handleCancel = this.handleCancel.bind(this);
-        this.saveAnnouncement = this.saveAnnouncement.bind(this);
-        this.handleisAnnouncement = this.handleisAnnouncement.bind(this);
-        this.handleTextChange = this.handleTextChange.bind(this);
-    }
+	const handleInputChange = (
+		e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+	): void => {
+		e.persist();
+		setFormState(prevState => ({
+			...prevState,
+			[e.target.name]: e.target.value,
+		}));
+	};
 
-    handleCancel(): void {
-        this.setState({ visible: false });
-        this.props.modalClosed();
-    }
+	const handleisUrgentChange = (e: CheckboxChangeEvent): void => {
+		setFormState(prevState => ({
+			...prevState,
+			isUrgent: e.target.checked,
+		}));
+	};
 
+	const addAnnouncement = (): void => {
+		if (text.length) {
+			const username = CookiesUtil.getCookie(Cookies.USERNAME);
+			createAnnouncement({
+				variables: { text, is_urgent: true, username },
+			});
+			toggleModal({ visible: !visible });
+		} else {
+			notification.open({
+				message: "Error",
+				description: "Please add text to your announcement",
+				icon: <i className="fas fa-exclamation-triangle" />,
+				placement: "topLeft",
+			});
+		}
+	};
 
-    handleisAnnouncement(isUrgent: boolean): void {
-        this.setState( {isUrgent: isUrgent});
-    };
+	return (
+		<Modal
+			className="news_update"
+			title="Create Announcement"
+			visible={visible}
+			onOk={addAnnouncement}
+			okText="Save"
+			onCancel={(): void => toggleModal({ visible: !visible })}
+			afterClose={(): void => toggleModal({ visible: !visible })}
+			destroyOnClose={true}
+		>
+			<EditRow>
+				<Checkbox
+					className="margin-after"
+					checked={isUrgent}
+					onChange={handleisUrgentChange}
+				>
+					<CreateAnnouncementExclamationIcon className="fas fa-exclamation" />
+					Urgent
+				</Checkbox>
+				<EditInput
+					type="text"
+					placeholder="Announcement"
+					name="text"
+					value={text}
+					onChange={handleInputChange}
+				/>
+			</EditRow>
+		</Modal>
+	);
+};
 
-    handleTextChange(e: ChangeEvent<any>): void {
-        this.setState( {text: e.target.value});
-    };
-
-    saveAnnouncement(): void {
-        if(this.state.text.length > 0) {
-            this.setState({visible: false});
-            let announcement = new Announcement(this.state.id !== null ? this.state.id : uuid(), this.state.text, this.state.isUrgent);
-            this.props.saveAnnouncement(announcement);
-            this.props.modalClosed();
-        }
-        else{
-            notification.open({
-                message: "Error",
-                description: "Must have content",
-                icon: <i className="fas fa-exclamation-triangle"/>,
-                placement: "topLeft"
-            });
-        }
-    }
-
-    getCategories(): any{
-        return [
-            <div><i className="fas fa-bullhorn"/></div>,
-            <div><i className="fas fa-exclamation"/></div>
-        ]
-
-    }
-
-    render(): React.ReactNode {
-        return (
-            <Modal
-                className="news_update"
-                title="Create News Update"
-                visible={this.state.visible}
-                onOk={this.saveAnnouncement}
-                okText="Save"
-                onCancel={this.handleCancel}
-                afterClose={this.props.modalClosed}
-                destroyOnClose={true}>
-                <EditColumn>
-                    <EditLabel>Title:</EditLabel>
-                    <EditInput type="text" value={this.state.text} onChange={this.handleTextChange}/>
-
-                </EditColumn>
-            </Modal>
-        )
-    }
-}
-
+export default CreateAnnouncement;
