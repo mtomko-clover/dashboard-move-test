@@ -19,11 +19,6 @@ type QueryResult = {
   __typename: string;
 };
 
-type ChartData = {
-  amount: number;
-  title: string;
-};
-
 const AppApprovalsHistogram = (): ReactElement | null => {
   const { RangePicker } = DatePicker;
   const thisMonth: RangePickerPresetRange = [moment().startOf('month'), moment().endOf('month')];
@@ -56,7 +51,7 @@ const AppApprovalsHistogram = (): ReactElement | null => {
 
   const { data } = useQuery(query, variables);
   console.log('AppApprovalsHistogram: ', dates, data);
-  let dataArray: Array<ChartData | void> = [];
+  let dataArray: Array<QueryResult | void> = [];
   if (data) {
     // Format date and sort the array based on date
     dataArray = data.jiraStats
