@@ -22,7 +22,7 @@ import Maricris from '../static/images/employees/Maricris_Bonzo.png';
 import BaoChau from '../static/images/employees/baochau.jpg';
 import UserIcon from '../static/images/employees/user.png';
 import Employee from '../models/Employee';
-import { EMPLOYEE_ROLES } from '../models/EmployeeRoles';
+import {EMPLOYEE_ROLES} from '../models/EmployeeRoles';
 
 export class EmployeeUtil {
 
@@ -98,12 +98,8 @@ export class EmployeeUtil {
             case "sonny.espinoza":
                 employee = new Employee("sonny.espinoza", EMPLOYEE_ROLES.ADMIN, "Sonny Espinoza", UserIcon);
                 break;
-            case "baochau.nguyen":
-                employee = new Employee("baochau.nguyen", "Bao Chau Nguyen", BaoChau);
-                break;
             default:
                 employee = new Employee(username, EMPLOYEE_ROLES.NON_ADMIN,"", UserIcon);
-
         }
         return employee;
     }

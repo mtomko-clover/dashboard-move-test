@@ -30,10 +30,10 @@ const Overview = (): ReactElement => (
         <AppApprovalsChart category="title" value="amount" />
       </BigCard>
     </BigRow>
-    <BigRow>
-      <RecentActivities />
-      <BigCard />
-    </BigRow>
+    {/*<BigRow>*/}
+      {/*<RecentActivities />*/}
+      {/*<BigCard />*/}
+    {/*</BigRow>*/}
   </Column>
 );
 
