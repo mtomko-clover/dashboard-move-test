@@ -46,6 +46,7 @@ export default class ViewUpdate extends Component<ViewUpdateProps, State> {
     this.state = {
       visible: this.props.showModal,
     };
+    console.log("View Update", this.props.update);
     this.close = this.close.bind(this);
   }
 
@@ -55,13 +56,15 @@ export default class ViewUpdate extends Component<ViewUpdateProps, State> {
   }
 
   render(): React.ReactNode {
+    let date = new Date(Number(this.props.update.createdAt));
     let formatDate =
-      months[this.props.update.createdAt.getMonth()] +
+      months[date.getMonth()] +
       '  ' +
-      this.props.update.createdAt.getDate() +
+      date.getDate() +
       ', ' +
-      this.props.update.createdAt.getFullYear();
-    let user: Employee = EmployeeUtil.getEmployeeFromUsername(this.props.update.username);
+      date.getFullYear();
+    let user: Employee = EmployeeUtil.getEmployeeFromUsername(this.props.update.author);
+    console.log("View Update", user);
     return (
       <Modal
         className="news_update"

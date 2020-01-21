@@ -5,7 +5,7 @@ export default class NewsItem {
   title: string;
   description?: string;
   type: NEWS_CATEGORIES;
-  username: string;
+  author: string;
 
   constructor(
     username: string,
@@ -17,7 +17,7 @@ export default class NewsItem {
     this.createdAt = createdAt;
     this.title = title;
     this.type = type;
-    this.username = username;
+    this.author = username;
     this.description = description;
   }
 }
