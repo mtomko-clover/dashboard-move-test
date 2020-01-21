@@ -4,7 +4,7 @@ import React, {ReactElement, ReactNode} from "react";
 
 import Row from "./Row";
 import NewsItem from "../../models/NewsItem";
-import {fetchNewsItems} from "../../utils/queries";
+import { fetchNewsItems } from "../../utils/queries";
 
 const NewsList = (): ReactElement | null => {
 	const { data, error, loading } = useQuery(fetchNewsItems, {});
@@ -24,7 +24,7 @@ const NewsList = (): ReactElement | null => {
         // } else {
         //     setState({ showViewNews: true, update });
         // }
-    }
+    };
 
 	return loading ? null : (
 		<List
@@ -44,5 +44,4 @@ const NewsList = (): ReactElement | null => {
 		/>
 	)
 }
-
 export default NewsList;

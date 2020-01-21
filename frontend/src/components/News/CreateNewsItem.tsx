@@ -33,19 +33,20 @@ const CreateNewsItem = (): ReactElement => {
     // TO-DO: update cache instead of querying again
     const options = {
         refetchQueries: [{ query: fetchNewsItems }]
-    }
-    const [updateNewsItem] = useMutation(mutation, options)
+    };
+
+    const [updateNewsItem] = useMutation(mutation, options);
 
     const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         e.persist();
         setFormState((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
-    }
+    };
 
     const handleDateChange = (date: Moment | null, dateString: string): void => {
         if (date) {
             setFormState(prevState => ({ ...prevState, date: date.toDate() }));
         }
-    }
+    };
 
     const addNewsItem = (): void => {
         if (title.length && category) {
@@ -60,7 +61,7 @@ const CreateNewsItem = (): ReactElement => {
                 placement: "topLeft"
             });
         }
-    }
+    };
 
     return (
         <Modal
