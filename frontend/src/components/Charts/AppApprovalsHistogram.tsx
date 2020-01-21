@@ -1,5 +1,6 @@
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import { DatePicker } from 'antd';
 import { RangePickerPresetRange, RangePickerValue } from 'antd/lib/date-picker/interface';
 import { useQuery } from '@apollo/react-hooks';
@@ -63,6 +64,8 @@ const AppApprovalsHistogram = (): ReactElement | null => {
   }
 
   useEffect(() => {
+    am4core.useTheme(am4themes_animated);
+
     // Create series
     function createSeries(chart: any, field: string, name: string, hidden: boolean) {
       const series = chart.series.push(new am4charts.CandlestickSeries());
