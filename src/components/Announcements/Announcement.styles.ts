@@ -51,6 +51,7 @@ export const EditColumn = styled.div`
   align-items: flext-start;
 `;
 
+
 export const EditInput = styled.input`
   font-size: 12px;
   font-style: bold;
