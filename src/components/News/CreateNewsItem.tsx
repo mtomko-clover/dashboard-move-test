@@ -23,14 +23,14 @@ const CreateNewsItem = (): ReactElement => {
 	const dateFormat = "MM/DD/YY";
 
 	const mutation = gql`
-		mutation UpdateNewsItem(
+		mutation AddNews(
 			$date: String
 			$title: String
 			$description: String
 			$type: String
 			$username: String
 		) {
-			updateNewsItem(
+			addNews(
 				date: $date
 				title: $title
 				description: $description
@@ -46,7 +46,7 @@ const CreateNewsItem = (): ReactElement => {
 	const options = {
 		refetchQueries: [{ query: news }],
 	};
-	const [updateNewsItem] = useMutation(mutation, options);
+	const [addNews] = useMutation(mutation, options);
 
 	const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
 		e.persist();
@@ -62,7 +62,7 @@ const CreateNewsItem = (): ReactElement => {
 	const addNewsItem = (): void => {
 		if (title.length && category) {
 			const username = CookiesUtil.getCookie(Cookies.USERNAME);
-			updateNewsItem({
+			addNews({
 				variables: {
 					date: moment(date).format("YYYY-MM-DD HH:mm:ss"),
 					description,

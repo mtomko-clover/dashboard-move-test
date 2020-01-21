@@ -107,3 +107,18 @@ export const news = gql`
 		}
 	}
 `;
+
+/**
+ * AnnouncementItems Queries
+ */
+export const fetchAnnouncementItems = gql`
+	query {
+		announcements {
+			created_at
+			id
+			author
+			text
+			is_urgent
+		}
+	}
+`;
