@@ -1,10 +1,19 @@
+type JiraStats {
+    date: String
+    approved: String
+    rejected: String
+    submitted: String
+    pending: String
+}
+
 type Query {
   appsApproved(start: String, end: String): Metrics
-  appsPending(end: String): Metrics
+  appsPending(start: String): Metrics
   appsRejected(start: String, end: String): Metrics
   appsSubmitted(start: String, end: String): Metrics
   devsApproved(start: String, end: String): Metrics
   devsPending: Metrics
   devsRejected(start: String, end: String): Metrics
   devsSubmitted(start: String, end: String): Metrics
+  jiraStats(start: String, end: String): [JiraStats]
 }

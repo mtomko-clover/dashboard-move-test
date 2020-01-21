@@ -5,7 +5,7 @@ const news = async () => {
   const response = await query(['SELECT * FROM news;'])
   console.log('fetchNewsItems: ', response[0])
   return response[0]
-}
+};
 
 const addNews = async (_: any, args: any) => {
   try {
@@ -16,7 +16,7 @@ const addNews = async (_: any, args: any) => {
     const response = await query([
       `INSERT INTO news (created_at, title, description, type, author) VALUES (${fields.join(',')});`,
       'COMMIT;',
-    ])
+    ]);
     console.log('updateNewsItem response: ', response)
     // TO-DO: add to user_news table too
     return { message: 'success!' }
@@ -24,7 +24,10 @@ const addNews = async (_: any, args: any) => {
     console.error(message)
     return { message }
   }
-}
+};
+
+
+
 
 export default {
   Query: {
