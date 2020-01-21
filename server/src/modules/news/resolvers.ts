@@ -2,9 +2,9 @@ import { query } from '../../db/fns'
 
 
 const news = async () => {
-  const response = await query(['SELECT * FROM news;'])
-  console.log('fetchNewsItems: ', response[0])
-  return response[0]
+    const response = await query(['SELECT * FROM news;'])
+    console.log('fetchNewsItems: ', response[0])
+    return response[0].map(obj => ({ ...obj, createdAt: obj.created_at }))
 };
 
 const addNews = async (_: any, args: any) => {
