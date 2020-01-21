@@ -1,1 +1,1 @@
-export {default as BigCard} from "./BigCard";
+export { default as BigCard } from './BigCard';

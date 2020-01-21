@@ -1,9 +1,8 @@
-import {Cookies} from "./Cookies"
+import { Cookies } from './Cookies';
 
 export class CookiesUtil {
-
   public static getCookie(cookieName: Cookies): string {
-    const name = cookieName + "=";
+    const name = cookieName + '=';
     const decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
 
@@ -16,10 +15,10 @@ export class CookiesUtil {
         return c.substring(name.length, c.length);
       }
     }
-    return "";
+    return '';
   }
 
   public static setCookie(cookieName: Cookies, value: string): void {
-    document.cookie = cookieName + "=" + value;
+    document.cookie = cookieName + '=' + value;
   }
 }

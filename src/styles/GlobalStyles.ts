@@ -1,6 +1,6 @@
-import { createGlobalStyle } from "styled-components"
+import { createGlobalStyle } from 'styled-components';
 
-import { fontDeclarations } from './fonts'
+import { fontDeclarations } from './fonts';
 
 export const GlobalStyles = createGlobalStyle`
 	${fontDeclarations}
@@ -52,4 +52,4 @@ export const GlobalStyles = createGlobalStyle`
 		font-weight: 400;
 		font-size: 12px;
 	}
-`
+`;

@@ -1,24 +1,24 @@
-import React, {ReactElement} from "react";
-import {useQuery} from "@apollo/react-hooks";
-import {fetchAnnouncementItems} from "../../utils/queries";
-import Announcement from "./Announcement";
+import React, { ReactElement } from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import { fetchAnnouncementItems } from '../../utils/queries';
+import Announcement from './Announcement';
 
 const Announcements = (): ReactElement | null => {
-    const { data, error, loading } = useQuery(fetchAnnouncementItems, {});
-    console.log("Announcements" , data);
+  const { data, error, loading } = useQuery(fetchAnnouncementItems, {});
+  console.log('Announcements', data);
 
-    if (error) {
-        console.error(error);
-        return null
-    }
+  if (error) {
+    console.error(error);
+    return null;
+  }
 
-    return loading ? null : (
-        <div>
-            {data.announcements.map((announcement: any, index: any) => (
-                <Announcement key={index} announcement={announcement} />
-            ))}
-        </div>
-    )
+  return loading ? null : (
+    <div>
+      {data.announcements.map((announcement: any, index: any) => (
+        <Announcement key={index} announcement={announcement} />
+      ))}
+    </div>
+  );
 };
 
 export default Announcements;
