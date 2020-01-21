@@ -40,7 +40,7 @@ const CreateAnnouncement = (): ReactElement => {
     const addAnnouncement = (): void => {
         if (text.length) {
             const username = CookiesUtil.getCookie(Cookies.USERNAME);
-            createAnnouncement({ variables: { text, is_urgent: true, username}});
+            createAnnouncement({ variables: { text, is_urgent: isUrgent, username}});
             toggleModal({ visible: !visible });
         } else {
             notification.open({
