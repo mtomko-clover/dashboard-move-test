@@ -29,11 +29,11 @@ const Header = ({ logout, sessionId, username, profilePic }: HeaderProps): React
             <Link className="header_title" to="/Home">
                 Developer Relations
             </Link>
-            {sessionId && (
+            {/* {sessionId && (
                 <Link className="header_link" to="/TimeTracker">
                     Time Tracking
                 </Link>
-            )}
+            )} */}
             {sessionId && username && (
                 <Dropdown overlay={menu} className="align-end">
                     <UsernameContainer className="ant-dropdown-link" href="#">
