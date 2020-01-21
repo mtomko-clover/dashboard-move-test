@@ -31,8 +31,9 @@ export default class Announcement extends Component<AnnouncementProps, State> {
                 {this.state.visible &&
                 <AnnouncementContainer>
                     {this.props.announcement.is_urgent ? (
-                        <AnnouncementBullhornIcon className="fas fa-bullhorn fa-lg"/>) : (
-                        <AnnouncementExclamationIcon className="fas fa-exclamation fa-lg"/>)}
+                        <AnnouncementExclamationIcon className="fas fa-exclamation fa-lg"/>) : (
+                        <AnnouncementBullhornIcon className="fas fa-bullhorn fa-lg"/>
+                        )}
                     <AnnouncementText>{this.props.announcement.text}</AnnouncementText>
                     <div className="filler"/>
                     <AnnouncementDelete onClick={this.deleteAnnouncement} className="fas fa-times-circle"/>
