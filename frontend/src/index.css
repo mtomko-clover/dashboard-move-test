@@ -42,6 +42,15 @@ code {
   align-items: center;
 }
 
+.flex-grow{
+  flex-grow: 1;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
 .align-end{
   justify-content: flex-end;
 }
