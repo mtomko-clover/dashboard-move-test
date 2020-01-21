@@ -1,30 +1,31 @@
-import { Dispatch, SetStateAction } from 'react';
+import {Dispatch, SetStateAction} from "react";
 
 export type ModalState = {
-  visible: boolean;
-};
+    visible: boolean;
+}
 
 export type FormState = {
-  text: string;
-  isUrgent: boolean;
-};
+    text: string;
+    isUrgent: boolean;
+}
 
 export type ToggleModal = Dispatch<SetStateAction<ModalState>>;
 
 export type SetFormState = Dispatch<SetStateAction<FormState>>;
 
+
 export type ModalContext = {
-  toggleModal: ToggleModal;
-  visible: boolean;
-};
+    toggleModal: ToggleModal;
+    visible: boolean;
+}
 
 export type Context = {
-  modal: ModalContext;
-  form: FormContext;
-};
+    modal: ModalContext;
+    form: FormContext;
+}
 
 export type FormContext = {
-  text: string;
-  isUrgent: boolean;
-  setFormState: SetFormState;
-};
+    text: string;
+    isUrgent: boolean;
+    setFormState: SetFormState;
+}
