@@ -21,7 +21,7 @@ const initialContext: Context = {
 		description: "",
 		title: "",
 		setFormState: (): void => {
-			throw new Error("toggleModal function must be overridden")
+			throw new Error("setFormState function must be overridden")
 		}
 	}
 };
@@ -41,7 +41,7 @@ export default ({ children }: { children: ReactNode }): ReactElement => {
         date: new Date(),
         description: "",
         title: "",
-    })
+    });
 
 	const store = {
 		modal: {

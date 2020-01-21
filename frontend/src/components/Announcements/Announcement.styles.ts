@@ -27,6 +27,11 @@ export const AnnouncementExclamationIcon = styled.i`
       color: #EA2C2F
 `;
 
+export const CreateAnnouncementExclamationIcon = styled.i`
+      margin-right: 5px;
+      color: #EA2C2F
+`;
+
 export const AnnouncementDelete = styled.i`
    margin-left: 20px;
    color: rgba(0, 0, 0, 0.45);
@@ -46,11 +51,6 @@ export const EditColumn = styled.div`
     align-items: flext-start;
 `;
 
-export const EditLabel = styled.div`
-        font-size: 16px;
-        font-style: bold;
-        margin-right: 10px;
-`;
 
 export const EditInput = styled.input`
         font-size: 12px;
@@ -59,7 +59,3 @@ export const EditInput = styled.input`
         flex-grow: 1;
         border: 1px solid #d9d9d9;
 `;
-
-export const CategoryRow = styled.input`
-
-    `;
