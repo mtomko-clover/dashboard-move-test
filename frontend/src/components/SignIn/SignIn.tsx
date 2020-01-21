@@ -20,7 +20,7 @@ interface UserState {
 }
 
 interface SignInProps extends RouteComponentProps {
-	parentHandleSignIn: (
+	signIn: (
 		username: string,
 		password: string,
 		env: string,
@@ -93,7 +93,7 @@ const LoginInput = styled.input`
 	box-shadow: ${({ theme }): string => theme.boxShadow};
 `;
 
-const SignIn = ({ history, parentHandleSignIn }: SignInProps): ReactElement => {
+const SignIn = ({ history, signIn }: SignInProps): ReactElement => {
 	let usernameInput: HTMLInputElement | null = null;
 	const [user, setUser] = useState<UserState>({
 		username: "",
@@ -104,7 +104,7 @@ const SignIn = ({ history, parentHandleSignIn }: SignInProps): ReactElement => {
 
 	const signedIn = CookiesUtil.getCookie(Cookies.SESSION_ID);
 	if (signedIn) {
-		history.push("/Home");
+		history.push("/home");
 	}
 
 	useEffect(() => {
@@ -113,7 +113,7 @@ const SignIn = ({ history, parentHandleSignIn }: SignInProps): ReactElement => {
 
 	const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
 		if (username && e.key === "Enter") {
-			parentHandleSignIn(username, password, environment);
+			signIn(username, password, environment);
 		}
 	};
 
@@ -123,7 +123,7 @@ const SignIn = ({ history, parentHandleSignIn }: SignInProps): ReactElement => {
 
 	const useLogin = (e: ChangeEvent<any>): void => {
 		if (username) {
-			parentHandleSignIn(username, password, environment).then(
+			signIn(username, password, environment).then(
 				(data: any) => {
 					// console.log("logged in");
 					// console.log(data);

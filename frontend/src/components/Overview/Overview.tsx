@@ -25,7 +25,6 @@ interface State {
 
 let dummyAnnouncements = [
     new Announcement(uuid(),"Need new Technical Solutions Engineer to support Canada ISV. We’ve lost Raymond, Lauren, Andy in the past 3 months. Zero TSE replacements since then is impacting Canada ISV support", false),
-    new Announcement(uuid(),"GMC Rollout testing on track in US + EMEA", true),
     new Announcement(uuid(),"App approval team planning to reject all backlog beyond first 25, and ask for resubmission via enhanced portal with additional info for CCPA/GDPR\n", true)
 ];
 
