@@ -26,7 +26,7 @@ const NewsList = (): ReactElement | null => {
 		//     setState({ showViewNews: true, update });
 		// }
 	};
-    // return <>Test</>
+
 	return loading ? null : (
 		<List
 			className="full-width margin-bottom"
@@ -48,7 +48,7 @@ const NewsList = (): ReactElement | null => {
 				)
 			}
 		/>
-	);
-};
+	)
+}
 
 export default NewsList;

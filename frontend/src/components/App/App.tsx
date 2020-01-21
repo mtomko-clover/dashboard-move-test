@@ -9,7 +9,6 @@ import Admin from "../AdminPage";
 import Header from "../Header";
 import Overview from "../Overview";
 import { SignIn } from "../SignIn";
-import TimeTracker from "../TimeTracking/TimeTracker";
 
 import * as Constants from "../../utils/Constants";
 import { Environment, Environments } from "../../utils/Environments";
@@ -18,6 +17,7 @@ import { CookiesUtil } from "../../utils/CookiesUtil";
 import { Cookies } from "../../utils/Cookies";
 import Employee from "../../models/Employee";
 import { EMPLOYEE_ROLES } from "../../models/EmployeeRoles";
+import AnnouncementProvider from "../Announcements/store";
 import { AppContainer } from "./App.styles";
 import { GlobalStyles, theme } from "../../styles";
 
@@ -87,11 +87,15 @@ const App = ({ history }: RouteComponentProps): ReactElement => {
 				<Route
 					path="/"
 					exact
-					render={(props): ReactElement => <SignIn {...props} signIn={useSignIn} />}
+					render={(props): ReactElement => (
+						<SignIn {...props} signIn={useSignIn} />
+					)}
 				/>
 				<Route path="/home" component={Overview} />
 				<Route path="/admin" component={Admin} />
-				<Route path="/timetracker" component={TimeTracker} />
+				<AnnouncementProvider>
+					<Route path="/Admin" component={Admin} />
+				</AnnouncementProvider>
 			</AppContainer>
 		</ThemeProvider>
 	);
