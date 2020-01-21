@@ -90,9 +90,8 @@ const App = ({ history }: RouteComponentProps): ReactElement => {
           render={(props): ReactElement => <SignIn {...props} signIn={useSignIn} />}
         />
         <Route path="/home" component={Overview} />
-        <Route path="/admin" component={Admin} />
         <AnnouncementProvider>
-          <Route path="/Admin" component={Admin} />
+          <Route path="/admin" component={Admin} />
         </AnnouncementProvider>
       </AppContainer>
     </ThemeProvider>
