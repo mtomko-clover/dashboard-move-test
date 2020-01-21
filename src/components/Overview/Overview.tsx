@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 
-import {AppApprovalsChart, JiraDLVChart} from "../Charts";
+import {AppApprovalsChart, AppApprovalsHistogram} from "../Charts";
 import {BigCard} from "../BigCard";
 import {News} from "../News";
 import WeeklyDigest from "./WeeklyDigest";
 import OverviewProvider from "./store";
 import NewsProvider from "../News/store";
 
-import {Column, Row} from "./Overview.styles";
+import {BigRow, Column} from "./Overview.styles";
 import Announcement from "../../models/Announcement";
 import Announcements from "../Announcements/Announcements";
 import RecentActivities from "../RecentActivity/RecentActivities";
@@ -80,23 +80,21 @@ export default class Overview extends Component<{}, State> {
                     <OverviewProvider>
                         <WeeklyDigest />
                     </OverviewProvider>
-                    <Row>
+                    <BigRow>
+                        <AppApprovalsHistogram />
+                    </BigRow>
+                    <BigRow>
                         <NewsProvider>
                             <News />
                         </NewsProvider>
                         <BigCard title="App Approvals">
                             <AppApprovalsChart category="title" value="amount" />
                         </BigCard>
-                    </Row>
-                    <Row>
+                    </BigRow>
+                    <BigRow>
                         <RecentActivities/>
-                        <BigCard title="Recently Updated Apps" />
-                    </Row>
-                    <Row>
-                        <BigCard title="JIRA DLV Issues: Created vs Resolved">
-                            <JiraDLVChart />
-                        </BigCard>
-                    </Row>
+                        <BigCard />
+                    </BigRow>
                     {/*<AppOverview appJson={singleResponse.data[0]}/>*/}
                 </Column>
         );

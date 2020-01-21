@@ -1,5 +1,4 @@
-import {gql} from "apollo-boost";
-
+import { gql } from "apollo-boost";
 
 /**
  * Overview/Weekly Digest Queries
@@ -11,7 +10,7 @@ export const appsApproved = gql`
 			previous
 		}
 	}
-`
+`;
 
 export const appsSubmitted = gql`
 	query AppsSubmitted($start: String, $end: String) {
@@ -20,7 +19,7 @@ export const appsSubmitted = gql`
 			previous
 		}
 	}
-`
+`;
 
 export const appsRejected = gql`
 	query AppsRejected($start: String, $end: String) {
@@ -29,13 +28,15 @@ export const appsRejected = gql`
 			previous
 		}
 	}
-`
+`;
 
-export const appsPending = gql`{
-	appsPending {
-		value
+export const appsPending = gql`
+	query AppsPending($start: String) {
+		appsPending(start: $start) {
+			value
+		}
 	}
-}`
+`;
 
 export const devsApproved = gql`
 	query DevsApproved($start: String, $end: String) {
@@ -44,7 +45,7 @@ export const devsApproved = gql`
 			previous
 		}
 	}
-`
+`;
 
 export const devsSubmitted = gql`
 	query DevsSubmitted($start: String, $end: String) {
@@ -53,7 +54,7 @@ export const devsSubmitted = gql`
 			previous
 		}
 	}
-`
+`;
 
 export const devsRejected = gql`
 	query DevsRejected($start: String, $end: String) {
@@ -62,13 +63,15 @@ export const devsRejected = gql`
 			previous
 		}
 	}
-`
+`;
 
-export const devsPending = gql`{
-	devsPending {
-		value
+export const devsPending = gql`
+	{
+		devsPending {
+			value
+		}
 	}
-}`
+`;
 
 export const communityQuestions = gql`
 	query CommunityQuestions($start: String, $end: String) {
@@ -77,7 +80,7 @@ export const communityQuestions = gql`
 			previous
 		}
 	}
-`
+`;
 
 export const communityAnswers = gql`
 	query CommunityAnswers($start: String, $end: String) {
@@ -86,15 +89,15 @@ export const communityAnswers = gql`
 			previous
 		}
 	}
-`
+`;
 
 /**
  * News Queries
  */
-export const fetchNewsItems = gql`
+export const news = gql`
 	query {
-		fetchNewsItems {
-			created_at
+		news {
+			createdAt
 			id
 			author
 			title
@@ -103,4 +106,4 @@ export const fetchNewsItems = gql`
 			type
 		}
 	}
-	`;
+`;

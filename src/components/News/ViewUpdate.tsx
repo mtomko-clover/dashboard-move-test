@@ -34,7 +34,7 @@ export default class ViewUpdate extends Component<ViewUpdateProps, State> {
     }
 
     render(): React.ReactNode {
-        let formatDate = months[this.props.update.created_at.getMonth()] + "  " + this.props.update.created_at.getDate() + ", " + this.props.update.created_at.getFullYear();
+        let formatDate = months[this.props.update.createdAt.getMonth()] + "  " + this.props.update.createdAt.getDate() + ", " + this.props.update.createdAt.getFullYear();
         let user: Employee = EmployeeUtil.getEmployeeFromUsername(this.props.update.username);
         return (
             <Modal
