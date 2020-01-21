@@ -5,7 +5,7 @@ import React, { ReactElement, useState } from 'react';
 import { Route, RouteComponentProps, withRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
-import Admin from '../AdminPage';
+import Settings from '../Settings';
 import Header from '../Header';
 import Overview from '../Overview';
 import { SignIn } from '../SignIn';
@@ -91,7 +91,7 @@ const App = ({ history }: RouteComponentProps): ReactElement => {
         />
         <Route path="/home" component={Overview} />
         <AnnouncementProvider>
-          <Route path="/admin" component={Admin} />
+          <Route path="/settings" component={Settings} />
         </AnnouncementProvider>
       </AppContainer>
     </ThemeProvider>

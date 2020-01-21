@@ -8,10 +8,39 @@ import { Cookies } from '../utils/Cookies';
 // import { useQuery } from "@apollo/react-hooks";
 import CreateAnnouncement from './Announcements/CreateAnnouncement';
 import { AnnouncementContext } from './Announcements/store';
+import styled from "styled-components";
+import { Button } from "antd";
 
 const user = EmployeeUtil.getEmployeeFromUsername(CookiesUtil.getCookie(Cookies.USERNAME));
 
-const AdminPage = (): ReactElement => {
+const SettingsContainer = styled.div`
+     width: 80%;
+`;
+
+const SettingsHeader = styled.div`
+  font-weight: bold;
+  font-size: 28px;
+  margin-top: 50px;
+`;
+
+const SettingsSection = styled.div`
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+`;
+
+const SectionHeader = styled.div`
+     font-size: 18px;
+     font-weight: bold;
+`;
+
+const SectionContent = styled.div`
+    margin-left: 20px;
+`;
+
+
+
+const Settings = (): ReactElement => {
   const {
     modal: { toggleModal, visible },
   } = useContext(AnnouncementContext);
@@ -23,23 +52,25 @@ const AdminPage = (): ReactElement => {
   // console.log("annoucementData", data);
 
   return (
-    <div>
+    <SettingsContainer>
       {visible && <CreateAnnouncement />}
       {user.role === EMPLOYEE_ROLES.ADMIN ? (
         <div>
-            <h1>Admin Settings</h1>
-          THIS WILL BE AN ADMIN PAGE
-          <button onClick={(): void => toggleModal({ visible: !visible })}>ADD ANNOUNCEMENT</button>
+            <SettingsHeader>Admin Settings</SettingsHeader>
+            <SettingsSection>
+                <SectionHeader>Announcements</SectionHeader>
+                <SectionContent><Button onClick={(): void => toggleModal({ visible: !visible })}>Add Annoucement</Button></SectionContent>
+            </SettingsSection>
         </div>
       ) : (
         <div>
-            <h1>Settings</h1>
+            <SettingsHeader>Settings</SettingsHeader>
             YOU ARE NOT AN ADMIN ¯\_(ツ)_/¯
             <p>check back soon for more features</p>
         </div>
       )}
-    </div>
+    </SettingsContainer>
   );
 };
 
-export default AdminPage;
+export default Settings;
