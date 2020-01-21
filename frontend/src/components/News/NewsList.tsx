@@ -13,27 +13,15 @@ const NewsList = (): ReactElement | null => {
     const initialState = {visible: false, update: new NewsItem("", new Date(), "", NEWS_CATEGORIES.DevRel)};
     const [ {visible, update}, setModalState] = useState(initialState);
 
-
-    console.log("NewsList", data);
-
     if (error) {
         console.error(error);
         return null;
     }
 
     const newsItem = (item: NewsItem | null): void => {
-        console.log('item clicked', item);
         if (item) {
             setModalState({visible: true, update: item});
         }
-        // TO-DO: add view News item
-        // const author = CookiesUtil.getCookie(Cookies.USERNAME);
-
-        // if (state.update && (author === state.update.author)) {
-        //     setState({ showModal: true, update });
-        // } else {
-        //     setState({ showViewNews: true, update });
-        // }
     };
 
     const closeViewUpdate = (): void => {
