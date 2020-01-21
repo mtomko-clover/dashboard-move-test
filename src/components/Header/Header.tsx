@@ -24,7 +24,7 @@ const Header = ({ logout, sessionId }: HeaderProps): ReactElement => {
       <Menu.Item>
         <MenuItemRow>
           <Icon type="setting" />
-          <Link to="/admin">Settings</Link>
+          <Link to="/settings">Settings</Link>
         </MenuItemRow>
       </Menu.Item>
       <Menu.Item>
