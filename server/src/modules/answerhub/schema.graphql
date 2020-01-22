@@ -1,0 +1,4 @@
+type Query {
+  communityQuestions(start: String, end: String): Metrics
+  communityAnswers(start: String, end: String): Metrics
+}

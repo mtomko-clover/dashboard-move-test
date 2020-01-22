@@ -1,0 +1,15 @@
+type Announcement {
+    id: ID
+    author: String
+    created_at: String
+    text: String
+    is_urgent: Boolean
+}
+
+type Query {
+  announcements: [Announcement]
+}
+
+type Mutation {
+  createAnnouncement(text: String, is_urgent: Boolean, username: String): Response
+}

@@ -1,0 +1,8 @@
+type Metrics {
+  value: Int
+  previous: Int
+}
+
+type Response {
+  message: String
+}
